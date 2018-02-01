@@ -1,0 +1,6 @@
+{
+    // Set the mode for the application from one of the following:
+    // - simulator: runs a single simulation
+    // - verifier: verifies the output from a single simulation run
+    "mode": "simulator"
+}

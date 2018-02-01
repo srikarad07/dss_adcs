@@ -13,7 +13,7 @@
 
 #include <rapidjson/document.h>
 
-// #include "dss_adcs/simulator.hpp"
+#include "dss_adcs/simulator.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {
