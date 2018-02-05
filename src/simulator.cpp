@@ -146,7 +146,7 @@ void executeSimulator( const rapidjson::Document& config )
 //                          writer );
 //     }
 //     std::cout << "Numerical integrator executed successfully!" << std::endl;
-// }
+}
 
 //! Check input parameters for single_particle_simulator application mode.
 simulatorInput checkSimulatorInput( const rapidjson::Document& config )
