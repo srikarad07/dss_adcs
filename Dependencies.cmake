@@ -7,6 +7,18 @@ include(ExternalProject)
 
 # -------------------------------
 
+# Boost: https://boost.org
+
+find_package(Boost)
+
+if(NOT APPLE)
+  include_directories(SYSTEM AFTER "${Boost_INCLUDE_DIRS}")
+else(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem \"${Boost_INCLUDE_DIRS}\"")
+endif(NOT APPLE)
+
+# -------------------------------
+
 # rapidjson: https://github.com/miloyip/rapidjson
 
 if(NOT BUILD_DEPENDENCIES)

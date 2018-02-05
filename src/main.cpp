@@ -82,7 +82,7 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     if ( mode.compare( "simulator") == 0 )
     {
         std::cout << "Mode                               " << mode << std::endl;
-        // dss_adcs::executeSimulator( config );
+        dss_adcs::executeSimulator( config );
     }
     else
     {
