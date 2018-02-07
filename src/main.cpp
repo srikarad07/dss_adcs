@@ -14,7 +14,6 @@
 #include <rapidjson/document.h>
 
 #include "dss_adcs/simulator.hpp"
-// #include "dss_adcs/factorial.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {
@@ -82,12 +81,10 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     
     dss_adcs::executeSimulator( config );
     
-    // dss_adcs::computeFactorial(10);
     // if ( mode.compare( "simulator") == 0 )
     // {
     //     std::cout << "Mode                               " << mode << std::endl;
     //     // dss_adcs::executeSimulator( config );
-    //     dss_adcs::Circle x(60.0);
     // }
     // else
     // {

@@ -7,6 +7,43 @@ include(ExternalProject)
 
 # -------------------------------
 
+# sml: https://github.com/openastro/sml
+
+if(NOT BUILD_DEPENDENCIES)
+  find_package(sml)
+endif(NOT BUILD_DEPENDENCIES)
+
+if(NOT SML_FOUND)
+  message(STATUS "sml will be downloaded when ${CMAKE_PROJECT_NAME} is built")
+  ExternalProject_Add(sml-lib
+    PREFIX ${EXTERNAL_PATH}/sml
+    #--Download step--------------
+    URL https://github.com/openastro/sml/archive/master.zip
+    TIMEOUT 30
+    #--Update/Patch step----------
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+    #--Configure step-------------
+    CONFIGURE_COMMAND ""
+    #--Build step-----------------
+    BUILD_COMMAND ""
+    #--Install step---------------
+    INSTALL_COMMAND ""
+    #--Output logging-------------
+    LOG_DOWNLOAD ON
+  )
+  ExternalProject_Get_Property(sml-lib source_dir)
+  set(SML_INCLUDE_DIRS ${source_dir}/include CACHE INTERNAL "Path to include folder for sml")
+endif(NOT SML_FOUND)
+
+if(NOT APPLE)
+  include_directories(SYSTEM AFTER "${SML_INCLUDE_DIRS}")
+else(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem \"${SML_INCLUDE_DIRS}\"")
+endif(NOT APPLE)
+
+# -------------------------------
+
 # Boost: https://boost.org
 
 find_package(Boost)

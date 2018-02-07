@@ -4,10 +4,6 @@
 // Configuration file for dustsim.
 {
     "mode": "simulator",
-    ////
-    // Central gravity
-    ////
-    // Set gravitational parameter of the central body [km^3 s^-2].
     "principle_inertia": [
         10.0,
         10.0,
