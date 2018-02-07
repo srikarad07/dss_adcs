@@ -4,11 +4,6 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
  */
 
-// #include <sstream>
-// #include <stdexcept>
-
-// #include "dss_adcs/factorial.hpp"
-
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -18,24 +13,10 @@
 // #include <astro/astro.hpp>
 
 // #include "dss_adcs/dynamicalSystem.hpp"
-
-#include "dss_adcs/factorial.hpp"
+#include "dss_adcs/simulator.hpp"
 
 namespace dss_adcs
 {
-
-//! Compute factorial.
-const int computeFactorial( const int integerNumber )
-{
-	if ( integerNumber < 0 )
-	{
-		std::ostringstream errorMessage;
-		errorMessage << "ERROR: (" << integerNumber << "!) is undefined!" << std::endl;
-		throw std::runtime_error( errorMessage.str( ) );
-	}
-
-	return ( integerNumber == 0 ) ? 1 : integerNumber * computeFactorial( integerNumber  - 1 );
-};
 
 void executeSimulator( const rapidjson::Document& config )
 {
@@ -68,6 +49,19 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
               << " [kg m^2]" << std::endl;         
     
     return simulatorInput( principleInertia );
+};
+
+//! Compute factorial.
+const int computeFactorial( const int integerNumber )
+{
+	if ( integerNumber < 0 )
+	{
+		std::ostringstream errorMessage;
+		errorMessage << "ERROR: (" << integerNumber << "!) is undefined!" << std::endl;
+		throw std::runtime_error( errorMessage.str( ) );
+	}
+
+	return ( integerNumber == 0 ) ? 1 : integerNumber * computeFactorial( integerNumber  - 1 );
 };
 
 } // namespace dss_adcs

@@ -5,6 +5,7 @@
 # Set project source files.
 set(SRC
   "${SRC_PATH}/factorial.cpp"
+  "${SRC_PATH}/simulator.cpp"
 )
 
 # Set project main file.

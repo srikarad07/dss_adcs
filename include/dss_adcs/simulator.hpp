@@ -4,19 +4,20 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
  */
 
-#ifndef DSS_ADCS_FACTORIAL_HPP
-#define DSS_ADCS_FACTORIAL_HPP
+#ifndef DSS_ADCS_SIMULATOR_HPP
+#define DSS_ADCS_SIMULATOR_HPP
+
+#include <string>
+
+#include <rapidjson/document.h>
 
 #include "dss_adcs/typedefs.hpp"
-#include <fstream>
-#include <iostream>
-#include <stdexcept>
 
 namespace dss_adcs
 {
 
 void executeSimulator( const rapidjson::Document& config );
-// void executeSimulator( const rapidjson::Document& config );
+
 struct simulatorInput
 {
 public:
@@ -33,6 +34,7 @@ private:
 };
 
 simulatorInput checkSimulatorInput( const rapidjson::Document& config );
+
 //! Compute factorial.
 /*!
  * Computes factorial of a given integer.
@@ -44,4 +46,4 @@ const int computeFactorial( const int integerNumber );
 
 } // namespace dss_adcs
 
-#endif // DSS_ADCS_FACTORIAL_HPP
+#endif // DSS_ADCS_SIMULATOR_HPP
