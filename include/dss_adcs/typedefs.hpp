@@ -35,6 +35,9 @@ typedef Vector3 Velocity;
 //! Set type for state vector to 6D vector.
 typedef Vector6 State;
 
+//! Set type for ineratia vector to 3D vector. 
+typedef Vector3 Inertia; 
+
 //! JSON config iterator.
 typedef rapidjson::Value::ConstMemberIterator ConfigIterator;
 
