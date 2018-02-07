@@ -14,6 +14,7 @@
 #include <rapidjson/document.h>
 
 #include "dss_adcs/simulator.hpp"
+// #include "dss_adcs/factorial.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {
@@ -67,29 +68,33 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     }
 
     rapidjson::Document config;
-    config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
+    // config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
 
-    rapidjson::Value::MemberIterator modeIterator = config.FindMember( "mode" );
-    if ( modeIterator == config.MemberEnd( ) )
-    {
-        std::cerr << "ERROR: Configuration option \"mode\" could not be found in JSON input!"
-                  << std::endl;
-        throw;
-    }
-    std::string mode = modeIterator->value.GetString( );
-    std::transform( mode.begin( ), mode.end( ), mode.begin( ), ::tolower );
-
-    if ( mode.compare( "simulator") == 0 )
-    {
-        std::cout << "Mode                               " << mode << std::endl;
-        dss_adcs::executeSimulator( config );
-    }
-    else
-    {
-        std::cout << std::endl;
-        std::cerr << "ERROR: Requested \"mode\" << mode << is invalid!" << std::endl;
-        throw;
-    }
+    // rapidjson::Value::MemberIterator modeIterator = config.FindMember( "mode" );
+    // if ( modeIterator == config.MemberEnd( ) )
+    // {
+    //     std::cerr << "ERROR: Configuration option \"mode\" could not be found in JSON input!"
+    //               << std::endl;
+    //     throw;
+    // }
+    // std::string mode = modeIterator->value.GetString( );
+    // std::transform( mode.begin( ), mode.end( ), mode.begin( ), ::tolower );
+    
+    dss_adcs::executeSimulator( config );
+    
+    // dss_adcs::computeFactorial(10);
+    // if ( mode.compare( "simulator") == 0 )
+    // {
+    //     std::cout << "Mode                               " << mode << std::endl;
+    //     // dss_adcs::executeSimulator( config );
+    //     dss_adcs::Circle x(60.0);
+    // }
+    // else
+    // {
+    //     std::cout << std::endl;
+    //     std::cerr << "ERROR: Requested \"mode\" << mode << is invalid!" << std::endl;
+    //     throw;
+    // }
 
     ///////////////////////////////////////////////////////////////////////////
 
