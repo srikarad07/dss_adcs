@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 S.D. Cherukuri (srikarad007@gmail.com)
+ * Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
  * Distributed under the MIT License.
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
  */
@@ -29,17 +29,6 @@ void executeSimulator( const rapidjson::Document& config )
     std::cout << "                           Run simulator                          " << std::endl;
     std::cout << "******************************************************************" << std::endl;
     std::cout << std::endl;
-
-    // Compute initial state in Cartesian elements.
-    // State initialState = astro::convertKeplerianToCartesianElements(
-    //     input.initialStateKeplerianElements, input.gravitationalParameter );
-    // std::cout << "Cartesian initial state            (";
-    // for ( unsigned int i = 0; i < initialState.size( ) - 1; i++ )
-    // {
-    //     std::cout << initialState[ i ] << ", ";
-    // }
-    // std::cout << initialState[ initialState.size( ) - 1 ] << ")" << std::endl;
-    // std::cout << std::endl;
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
@@ -73,11 +62,11 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
               << "[deg]"           << std::endl;
     std::cout << "Yaw angle                         "   << initialAttitudeState[2]
               << "[deg]"           << std::endl;
-    std::cout << "Roll rate:                        "     << initialAttitudeState[3]
+    std::cout << "Roll rate:                        "   << initialAttitudeState[3]
               << "[deg/sec]"       << std::endl; 
     std::cout << "Pitch rate:                       "   << initialAttitudeState[4]
               << "[deg/sec]"       << std::endl;
-    std::cout << "[Yaw rate]                        "      << initialAttitudeState[5]
+    std::cout << "[Yaw rate]                        "   << initialAttitudeState[5]
               << "[deg/sec]"       << std::endl;
 
     // Extract integrator type. 

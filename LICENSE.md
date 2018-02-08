@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2018 S.D. Cherukuri (srikarad007@gmail.com)
+Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

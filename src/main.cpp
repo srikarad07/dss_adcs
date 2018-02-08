@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 S.D. Cherukuri (srikarad007@gmail.com)
+ * Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
  * Distributed under the MIT License.
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
  */
@@ -20,13 +20,13 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
 	///////////////////////////////////////////////////////////////////////////
 
     std::cout << std::endl;
-    std::cout << "------------------------------------------------------------------" << std::endl;
+    std::cout << "---------------------------------------------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
     std::cout << "                              dss - adcs                          " << std::endl;
     std::cout << std::endl;
-    std::cout << "     Copyright (c) 2018 S.D. Cherukuri (srikarad007@gmail.com)    " << std::endl;
+    std::cout << "     Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)    " << std::endl;
     std::cout << std::endl;
-    std::cout << "------------------------------------------------------------------" << std::endl;
+    std::cout << "----------------------------------------------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 
     ///////////////////////////////////////////////////////////////////////////
