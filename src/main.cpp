@@ -67,17 +67,19 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     }
 
     rapidjson::Document config;
-    // config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
+    config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
+    
+    std::cout << "The mode is given as: " << config["mode"].GetString() << std::endl; 
 
-    // rapidjson::Value::MemberIterator modeIterator = config.FindMember( "mode" );
-    // if ( modeIterator == config.MemberEnd( ) )
-    // {
-    //     std::cerr << "ERROR: Configuration option \"mode\" could not be found in JSON input!"
-    //               << std::endl;
-    //     throw;
-    // }
-    // std::string mode = modeIterator->value.GetString( );
-    // std::transform( mode.begin( ), mode.end( ), mode.begin( ), ::tolower );
+    rapidjson::Value::MemberIterator modeIterator = config.FindMember( "mode" );
+    if ( modeIterator == config.MemberEnd( ) )
+    {
+        std::cerr << "ERROR: Configuration option \"mode\" could not be found in JSON input!"
+                  << std::endl;
+        throw;
+    }
+    std::string mode = modeIterator->value.GetString( );
+    std::transform( mode.begin( ), mode.end( ), mode.begin( ), ::tolower );
     
     dss_adcs::executeSimulator( config );
     
