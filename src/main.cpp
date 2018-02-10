@@ -68,8 +68,6 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
 
     rapidjson::Document config;
     config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
-    
-    std::cout << "The mode is given as: " << config["mode"].GetString() << std::endl; 
 
     rapidjson::Value::MemberIterator modeIterator = config.FindMember( "mode" );
     if ( modeIterator == config.MemberEnd( ) )
@@ -83,17 +81,17 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     
     dss_adcs::executeSimulator( config );
     
-    // if ( mode.compare( "simulator") == 0 )
-    // {
-    //     std::cout << "Mode                               " << mode << std::endl;
-    //     // dss_adcs::executeSimulator( config );
-    // }
-    // else
-    // {
-    //     std::cout << std::endl;
-    //     std::cerr << "ERROR: Requested \"mode\" << mode << is invalid!" << std::endl;
-    //     throw;
-    // }
+    if ( mode.compare( "simulator") == 0 )
+    {
+        std::cout << "Mode                               " << mode << std::endl;
+        // dss_adcs::executeSimulator( config );
+    }
+    else
+    {
+        std::cout << std::endl;
+        std::cerr << "ERROR: Requested \"mode\" << mode << is invalid!" << std::endl;
+        throw;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 

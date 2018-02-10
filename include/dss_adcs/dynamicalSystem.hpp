@@ -12,6 +12,7 @@
 #include <astro/astro.hpp>
 
 #include "dss_adcs/typedefs.hpp"
+#include "dss_adcs/rotationalBodyAccelerationModel.hpp"
 
 namespace dss_adcs
 {
@@ -37,8 +38,8 @@ public:
      * @param[in] aInertiaPrinciple         Princple axes of inertia's of the spacecraft [kg m^2]
      * @param[in] intial
      */
-    DynamicalSystem( const Real aPrincipleInertia )
-        : aPrincipleInertia( aPrincipleInertia )
+    DynamicalSystem( const Inertia aPrincipleInertia )
+        : principleInertia( aPrincipleInertia )
     { }
 
     //! Overload ()-operator to compute state derivative using dynamical system.
@@ -58,36 +59,15 @@ public:
                       const double time )
     {
         const Position currentPosition = { { state[0], state[1], state[2] } };
-
         // Set the derivative fo the position elements to the current velocity elements.
-        stateDerivative[ 0 ] = state[ 3 ];
-        stateDerivative[ 1 ] = state[ 4 ];
-        stateDerivative[ 2 ] = state[ 5 ];
-
+        stateDerivative[ 0 ] =  state[3];
+        stateDerivative[ 1 ] =  state[4];
+        stateDerivative[ 2 ] =  state[5];
+        
         // Compute the total acceleration acting on the system as a sum of the forces.
         // Central body gravity is included by default.
         Vector3 acceleration
-            = astro::computeRotationalBodyAcceleration( principleInertia, currentPosition );
-
-        // // Add J2 acceleration if model is set to active.
-        // if ( isJ2AccelerationModelActive )
-        // {
-        //     acceleration = sml::add( acceleration,
-        //                              astro::computeJ2Acceleration( gravitationalParameter,
-        //                                                            currentPosition,
-        //                                                            equatorialRadius,
-        //                                                            j2Coefficient ) );
-        // }
-
-        // // Add solar radiation pressure acceleration if model is set to active.
-        // if ( isRadiationPressureAccelerationModelActive )
-        // {
-        // //     acceleration = sml::add( acceleration,
-        // //                              astro::computeJ2Acceleration( gravitationalParameter,
-        // //                                                            currentPosition,
-        // //                                                            equatorialRadius,
-        // //                                                            j2Coefficient ) );
-        // }
+            = dss_adcs::computeRotationalBodyAcceleration( principleInertia, currentPosition );
 
         // Set the derivative of the velocity elements to the computed total acceleration.
         stateDerivative[ 3 ] = acceleration[ 0 ];
@@ -99,29 +79,7 @@ protected:
 private:
 
     //! Gravitational parameter of central body [km^3 s^-2].
-    const Real principleInertia;
-
-    // //! Boolean flag indicating if J2 acceleration model is active (true) or not (false).
-    // const bool isJ2AccelerationModelActive;
-
-    // //! J2-coefficient (unnormalized) of spherical harmonics expansion of gravity field [-].
-    // const Real j2Coefficient;
-
-    // //! Equatorial radius of central body corresponding with spherical harmonics gravity field [km].
-    // const Real equatorialRadius;
-
-    // //! Boolean flag indicating if radiation pressure acceleration model is active (true) or not
-    // //! (false).
-    // const bool isRadiationPressureAccelerationModelActive;
-
-    // //! Radius of dust particle [micron].
-    // const Real particleRadius;
-
-    // //! Bulk density of dust particle [kg m^-3].
-    // const Real particleBulkDensity;
-
-    // //! Radiation pressure coefficient [-].
-    // const Real radiationPressureCoefficient;
+    const Inertia principleInertia;
 };
 
 } // namespace dss_adcs

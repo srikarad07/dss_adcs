@@ -44,6 +44,44 @@ endif(NOT APPLE)
 
 # -------------------------------
 
+# astro: https://github.com/openastro/astro
+
+if(NOT BUILD_DEPENDENCIES)
+  find_package(astro)
+endif(NOT BUILD_DEPENDENCIES)
+
+if(NOT ASTRO_FOUND)
+  message(STATUS "astro will be downloaded when ${CMAKE_PROJECT_NAME} is built")
+  ExternalProject_Add(astro-lib
+    DEPENDS sml-lib
+    PREFIX ${EXTERNAL_PATH}/astro
+    #--Download step--------------
+    URL https://github.com/openastro/astro/archive/master.zip
+    TIMEOUT 30
+    #--Update/Patch step----------
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+    #--Configure step-------------
+    CONFIGURE_COMMAND ""
+    #--Build step-----------------
+    BUILD_COMMAND ""
+    #--Install step---------------
+    INSTALL_COMMAND ""
+    #--Output logging-------------
+    LOG_DOWNLOAD ON
+  )
+  ExternalProject_Get_Property(astro-lib source_dir)
+  set(ASTRO_INCLUDE_DIRS ${source_dir}/include CACHE INTERNAL "Path to include folder for astro")
+endif(NOT ASTRO_FOUND)
+
+if(NOT APPLE)
+  include_directories(SYSTEM AFTER "${ASTRO_INCLUDE_DIRS}")
+else(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem \"${ASTRO_INCLUDE_DIRS}\"")
+endif(NOT APPLE)
+
+# -------------------------------
+
 # Boost: https://boost.org
 
 find_package(Boost)

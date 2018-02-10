@@ -12,7 +12,7 @@
 
 #include <astro/astro.hpp>
 
-// #include "dss_adcs/dynamicalSystem.hpp"
+#include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
 
@@ -29,6 +29,13 @@ void executeSimulator( const rapidjson::Document& config )
     std::cout << "                           Run simulator                          " << std::endl;
     std::cout << "******************************************************************" << std::endl;
     std::cout << std::endl;
+
+    // Create instance of dynamical system.
+    std::cout << "Setting up dynamical model ..." << std::endl;
+    DynamicalSystem dynamics( input.principleInertia );
+    std::cout << "Dynamical model set up successfully!" << std::endl;
+    std::cout << std::endl;
+
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
