@@ -15,6 +15,7 @@
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
+#include "dss_adcs/outputWriter.hpp"
 
 namespace dss_adcs
 {
@@ -35,7 +36,36 @@ void executeSimulator( const rapidjson::Document& config )
     DynamicalSystem dynamics( input.principleInertia );
     std::cout << "Dynamical model set up successfully!" << std::endl;
     std::cout << std::endl;
+    
+    State stateDerivative = { 0, 0, 0, 0, 0, 0 };
+    // Trial for the dynamics: 
+    State xxx = dynamics( input.initialAttitudeState, stateDerivative ); 
+    
+    std::cout << xxx[0] << std::endl; 
 
+    // Create file stream to write state history to.
+    std::ofstream stateHistoryFile( input.stateHistoryFilePath );
+    stateHistoryFile << "t, roll, pitch, yaw, roll_rate, pitch_rate, yaw_rate" << std::endl;
+    StateHistoryWriter writer( stateHistoryFile );
+
+    //Set up numerical integrator. 
+    // std::cout << "Executing numerical integrator ..." << std::endl;
+    // if ( input.integrator == rk4 )
+    // {
+    //     using namespace boost::numeric::odeint; 
+    //     integrate_const( runge_kutta4< State >(),
+    //                      dynamics, 
+    //                      input.initialAttitudeState,
+    //                      input.startEpoch,
+    //                      input.endEpoch,
+    //                      input.timeStep,
+    //                      writer );
+    // }
+    // else 
+    // {
+    //     std::cout << "Numerical integrator not defined" << std::endl;
+    //     throw;
+    // }
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 

@@ -54,9 +54,9 @@ public:
      * @param[out] stateDerivative   Computed state derivative of the dynamical system (1-D vector)
      * @param[in]  time              Current simulation epoch
      */
-    void operator( )( const Vector6& state,
-                      Vector6& stateDerivative,
-                      const double time )
+    State operator( )( const Vector6& state,
+                      Vector6& stateDerivative )
+                    //   const double time )
     {
         const Position currentPosition = { { state[0], state[1], state[2] } };
         // Set the derivative fo the position elements to the current velocity elements.
@@ -67,12 +67,14 @@ public:
         // Compute the total acceleration acting on the system as a sum of the forces.
         // Central body gravity is included by default.
         Vector3 acceleration
-            = dss_adcs::computeRotationalBodyAcceleration( principleInertia, currentPosition );
+            = astro::computeRotationalBodyAcceleration( principleInertia, currentPosition );
 
         // Set the derivative of the velocity elements to the computed total acceleration.
         stateDerivative[ 3 ] = acceleration[ 0 ];
         stateDerivative[ 4 ] = acceleration[ 1 ];
         stateDerivative[ 5 ] = acceleration[ 2 ];
+
+        return stateDerivative;
     }
 
 protected:
