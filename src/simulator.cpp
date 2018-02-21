@@ -12,13 +12,13 @@
 #include <boost/numeric/odeint.hpp>
 
 #include <astro/astro.hpp>
-// #include <integrate/integrate.hpp>
+#include <integrate/integrate.hpp>
 
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
 #include "dss_adcs/outputWriter.hpp"
-#include "dss_adcs/rungeKutta.hpp"
+// #include "dss_adcs/rungeKutta.hpp"
 
 namespace dss_adcs
 {
@@ -52,7 +52,7 @@ void executeSimulator( const rapidjson::Document& config )
         // using namespace boost::numeric::odeint;
         // std::vector< > steps; /* size_t step */
         // size_t steps = integrate( dynamics, input.initialAttitudeState, 0.0, 10.0, 0.1 ); 
-        dss_adcs::performRungeKutta4Integration( dynamics, input );
+        integrate::performRungeKutta4Integration( dynamics, input );
         std::cout << "Numerical Integrator" << input.integrator << "run successfully!" << std::endl;
     }
     else 

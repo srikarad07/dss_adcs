@@ -44,6 +44,20 @@ endif(NOT APPLE)
 
 # -------------------------------
 
+# astro: https://github.com/openastro/integrate
+
+if(NOT BUILD_DEPENDENCIES)
+  find_package(integrate)
+endif(NOT BUILD_DEPENDENCIES)
+
+if(NOT APPLE)
+  include_directories(SYSTEM AFTER "${INTEGRATE_INCLUDE_DIRS}")
+else(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem \"${INTEGRATE_INCLUDE_DIRS}\"")
+endif(NOT APPLE)
+
+# -------------------------------
+
 # astro: https://github.com/openastro/astro
 
 if(NOT BUILD_DEPENDENCIES)
