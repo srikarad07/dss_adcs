@@ -54,9 +54,9 @@ public:
      * @param[out] stateDerivative   Computed state derivative of the dynamical system (1-D vector)
      * @param[in]  time              Current simulation epoch
      */
-    State operator( )( const Vector6& state,
+    void operator( )( const Vector6& state,
                       Vector6& stateDerivative )
-                    //   const double time )
+                    //   const double time  )
     {
         const Position currentPosition = { { state[0], state[1], state[2] } };
         // Set the derivative fo the position elements to the current velocity elements.
@@ -74,7 +74,8 @@ public:
         stateDerivative[ 4 ] = acceleration[ 1 ];
         stateDerivative[ 5 ] = acceleration[ 2 ];
 
-        return stateDerivative;
+        // return stateDerivative;
+
     }
 
 protected:
