@@ -8,14 +8,12 @@
 #define DSS_ADCS_DYNAMICAL_SYSTEM_HPP
 
 #include <iostream>
-// #include <Eigen/Dense>
 
 #include <sml/sml.hpp>
 #include <astro/astro.hpp>
 
 #include "dss_adcs/typedefs.hpp"
 #include "dss_adcs/gravityGradientTorqueModel.hpp"
-// #include "dss_adcs/rotationalBodyAccelerationModel.hpp"
 
 namespace dss_adcs
 {
@@ -67,8 +65,8 @@ public:
                       Vector6& stateDerivative,
                       const double time  )
     {
-        const Position currentPosition = { { state[0], state[1], state[2] } };
-        const Velocity currentVelocity = { { state[3], state[4], state[5] } };
+        const Position currentPosition = { state[0], state[1], state[2] };
+        const Velocity currentVelocity = { state[3], state[4], state[5] };
         // Set the derivative fo the position elements to the current velocity elements.
         stateDerivative[ 0 ] =  state[3];
         stateDerivative[ 1 ] =  state[4];

@@ -7,9 +7,7 @@
 #ifndef DSS_ADCS_TYPEDEFS_HPP
 #define DSS_ADCS_TYPEDEFS_HPP
 
-#include <boost/array.hpp>
-// #include <boost/numeric/ublas/matrix.hpp>
-// #include <boost/numeric/ublas/io.hpp>
+// #include <boost/array.hpp>
 #include <Eigen/Dense>
 #include <rapidjson/document.h>
 
@@ -23,10 +21,10 @@ typedef int Int;
 typedef double Real;
 
 //! Set type for 3-dimensional vector.
-typedef boost::array< Real, 3 > Vector3;
+typedef Eigen::Matrix< double, 3, 1 > Vector3;
 
 //! Set type for 6-dimensional vector.
-typedef boost::array< Real, 6 > Vector6;
+typedef Eigen::Matrix< double, 6, 1 > Vector6;
 
 //! Set type for a 3 by 3 matrix.
 // typedef boost::numeric::ublas::matrix Matrix33;

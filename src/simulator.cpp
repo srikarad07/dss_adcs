@@ -9,7 +9,6 @@
 #include <stdexcept>
 #include <vector>
 
-// #include <Eigen/Dense>
 #include <boost/numeric/odeint.hpp>
 
 #include <astro/astro.hpp>
@@ -59,15 +58,6 @@ void executeSimulator( const rapidjson::Document& config )
     directionCosineMatrix(2,0) = 0.0;
     directionCosineMatrix(2,1) = 0.0;
     directionCosineMatrix(2,2) = 1.0;
-    // directionCosineMatrix[0][0] = 1.0;
-    // directionCosineMatrix[0][1] = 0.0;
-    // directionCosineMatrix[0][2] = 0.0;
-    // directionCosineMatrix[1][0] = 0.0; 
-    // directionCosineMatrix[1][1] = 1.0;
-    // directionCosineMatrix[1][2] = 0.0;
-    // directionCosineMatrix[2][0] = 0.0;
-    // directionCosineMatrix[2][1] = 0.0;
-    // directionCosineMatrix[2][2] = 1.0;
 
     DynamicalSystem dynamics( input.principleInertia, gravitationalParameter, radius, directionCosineMatrix );
     std::cout << "Dynamical model set up successfully!" << std::endl;
@@ -84,7 +74,7 @@ void executeSimulator( const rapidjson::Document& config )
     if ( input.integrator == rk4 )
     {
         using namespace boost::numeric::odeint;
-        integrate_const( runge_kutta4< State >( ),
+        integrate_const( runge_kutta4< State,double,State,double,vector_space_algebra >( ),
                          dynamics,
                          currentState,
                          input.startEpoch,
@@ -100,12 +90,12 @@ void executeSimulator( const rapidjson::Document& config )
     { 
         // std::cout << "Previous Current state: " << currentState[0] << std::endl; 
 
-        using namespace boost::numeric::odeint;
-        size_t steps = integrate(   dynamics, 
-                                    currentState, 
-                                    input.startEpoch,
-                                    input.endEpoch,
-                                    input.timeStep ); 
+        // using namespace boost::numeric::odeint;
+        // size_t steps = integrate(   dynamics, 
+        //                             currentState, 
+        //                             input.startEpoch,
+        //                             input.endEpoch,
+        //                             input.timeStep ); 
         // std::cout << "After integration Curent state: " << currentState[0] << std::endl;     
     }
     else
