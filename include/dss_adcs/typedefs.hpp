@@ -8,7 +8,9 @@
 #define DSS_ADCS_TYPEDEFS_HPP
 
 #include <boost/array.hpp>
-
+// #include <boost/numeric/ublas/matrix.hpp>
+// #include <boost/numeric/ublas/io.hpp>
+#include <Eigen/Dense>
 #include <rapidjson/document.h>
 
 namespace dss_adcs
@@ -25,6 +27,11 @@ typedef boost::array< Real, 3 > Vector3;
 
 //! Set type for 6-dimensional vector.
 typedef boost::array< Real, 6 > Vector6;
+
+//! Set type for a 3 by 3 matrix.
+// typedef boost::numeric::ublas::matrix Matrix33;
+// typedef Real Matrix33[3][3];
+typedef Eigen::Matrix< double, 3, 3 > Matrix33; 
 
 //! Set type for position vector to 3D vector.
 typedef Vector3 Position;
@@ -47,7 +54,8 @@ enum Integrator
   rk4,
   dopri5,
   rkf78,
-  bs
+  bs,
+  testInt
 };
 
 } // namespace dss_adcs

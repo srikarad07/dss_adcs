@@ -1,5 +1,4 @@
 # Copyright (c) 2017, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
-# Copyright (c) 2017, K. Kumar, Delft University of Technology (me@kartikkumar.com)
 # Distributed under the MIT License.
 # See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 

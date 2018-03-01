@@ -13,20 +13,21 @@
         10.0,
         10.0,
         10.0,
-        10.0,
-        10.0,
-        10.0
+        0.01,
+        0.01,
+        0.01
     ],
+    "isGravityGradientActive": "true",
     ////
     // Numerical integrator
     ////
     // Select numerical integrator.
     // (rk4|dopri5|rkf78|bs)
-    "integrator": "rk4",
+    "integrator": "testInt",
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 86400.0,
-    "time_step": 10.0,
+    "end_epoch": 10.0,
+    "time_step": 1.0,
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,
     "absolute_tolerance": 1.0e-12,
@@ -35,5 +36,5 @@
     ////
     // Set up file writer options.
     "metadata_file_path": "/home/superman/desktop/metadata.csv",
-    "state_history_file_path": "/Users/superman/desktop/state_history.csv"
+    "state_history_file_path": "/home/superman/Desktop/state_history.csv"
 }

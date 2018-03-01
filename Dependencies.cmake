@@ -7,6 +7,18 @@ include(ExternalProject)
 
 # -------------------------------
 
+# Eigen: https://eigen.tuxfamily.org/dox/
+
+find_package(Eigen3 3.1.2)
+
+if(NOT APPLE)
+  include_directories(SYSTEM AFTER "${EIGEN3_INCLUDE_DIR}")
+else(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem \"${EIGEN3_INCLUDE_DIR}\"")
+endif(NOT APPLE)
+
+# -------------------------------
+
 # sml: https://github.com/openastro/sml
 
 if(NOT BUILD_DEPENDENCIES)

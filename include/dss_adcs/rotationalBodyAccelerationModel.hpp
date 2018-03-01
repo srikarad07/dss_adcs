@@ -39,7 +39,7 @@ namespace dss_adcs
  * @return                                    Acceleration vector                      [km s^-2]
  */
 template< typename Inertia, typename Vector3 >
-Vector3 computeRotationalBodyAcceleration( const Inertia     principleInertia,
+Vector3( const Inertia     principleInertia,
                                         const Vector3& angularVelocity )
 {
     Vector3 acceleration = angularVelocity;

@@ -20,13 +20,14 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
 	///////////////////////////////////////////////////////////////////////////
 
     std::cout << std::endl;
-    std::cout << "---------------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
     std::cout << "                              dss - adcs                          " << std::endl;
     std::cout << std::endl;
-    std::cout << "     Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)    " << std::endl;
+    std::cout << "     Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology" << std::endl;
+    std::cout << "                           (srikarad007@gmail.com)                       " << std::endl; 
     std::cout << std::endl;
-    std::cout << "----------------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -78,13 +79,11 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     }
     std::string mode = modeIterator->value.GetString( );
     std::transform( mode.begin( ), mode.end( ), mode.begin( ), ::tolower );
-    
-    dss_adcs::executeSimulator( config );
-    
+        
     if ( mode.compare( "simulator") == 0 )
     {
         std::cout << "Mode                               " << mode << std::endl;
-        // dss_adcs::executeSimulator( config );
+        dss_adcs::executeSimulator( config );
     }
     else
     {

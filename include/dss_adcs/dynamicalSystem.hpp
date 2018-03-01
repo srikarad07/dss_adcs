@@ -7,12 +7,15 @@
 #ifndef DSS_ADCS_DYNAMICAL_SYSTEM_HPP
 #define DSS_ADCS_DYNAMICAL_SYSTEM_HPP
 
-#include <sml/sml.hpp>
+#include <iostream>
+// #include <Eigen/Dense>
 
+#include <sml/sml.hpp>
 #include <astro/astro.hpp>
 
 #include "dss_adcs/typedefs.hpp"
-#include "dss_adcs/rotationalBodyAccelerationModel.hpp"
+#include "dss_adcs/gravityGradientTorqueModel.hpp"
+// #include "dss_adcs/rotationalBodyAccelerationModel.hpp"
 
 namespace dss_adcs
 {
@@ -38,8 +41,14 @@ public:
      * @param[in] aInertiaPrinciple         Princple axes of inertia's of the spacecraft [kg m^2]
      * @param[in] intial
      */
-    DynamicalSystem( const Inertia aPrincipleInertia )
-        : principleInertia( aPrincipleInertia )
+    DynamicalSystem( const Inertia      aPrincipleInertia,
+                     const Real         aGravitationalParameter,
+                     const Real         aRadius,
+                     const Matrix33     aDirectionCosineMatrix )
+        : principleInertia( aPrincipleInertia ),
+          gravitationalParameter( aGravitationalParameter ),
+          radius( aRadius ),
+          directionCosineMatrix( aDirectionCosineMatrix )
     { }
 
     //! Overload ()-operator to compute state derivative using dynamical system.
@@ -55,20 +64,26 @@ public:
      * @param[in]  time              Current simulation epoch
      */
     void operator( )( const Vector6& state,
-                      Vector6& stateDerivative )
-                    //   const double time  )
+                      Vector6& stateDerivative,
+                      const double time  )
     {
         const Position currentPosition = { { state[0], state[1], state[2] } };
+        const Velocity currentVelocity = { { state[3], state[4], state[5] } };
         // Set the derivative fo the position elements to the current velocity elements.
         stateDerivative[ 0 ] =  state[3];
         stateDerivative[ 1 ] =  state[4];
         stateDerivative[ 2 ] =  state[5];
         
+        std::cout << "The first element for state vector is: " << state[0] << std::endl;
+        std::cout << "The forth element for state vector is: " << state[3] << std::endl; 
         // Compute the total acceleration acting on the system as a sum of the forces.
         // Central body gravity is included by default.
         Vector3 acceleration
-            = astro::computeRotationalBodyAcceleration( principleInertia, currentPosition );
-
+            = astro::computeRotationalBodyAcceleration( principleInertia, currentVelocity );
+        std::cout << "The acceleration is: " << acceleration[0] << std::endl; 
+        // sml::add( acceleration, dss_adcs::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ) );
+        Vector3 temp_acceleration = dss_adcs::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix );
+        std::cout << "The acceleration gravity gradient is: " << temp_acceleration[0] << std::endl; 
         // Set the derivative of the velocity elements to the computed total acceleration.
         stateDerivative[ 3 ] = acceleration[ 0 ];
         stateDerivative[ 4 ] = acceleration[ 1 ];
@@ -81,8 +96,17 @@ public:
 protected:
 private:
 
-    //! Gravitational parameter of central body [km^3 s^-2].
+    //! Principle Inertia of the orbiting body [km m^2].
     const Inertia principleInertia;
+
+    //! Gravitational parameter of the central body [km^3 s⁻2].gravitationalParameter
+    const Real gravitationalParameter;
+
+    //! Magnitude of the radial vector of the orbiting body from the central body.
+    const Real radius;
+
+    //! Transformation matrix from body fixed reference frame to inertial reference frame. 
+    const Matrix33 directionCosineMatrix;
 };
 
 } // namespace dss_adcs

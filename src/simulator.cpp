@@ -9,10 +9,11 @@
 #include <stdexcept>
 #include <vector>
 
+// #include <Eigen/Dense>
 #include <boost/numeric/odeint.hpp>
 
 #include <astro/astro.hpp>
-#include <integrate/integrate.hpp>
+// #include <integrate/integrate.hpp>
 
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/simulator.hpp"
@@ -36,7 +37,39 @@ void executeSimulator( const rapidjson::Document& config )
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
-    DynamicalSystem dynamics( input.principleInertia );
+    
+    /*  testInt for the gravity gradient model 
+    *   assumptions: raidius is an assumption -> ideally radius should be derived from a ephermeris. 
+    *   assumption: random direction cosine matrix is defined -> todo make a function for 
+    *   direction cosines and conversion from euler angles and quaternions. 
+    *   assumtion: random gravitational parameter defined for now -> ideally should be 
+    *   taken from a reliable source. 
+    */
+    Real radius = 500.0; 
+    Real gravitationalParameter = 1000000.0;
+    Matrix33 directionCosineMatrix(3,3); 
+
+    // boost::numeric::ublas::matrix< Real > directionCosineMatrix(3,3);
+    directionCosineMatrix(0,0) = 1.0;
+    directionCosineMatrix(0,1) = 0.0;
+    directionCosineMatrix(0,2) = 0.0;
+    directionCosineMatrix(1,0) = 0.0; 
+    directionCosineMatrix(1,1) = 1.0;
+    directionCosineMatrix(1,2) = 0.0;
+    directionCosineMatrix(2,0) = 0.0;
+    directionCosineMatrix(2,1) = 0.0;
+    directionCosineMatrix(2,2) = 1.0;
+    // directionCosineMatrix[0][0] = 1.0;
+    // directionCosineMatrix[0][1] = 0.0;
+    // directionCosineMatrix[0][2] = 0.0;
+    // directionCosineMatrix[1][0] = 0.0; 
+    // directionCosineMatrix[1][1] = 1.0;
+    // directionCosineMatrix[1][2] = 0.0;
+    // directionCosineMatrix[2][0] = 0.0;
+    // directionCosineMatrix[2][1] = 0.0;
+    // directionCosineMatrix[2][2] = 1.0;
+
+    DynamicalSystem dynamics( input.principleInertia, gravitationalParameter, radius, directionCosineMatrix );
     std::cout << "Dynamical model set up successfully!" << std::endl;
     std::cout << std::endl;
 
@@ -47,15 +80,35 @@ void executeSimulator( const rapidjson::Document& config )
 
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
+    State currentState = input.initialAttitudeState;
     if ( input.integrator == rk4 )
     {
-        // using namespace boost::numeric::odeint;
-        // std::vector< > steps; /* size_t step */
-        // size_t steps = integrate( dynamics, input.initialAttitudeState, 0.0, 10.0, 0.1 ); 
-        integrate::performRungeKutta4Integration( dynamics, input );
-        std::cout << "Numerical Integrator" << input.integrator << "run successfully!" << std::endl;
+        using namespace boost::numeric::odeint;
+        integrate_const( runge_kutta4< State >( ),
+                         dynamics,
+                         currentState,
+                         input.startEpoch,
+                         input.endEpoch,
+                         input.timeStep,
+                         writer );
+        // double stepSize = steps.size();
+        // std::cout << "Size of the integration: " << stepSize << std::endl; 
+        // integrate::performRungeKutta4Integration( dynamics, input );
+        // std::cout << "Numerical Integrator" << input.integrator << "run successfully!" << std::endl;
     }
-    else 
+    else if ( input.integrator == testInt )
+    { 
+        // std::cout << "Previous Current state: " << currentState[0] << std::endl; 
+
+        using namespace boost::numeric::odeint;
+        size_t steps = integrate(   dynamics, 
+                                    currentState, 
+                                    input.startEpoch,
+                                    input.endEpoch,
+                                    input.timeStep ); 
+        // std::cout << "After integration Curent state: " << currentState[0] << std::endl;     
+    }
+    else
     {
         std::cout << "Numerical integrator not defined" << std::endl;
         throw;
@@ -116,6 +169,10 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
         else if ( integratorString.compare( "bs" ) == 0 )
         {
             integrator = bs;
+        }
+        else if ( integratorString.compare( "testInt" ) == 0 )
+        {
+            integrator = testInt;
         }
         else
         {
