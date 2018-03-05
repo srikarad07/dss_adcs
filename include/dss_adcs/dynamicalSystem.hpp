@@ -9,11 +9,15 @@
 
 #include <iostream>
 
+#include <Eigen/Dense>
+#include <Eigen/LU>
+
 #include <sml/sml.hpp>
 #include <astro/astro.hpp>
 
 #include "dss_adcs/typedefs.hpp"
-#include "dss_adcs/gravityGradientTorqueModel.hpp"
+// #include "dss_adcs/gravityGradientTorqueModel.hpp"
+// #include "dss_adcs/eulerKinematicDifferential.hpp"
 
 namespace dss_adcs
 {
@@ -65,29 +69,38 @@ public:
                       Vector6& stateDerivative,
                       const double time  )
     {
-        const Position currentPosition = { state[0], state[1], state[2] };
-        const Velocity currentVelocity = { state[3], state[4], state[5] };
+        // const Position currentPosition = { state[0], state[1], state[2] };
+        // const Velocity currentVelocity = { state[3], state[4], state[5] };
         // Set the derivative fo the position elements to the current velocity elements.
-        stateDerivative[ 0 ] =  state[3];
-        stateDerivative[ 1 ] =  state[4];
-        stateDerivative[ 2 ] =  state[5];
+        // stateDerivative[ 0 ] =  state[3];
+        // stateDerivative[ 1 ] =  state[4];
+        // stateDerivative[ 2 ] =  state[5];
         
-        std::cout << "The first element for state vector is: " << state[0] << std::endl;
-        std::cout << "The forth element for state vector is: " << state[3] << std::endl; 
+        // std::cout << "The first element for state vector is: " << state[0] << std::endl;
+        // std::cout << "The forth element for state vector is: " << state[3] << std::endl;
+        Position currentAttitude(state[0], state[1], state[2] ); 
+        Velocity currentAttitudeRate( state[3], state[4], state[5] );    
+        const Vector3 rotationSequence(3,2,1); 
+        
+        Vector3 attitudeDerivative 
+            = astro::eulerKinematicDifferential( rotationSequence, currentAttitude, currentAttitudeRate );
+
         // Compute the total acceleration acting on the system as a sum of the forces.
         // Central body gravity is included by default.
         Vector3 acceleration
-            = astro::computeRotationalBodyAcceleration( principleInertia, currentVelocity );
-        std::cout << "The acceleration is: " << acceleration[0] << std::endl; 
+            = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
+        // std::cout << "The acceleration is: " << acceleration[0] << std::endl; 
         // sml::add( acceleration, dss_adcs::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ) );
-        Vector3 temp_acceleration = dss_adcs::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix );
-        std::cout << "The acceleration gravity gradient is: " << temp_acceleration[0] << std::endl; 
+        Vector3 temp_acceleration 
+            = astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix );
+        // std::cout << "The acceleration gravity gradient is: " << temp_acceleration[0] << std::endl; 
         // Set the derivative of the velocity elements to the computed total acceleration.
+        stateDerivative[ 0 ] = attitudeDerivative[ 0 ];
+        stateDerivative[ 1 ] = attitudeDerivative[ 1 ];
+        stateDerivative[ 2 ] = attitudeDerivative[ 2 ];
         stateDerivative[ 3 ] = acceleration[ 0 ];
         stateDerivative[ 4 ] = acceleration[ 1 ];
         stateDerivative[ 5 ] = acceleration[ 2 ];
-
-        // return stateDerivative;
 
     }
 

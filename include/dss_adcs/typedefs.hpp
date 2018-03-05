@@ -27,8 +27,6 @@ typedef Eigen::Matrix< double, 3, 1 > Vector3;
 typedef Eigen::Matrix< double, 6, 1 > Vector6;
 
 //! Set type for a 3 by 3 matrix.
-// typedef boost::numeric::ublas::matrix Matrix33;
-// typedef Real Matrix33[3][3];
 typedef Eigen::Matrix< double, 3, 3 > Matrix33; 
 
 //! Set type for position vector to 3D vector.

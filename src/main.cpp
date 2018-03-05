@@ -14,6 +14,11 @@
 #include <rapidjson/document.h>
 
 #include "dss_adcs/simulator.hpp"
+#include "dss_adcs/typedefs.hpp"
+
+// #include <sml/sml.hpp> 
+
+// #include <math.h>
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {
@@ -79,7 +84,26 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     }
     std::string mode = modeIterator->value.GetString( );
     std::transform( mode.begin( ), mode.end( ), mode.begin( ), ::tolower );
-        
+
+    // 
+    // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> 
+    //     
+    // Eigen::Matrix3d m;
+    // // Eigen::Matrix3d angle; angle << sml::convertDegreesToRadians(30.0), sml::convertDegreesToRadians(30.0), sml::convertDegreesToRadians(30.0);
+    // double angle1       = sml::convertDegreesToRadians(30.0);
+    // double angle2       = sml::convertDegreesToRadians(30.0);
+    // double angle3       = sml::convertDegreesToRadians(30.0);  
+    // // Eigen::Vector3d rotationAxis1(1,0,0); 
+    // // Eigen::Vector3d rotationAxis2(0,1,0); 
+    // // Eigen::Vector3d rotationAxis1(0,0,1);
+    // Eigen::Vector3d rotationAxis1; rotationAxis1 << - sin(angle2), sin(angle3)* cos(angle2), cos(angle3) * cos(angle2);  
+    // m = Eigen::AngleAxisd( angle1,  rotationAxis1 );
+    //     // Eigen::AngleAxisd(sml::convertDegreesToRadians(-45.0), Eigen::Vector3d::UnitY() )*
+    //     // Eigen::AngleAxisd(sml::convertDegreesToRadians(60.0), Eigen::Vector3d::UnitX() ); 
+
+    // std::cout << "The rotation matrix for a rotation of 10 deg in the sequence 3-2-1 is given as: \n" << m.transpose() << std::endl; 
+    // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>>
+
     if ( mode.compare( "simulator") == 0 )
     {
         std::cout << "Mode                               " << mode << std::endl;

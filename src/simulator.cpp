@@ -45,19 +45,19 @@ void executeSimulator( const rapidjson::Document& config )
     *   taken from a reliable source. 
     */
     Real radius = 500.0; 
-    Real gravitationalParameter = 1000000.0;
+    Real gravitationalParameter = 3.986004415e5;
     Matrix33 directionCosineMatrix(3,3); 
 
     // boost::numeric::ublas::matrix< Real > directionCosineMatrix(3,3);
-    directionCosineMatrix(0,0) = 1.0;
-    directionCosineMatrix(0,1) = 0.0;
-    directionCosineMatrix(0,2) = 0.0;
-    directionCosineMatrix(1,0) = 0.0; 
-    directionCosineMatrix(1,1) = 1.0;
-    directionCosineMatrix(1,2) = 0.0;
-    directionCosineMatrix(2,0) = 0.0;
-    directionCosineMatrix(2,1) = 0.0;
-    directionCosineMatrix(2,2) = 1.0;
+    directionCosineMatrix(0,0) = 0.2;
+    directionCosineMatrix(0,1) = 0.3;
+    directionCosineMatrix(0,2) = 0.5;
+    directionCosineMatrix(1,0) = 0.5; 
+    directionCosineMatrix(1,1) = 0.2;
+    directionCosineMatrix(1,2) = 0.3;
+    directionCosineMatrix(2,0) = 0.2;
+    directionCosineMatrix(2,1) = 0.3;
+    directionCosineMatrix(2,2) = 0.5;
 
     DynamicalSystem dynamics( input.principleInertia, gravitationalParameter, radius, directionCosineMatrix );
     std::cout << "Dynamical model set up successfully!" << std::endl;
@@ -74,7 +74,7 @@ void executeSimulator( const rapidjson::Document& config )
     if ( input.integrator == rk4 )
     {
         using namespace boost::numeric::odeint;
-        integrate_const( runge_kutta4< State,double,State,double,vector_space_algebra >( ),
+        integrate_const( runge_kutta4< State, double, State, double, vector_space_algebra >( ),
                          dynamics,
                          currentState,
                          input.startEpoch,
