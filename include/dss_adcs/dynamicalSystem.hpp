@@ -8,6 +8,8 @@
 #define DSS_ADCS_DYNAMICAL_SYSTEM_HPP
 
 #include <iostream>
+// #include <conio.h>
+#include <math.h>
 
 #include <Eigen/Dense>
 #include <Eigen/LU>
@@ -16,8 +18,6 @@
 #include <astro/astro.hpp>
 
 #include "dss_adcs/typedefs.hpp"
-// #include "dss_adcs/gravityGradientTorqueModel.hpp"
-// #include "dss_adcs/eulerKinematicDifferential.hpp"
 
 namespace dss_adcs
 {
@@ -46,11 +46,13 @@ public:
     DynamicalSystem( const Inertia      aPrincipleInertia,
                      const Real         aGravitationalParameter,
                      const Real         aRadius,
-                     const Matrix33     aDirectionCosineMatrix )
+                     const Real         aSemiMajorAxis, 
+                     const bool         aGravityGradientAcclerationModelFlag )
         : principleInertia( aPrincipleInertia ),
           gravitationalParameter( aGravitationalParameter ),
           radius( aRadius ),
-          directionCosineMatrix( aDirectionCosineMatrix )
+          semiMajorAxis( aSemiMajorAxis ),
+          gravityGradientAcclerationModelFlag( aGravityGradientAcclerationModelFlag )
     { }
 
     //! Overload ()-operator to compute state derivative using dynamical system.
@@ -69,21 +71,17 @@ public:
                       Vector6& stateDerivative,
                       const double time  )
     {
-        // const Position currentPosition = { state[0], state[1], state[2] };
-        // const Velocity currentVelocity = { state[3], state[4], state[5] };
-        // Set the derivative fo the position elements to the current velocity elements.
-        // stateDerivative[ 0 ] =  state[3];
-        // stateDerivative[ 1 ] =  state[4];
-        // stateDerivative[ 2 ] =  state[5];
-        
-        // std::cout << "The first element for state vector is: " << state[0] << std::endl;
-        // std::cout << "The forth element for state vector is: " << state[3] << std::endl;
-        Position currentAttitude(state[0], state[1], state[2] ); 
+        Position currentAttitude( state[0], state[1], state[2] ); 
         Velocity currentAttitudeRate( state[3], state[4], state[5] );    
-        const Vector3 rotationSequence(3,2,1); 
+        Matrix33 rotationSequence;
+        rotationSequence << 0, 0, 1, 
+                            0, 1, 0, 
+                            0, 0, 1; 
         
+        Real meanAngularMotion             = pow( gravitationalParameter/(pow(semiMajorAxis,3)), 0.5);
+
         Vector3 attitudeDerivative 
-            = astro::eulerKinematicDifferential( rotationSequence, currentAttitude, currentAttitudeRate );
+            = astro::eulerKinematicDifferential( rotationSequence, currentAttitude, currentAttitudeRate, meanAngularMotion );
 
         // Compute the total acceleration acting on the system as a sum of the forces.
         // Central body gravity is included by default.
@@ -91,8 +89,13 @@ public:
             = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
         // std::cout << "The acceleration is: " << acceleration[0] << std::endl; 
         // sml::add( acceleration, dss_adcs::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ) );
-        Vector3 temp_acceleration 
-            = astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix );
+        if ( gravityGradientAcclerationModelFlag == true )
+        {
+               Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
+
+               acceleration += astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ); 
+            //    std::cout << "Gravity gradient acceleration disturbance model is active" << std::endl; 
+        }    
         // std::cout << "The acceleration gravity gradient is: " << temp_acceleration[0] << std::endl; 
         // Set the derivative of the velocity elements to the computed total acceleration.
         stateDerivative[ 0 ] = attitudeDerivative[ 0 ];
@@ -116,8 +119,12 @@ private:
     //! Magnitude of the radial vector of the orbiting body from the central body.
     const Real radius;
 
-    //! Transformation matrix from body fixed reference frame to inertial reference frame. 
-    const Matrix33 directionCosineMatrix;
+    //! Radius of the spacecraft around the orbit. 
+    const Real semiMajorAxis;
+
+    //! Gravity graditen acceleration disturbance model flag. 
+    const bool gravityGradientAcclerationModelFlag;
+
 };
 
 } // namespace dss_adcs

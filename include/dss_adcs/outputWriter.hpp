@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <iostream>
 
+#include <sml/sml.hpp>
+
 #include "dss_adcs/typedefs.hpp"
 
 #ifndef DSS_ADCS_OUTPUT_WRITER_HPP
@@ -56,9 +58,9 @@ public:
 
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
                             << time << ','
-                            << state[ 0 ] << ','
-                            << state[ 1 ] << ','
-                            << state[ 2 ] << ','
+                            << sml::convertRadiansToDegrees( state[ 0 ] ) << ','
+                            << sml::convertRadiansToDegrees( state[ 1 ] ) << ','
+                            << sml::convertRadiansToDegrees( state[ 2 ] ) << ','
                             << state[ 3 ] << ','
                             << state[ 4 ] << ','
                             << state[ 5 ] << ','

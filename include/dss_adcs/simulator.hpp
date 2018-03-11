@@ -59,8 +59,12 @@ public:
                     const Real               aStartEpoch,
                     const Real               anEndEpoch, 
                     const Real               aTimeStep,
+                    const Real               aGravitationalParameter, 
+                    const Real               aRadius,
+                    const Real               aSemiMajorAxis,   
                     const Real               aRelativeTolerance,   
                     const Real               anAbsoluteTolerance, 
+                    const bool               aGravityGradientAcclerationModelFlag,
                     const std::string&       aMetadataFilePath,
                     const std::string&       aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
@@ -69,8 +73,12 @@ public:
           startEpoch( aStartEpoch ),
           endEpoch( anEndEpoch ),
           timeStep( aTimeStep ),
+          gravitationalParameter( aGravitationalParameter ),
+          radius( aRadius ),
+          semiMajorAxis( aSemiMajorAxis ),
           relativeTolerance( aRelativeTolerance ),
           absoluteTolerance( anAbsoluteTolerance ),
+          gravityGradientAcclerationModelFlag( aGravityGradientAcclerationModelFlag ),
           metadataFilePath( aMetadataFilePath ),
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -93,12 +101,24 @@ public:
     //! Time step for the simulation.
     const Real timeStep; 
 
+    //! Gravitational Parameter of the central body. 
+    const Real gravitationalParameter;
+
+    //! Magnitude of the radius vector for the given orbital parameters. 
+    const Real radius;
+
+    //! Semi major axis of the orbit. 
+    const Real semiMajorAxis; 
+
     //! Relative tolerance fo the integrator. 
     const Real relativeTolerance;
 
     //! Absolute tolerance for the integrator. 
     const Real absoluteTolerance;
     
+    //! Status of gravity gradient model. 
+    const bool gravityGradientAcclerationModelFlag;
+
     //! Metadata file path.
     const std::string metadataFilePath; 
 

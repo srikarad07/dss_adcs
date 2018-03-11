@@ -17,7 +17,16 @@
         0.01,
         0.01
     ],
-    "isGravityGradientActive": "true",
+    "is_gravity_gradient_active": true,
+    // Gravitational Parameter of the central body [km^3 s^-2]. 
+    "gravitational_parameter" : 5.793939e6, 
+
+    // Radial vector of the satellite from spacecraft [km]. 
+    "radius": 500.0,
+
+    // Semi major axis of the orbit of the satellite [km].
+    "semi_major_axis" : 500.0,
+    
     ////
     // Numerical integrator
     ////
@@ -26,7 +35,7 @@
     "integrator": "rk4",
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 100.0,
+    "end_epoch": 1000.0,
     "time_step": 1.0,
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,

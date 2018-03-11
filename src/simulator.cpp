@@ -39,27 +39,12 @@ void executeSimulator( const rapidjson::Document& config )
     
     /*  testInt for the gravity gradient model 
     *   assumptions: raidius is an assumption -> ideally radius should be derived from a ephermeris. 
-    *   assumption: random direction cosine matrix is defined -> todo make a function for 
     *   direction cosines and conversion from euler angles and quaternions. 
     *   assumtion: random gravitational parameter defined for now -> ideally should be 
     *   taken from a reliable source. 
     */
-    Real radius = 500.0; 
-    Real gravitationalParameter = 3.986004415e5;
-    Matrix33 directionCosineMatrix(3,3); 
 
-    // boost::numeric::ublas::matrix< Real > directionCosineMatrix(3,3);
-    directionCosineMatrix(0,0) = 0.2;
-    directionCosineMatrix(0,1) = 0.3;
-    directionCosineMatrix(0,2) = 0.5;
-    directionCosineMatrix(1,0) = 0.5; 
-    directionCosineMatrix(1,1) = 0.2;
-    directionCosineMatrix(1,2) = 0.3;
-    directionCosineMatrix(2,0) = 0.2;
-    directionCosineMatrix(2,1) = 0.3;
-    directionCosineMatrix(2,2) = 0.5;
-
-    DynamicalSystem dynamics( input.principleInertia, gravitationalParameter, radius, directionCosineMatrix );
+    DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis, input.gravityGradientAcclerationModelFlag );
     std::cout << "Dynamical model set up successfully!" << std::endl;
     std::cout << std::endl;
 
@@ -124,24 +109,24 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     // Extract the initial attitude states and angular velocities. 
     ConfigIterator initialAttitudeStateIterator         = find( config, "initial_attitude_state"); 
     State initialAttitudeState;
-    initialAttitudeState[0]                             = initialAttitudeStateIterator->value[0].GetDouble();
-    initialAttitudeState[1]                             = initialAttitudeStateIterator->value[1].GetDouble();
-    initialAttitudeState[2]                             = initialAttitudeStateIterator->value[2].GetDouble();
-    initialAttitudeState[3]                             = initialAttitudeStateIterator->value[3].GetDouble();
-    initialAttitudeState[4]                             = initialAttitudeStateIterator->value[4].GetDouble(); 
-    initialAttitudeState[5]                             = initialAttitudeStateIterator->value[5].GetDouble(); 
+    initialAttitudeState[0]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[0].GetDouble());
+    initialAttitudeState[1]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[1].GetDouble());
+    initialAttitudeState[2]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[2].GetDouble());
+    initialAttitudeState[3]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[3].GetDouble());
+    initialAttitudeState[4]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[4].GetDouble()); 
+    initialAttitudeState[5]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[5].GetDouble()); 
     std::cout << "Roll angle:                       "   << initialAttitudeState[0]
-              << "[deg]"           << std::endl; 
+              << "[rad]"           << std::endl; 
     std::cout << "Pitch angle:                      "   << initialAttitudeState[1]
-              << "[deg]"           << std::endl;
+              << "[rad]"           << std::endl;
     std::cout << "Yaw angle                         "   << initialAttitudeState[2]
-              << "[deg]"           << std::endl;
+              << "[rad]"           << std::endl;
     std::cout << "Roll rate:                        "   << initialAttitudeState[3]
-              << "[deg/sec]"       << std::endl; 
+              << "[rad/sec]"       << std::endl; 
     std::cout << "Pitch rate:                       "   << initialAttitudeState[4]
-              << "[deg/sec]"       << std::endl;
+              << "[rad/sec]"       << std::endl;
     std::cout << "[Yaw rate]                        "   << initialAttitudeState[5]
-              << "[deg/sec]"       << std::endl;
+              << "[rad/sec]"       << std::endl;
 
     // Extract integrator type. 
     const std::string integratorString                  = find( config, "integrator" )->value.GetString( );
@@ -186,13 +171,32 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     std::cout << "Timestep of the integration is:   " << timeStep 
               << "[sec]" << std::endl; 
     
-    // Extract integrator tolerances. 
+    // Ectract gravitational parameter of the central body.  
+    const Real gravitationalParameter                 = find( config, "gravitational_parameter")->value.GetDouble(); 
+    std::cout << "Gravitational Parameter: " << gravitationalParameter
+              << "[km^3 s^-2]" << std::endl; 
+
+    // Extract the radial distance of the central body. 
+    const Real radius                                 = find( config, "radius")->value.GetDouble();
+    std::cout << "Radial vector: "      << radius
+              << "[km]" << std::endl; 
+
+    // Exract the semi major axis of the orbit. 
+    const Real semiMajorAxis                          = find( config, "semi_major_axis")->value.GetDouble(); 
+    std::cout << "Semi major axis: "   << semiMajorAxis
+              << "[km]" << std::endl; 
+
+    // Extract integrator tolerances.  
     const Real relativeTolerance                      = find( config, "relative_tolerance")->value.GetDouble(); 
     std::cout << "Relative Tolerance: " << relativeTolerance
               << "[-]" << std::endl; 
     const Real absoluteTolerance                      = find( config, "absolute_tolerance")->value.GetDouble(); 
     std::cout << "Absolute Tolerance: " << absoluteTolerance
               << "[-]" << std::endl;
+
+    // Extract gravity gradient model .
+    const bool gravityGradientAcclerationModelFlag = find( config, "is_gravity_gradient_active" )->value.GetBool( );
+    std::cout << "Is Gravity Gradient disturbance model active?                " << gravityGradientAcclerationModelFlag << std::endl;
 
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
@@ -206,8 +210,12 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
                             startEpoch,
                             endEpoch,
                             timeStep,
+                            gravitationalParameter,
+                            radius, 
+                            semiMajorAxis,
                             relativeTolerance,
                             absoluteTolerance,
+                            gravityGradientAcclerationModelFlag,
                             metadataFilePath,
                             stateHistoryFilePath);
 };
