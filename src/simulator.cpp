@@ -18,7 +18,6 @@
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
 #include "dss_adcs/outputWriter.hpp"
-// #include "dss_adcs/rungeKutta.hpp"
 
 namespace dss_adcs
 {
@@ -50,7 +49,7 @@ void executeSimulator( const rapidjson::Document& config )
 
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t, roll, pitch, yaw, roll_rate, pitch_rate, yaw_rate" << std::endl;
+    stateHistoryFile << "t, q_1, q_2, q_3, q_4, w_1, w_2, w_3" << std::endl;
     StateHistoryWriter writer( stateHistoryFile );
 
     //Set up numerical integrator. 
@@ -59,29 +58,13 @@ void executeSimulator( const rapidjson::Document& config )
     if ( input.integrator == rk4 )
     {
         using namespace boost::numeric::odeint;
-        integrate_const( runge_kutta4< State, double, State, double, vector_space_algebra >( ),
+        integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
                          dynamics,
                          currentState,
                          input.startEpoch,
                          input.endEpoch,
                          input.timeStep,
                          writer );
-        // double stepSize = steps.size();
-        // std::cout << "Size of the integration: " << stepSize << std::endl; 
-        // integrate::performRungeKutta4Integration( dynamics, input );
-        // std::cout << "Numerical Integrator" << input.integrator << "run successfully!" << std::endl;
-    }
-    else if ( input.integrator == testInt )
-    { 
-        // std::cout << "Previous Current state: " << currentState[0] << std::endl; 
-
-        // using namespace boost::numeric::odeint;
-        // size_t steps = integrate(   dynamics, 
-        //                             currentState, 
-        //                             input.startEpoch,
-        //                             input.endEpoch,
-        //                             input.timeStep ); 
-        // std::cout << "After integration Curent state: " << currentState[0] << std::endl;     
     }
     else
     {
@@ -108,25 +91,30 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
 
     // Extract the initial attitude states and angular velocities. 
     ConfigIterator initialAttitudeStateIterator         = find( config, "initial_attitude_state"); 
-    State initialAttitudeState;
-    initialAttitudeState[0]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[0].GetDouble());
-    initialAttitudeState[1]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[1].GetDouble());
-    initialAttitudeState[2]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[2].GetDouble());
-    initialAttitudeState[3]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[3].GetDouble());
+    // Extract attitude kinematic type. 
+    // const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
+    // std::cout << "Attitude representation string: " << attitudeRepresentationString << std::endl; 
+    Vector7 initialAttitudeState;
+    initialAttitudeState[0]                             = initialAttitudeStateIterator->value[0].GetDouble();
+    initialAttitudeState[1]                             = initialAttitudeStateIterator->value[1].GetDouble();
+    initialAttitudeState[2]                             = initialAttitudeStateIterator->value[2].GetDouble();
+    initialAttitudeState[3]                             = initialAttitudeStateIterator->value[3].GetDouble();
     initialAttitudeState[4]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[4].GetDouble()); 
     initialAttitudeState[5]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[5].GetDouble()); 
-    std::cout << "Roll angle:                       "   << initialAttitudeState[0]
-              << "[rad]"           << std::endl; 
-    std::cout << "Pitch angle:                      "   << initialAttitudeState[1]
-              << "[rad]"           << std::endl;
-    std::cout << "Yaw angle                         "   << initialAttitudeState[2]
-              << "[rad]"           << std::endl;
-    std::cout << "Roll rate:                        "   << initialAttitudeState[3]
-              << "[rad/sec]"       << std::endl; 
-    std::cout << "Pitch rate:                       "   << initialAttitudeState[4]
-              << "[rad/sec]"       << std::endl;
-    std::cout << "[Yaw rate]                        "   << initialAttitudeState[5]
-              << "[rad/sec]"       << std::endl;
+    initialAttitudeState[6]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[6].GetDouble()); 
+    // std::cout << "Roll angle:                       "   << initialAttitudeState[0]
+    //           << "[rad]"           << std::endl; 
+    // std::cout << "Pitch angle:                      "   << initialAttitudeState[1]
+    //           << "[rad]"           << std::endl;
+    // std::cout << "Yaw angle                         "   << initialAttitudeState[2]
+    //           << "[rad]"           << std::endl;
+    // std::cout << "Roll rate:                        "   << initialAttitudeState[3]
+    //           << "[rad/sec]"       << std::endl; 
+    // std::cout << "Pitch rate:                       "   << initialAttitudeState[4]
+    //           << "[rad/sec]"       << std::endl;
+    // std::cout << "[Yaw rate]                        "   << initialAttitudeState[5]
+    //           << "[rad/sec]"       << std::endl;
+        
 
     // Extract integrator type. 
     const std::string integratorString                  = find( config, "integrator" )->value.GetString( );
