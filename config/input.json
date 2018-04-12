@@ -1,7 +1,3 @@
-// Copyright (c) 2017, K. Kumar, Delft University of Technology (me@kartikkumar.com)
-// Distributed under the MIT License.
-// See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
-// Configuration file for dustsim.
 {
     "mode": "simulator",
     "principle_inertia": [
@@ -14,9 +10,9 @@
         10.0,
         10.0,
         10.0,
-        0.01,
-        0.01,
-        0.01
+        0.1,
+        0.1,
+        0.1
     ],
     "is_gravity_gradient_active": true,
     // Gravitational Parameter of the central body [km^3 s^-2]. 
@@ -40,7 +36,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 1000.0,
+    "end_epoch": 10.0,
     "time_step": 1.0,
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,

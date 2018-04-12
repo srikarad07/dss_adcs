@@ -117,11 +117,11 @@ public:
 
         Vector4 attitudeDerivative 
             = astro::computeQuaternionDerivative( currentAttitude, currentAttitudeRate );
-
+        std::cout << "The attitude derivative: \n" << attitudeDerivative << std::endl; 
         // Compute the total acceleration acting on the system as a sum of the forces.
         Vector3 acceleration
             = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
- 
+        std::cout << "The acceleration of \n" << acceleration << std::endl; 
         // if ( gravityGradientAcclerationModelFlag == true )
         // {
         //        Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );

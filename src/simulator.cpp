@@ -49,7 +49,7 @@ void executeSimulator( const rapidjson::Document& config )
 
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t, q_1, q_2, q_3, q_4, w_1, w_2, w_3" << std::endl;
+    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3" << std::endl;
     StateHistoryWriter writer( stateHistoryFile );
 
     //Set up numerical integrator. 
