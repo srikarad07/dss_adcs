@@ -12,7 +12,6 @@
 #include <boost/numeric/odeint.hpp>
 
 #include <astro/astro.hpp>
-// #include <integrate/integrate.hpp>
 
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/simulator.hpp"

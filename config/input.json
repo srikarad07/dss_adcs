@@ -10,9 +10,9 @@
         10.0,
         10.0,
         10.0,
-        0.1,
-        0.1,
-        0.1
+        0.01,
+        0.01,
+        0.01
     ],
     "is_gravity_gradient_active": true,
     // Gravitational Parameter of the central body [km^3 s^-2]. 

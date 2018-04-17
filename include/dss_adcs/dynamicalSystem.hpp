@@ -112,7 +112,7 @@ public:
                       const double time  )
     {
         // Quaterniond currentAttitude( state[3], state[0], state[1], state[2]); 
-        Vector4 currentAttitude( state[3], state[0], state[1], state[2]); 
+        Vector4 currentAttitude( state[0], state[1], state[2], state[3] ); 
         Vector3 currentAttitudeRate( state[4], state[5], state[6] );    
 
         Vector4 attitudeDerivative 
