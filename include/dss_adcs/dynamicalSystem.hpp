@@ -17,6 +17,7 @@
 #include <astro/astro.hpp>
 
 #include "dss_adcs/typedefs.hpp"
+#include "dss_adcs/controlTorque.hpp"
 
 namespace dss_adcs
 {
@@ -65,10 +66,12 @@ public:
         Vector4 attitudeDerivative 
             = astro::computeQuaternionDerivative( currentAttitude, currentAttitudeRate );
         // std::cout << "The attitude derivative: \n" << attitudeDerivative << std::endl; 
-        // Compute the total acceleration acting on the system as a sum of the forces.
-        Vector3 acceleration
+        
+        // Compute the torque acting on the system due to the un-uniformity of structure of the spacecraft.
+        Vector3 torque
             = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
         // std::cout << "The acceleration of \n" << acceleration << std::endl; 
+        
         // if ( gravityGradientAccelerationModelFlag == true )
         // {
         //        Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
@@ -77,6 +80,25 @@ public:
  
         // }
 
+        // Control torque on the dynamics: 
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< ASSUMPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+        Vector3 quaternionControlGainMatrix( 10.0, 10.0, 10.0);
+        Vector3 angularVelocityControlGainMatrix( 10.0, 10.0, 10.0); 
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<             >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+        
+        torque += dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                    currentAttitudeRate, 
+                                                    quaternionControlGainMatrix, 
+                                                    angularVelocityControlGainMatrix );
+        // std::cout << "The acceleration is: " << torque << std::endl; 
+        // std::cout << "The counter is: " << p++ << std::endl;
+
+        // Angular acceleration on the spacecraft is calculated as. // 
+        Vector3 acceleration; 
+        acceleration[0]     = torque[0] / principleInertia[0]; 
+        acceleration[1]     = torque[1] / principleInertia[1]; 
+        acceleration[2]     = torque[2] / principleInertia[2];                              
+                     
         // Set the derivative of the velocity elements to the computed total acceleration.
         stateDerivative[ 0 ] = attitudeDerivative[ 0 ];
         stateDerivative[ 1 ] = attitudeDerivative[ 1 ];

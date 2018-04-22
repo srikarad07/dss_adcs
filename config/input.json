@@ -1,9 +1,9 @@
 {
     "mode": "simulator",
     "principle_inertia": [
-        10.0,
-        10.0,
-        10.0
+        1000.0,
+        1000.0,
+        1000.0
     ],
     "initial_attitude_state": [
         10.0,
@@ -36,7 +36,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 10.0,
+    "end_epoch": 1000.0,
     "time_step": 1.0,
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,
