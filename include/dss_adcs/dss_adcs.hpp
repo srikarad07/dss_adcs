@@ -10,4 +10,5 @@
 #include "dss_adcs/factorial.hpp"
 #include "dss_adcs/typedefs.hpp"
 
+
 #endif // DSS_ADCS_HPP

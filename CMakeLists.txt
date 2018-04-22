@@ -111,6 +111,8 @@ if(BUILD_MAIN)
   target_link_libraries(
     ${MAIN_NAME}
     ${LIB_NAME}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
 #    ${PYKEP_LIBRARY}
 #    ${SQLITECPP_LIBRARY}
 #    ${SQLITE3_LIBRARY}

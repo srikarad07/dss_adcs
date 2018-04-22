@@ -58,15 +58,15 @@ endif(NOT APPLE)
 
 # astro: https://github.com/openastro/integrate
 
-if(NOT BUILD_DEPENDENCIES)
-  find_package(integrate)
-endif(NOT BUILD_DEPENDENCIES)
+# if(NOT BUILD_DEPENDENCIES)
+#   find_package(integrate)
+# endif(NOT BUILD_DEPENDENCIES)
 
-if(NOT APPLE)
-  include_directories(SYSTEM AFTER "${INTEGRATE_INCLUDE_DIRS}")
-else(APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem \"${INTEGRATE_INCLUDE_DIRS}\"")
-endif(NOT APPLE)
+# if(NOT APPLE)
+#   include_directories(SYSTEM AFTER "${INTEGRATE_INCLUDE_DIRS}")
+# else(APPLE)
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem \"${INTEGRATE_INCLUDE_DIRS}\"")
+# endif(NOT APPLE)
 
 # -------------------------------
 
@@ -110,7 +110,7 @@ endif(NOT APPLE)
 
 # Boost: https://boost.org
 
-find_package(Boost)
+find_package(Boost 1.36.0 COMPONENTS date_time filesystem system )
 
 if(NOT APPLE)
   include_directories(SYSTEM AFTER "${Boost_INCLUDE_DIRS}")

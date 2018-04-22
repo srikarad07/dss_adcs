@@ -16,9 +16,7 @@
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/typedefs.hpp"
 
-// #include <sml/sml.hpp> 
-
-// #include <math.h>
+// #include "dss_adcs/productSearch.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {
@@ -87,21 +85,12 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
 
     // 
     // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> 
-    //     
-    // Eigen::Matrix3d m;
-    // // Eigen::Matrix3d angle; angle << sml::convertDegreesToRadians(30.0), sml::convertDegreesToRadians(30.0), sml::convertDegreesToRadians(30.0);
-    // double angle1       = sml::convertDegreesToRadians(30.0);
-    // double angle2       = sml::convertDegreesToRadians(30.0);
-    // double angle3       = sml::convertDegreesToRadians(30.0);  
-    // // Eigen::Vector3d rotationAxis1(1,0,0); 
-    // // Eigen::Vector3d rotationAxis2(0,1,0); 
-    // // Eigen::Vector3d rotationAxis1(0,0,1);
-    // Eigen::Vector3d rotationAxis1; rotationAxis1 << - sin(angle2), sin(angle3)* cos(angle2), cos(angle3) * cos(angle2);  
-    // m = Eigen::AngleAxisd( angle1,  rotationAxis1 );
-    //     // Eigen::AngleAxisd(sml::convertDegreesToRadians(-45.0), Eigen::Vector3d::UnitY() )*
-    //     // Eigen::AngleAxisd(sml::convertDegreesToRadians(60.0), Eigen::Vector3d::UnitX() ); 
-
-    // std::cout << "The rotation matrix for a rotation of 10 deg in the sequence 3-2-1 is given as: \n" << m.transpose() << std::endl; 
+    // std::cout << "<<<<<<<<<<< Start of the test script >>>>>>>>>>>>>>>>>>>>>" << std::endl; 
+    // // char path   = "/home/superman/trial/test-products/reaction_wheels"; 
+    // dss_adcs::ProductSearch productFilesPrint;
+    // productFilesPrint(); 
+    
+    // std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
     // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>>
 
     if ( mode.compare( "simulator") == 0 )
