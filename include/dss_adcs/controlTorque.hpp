@@ -19,7 +19,7 @@ Vector3 computeRealTorqueValue(     const Vector4 quaternionCurrent,
                                     const Vector3 quaternionControlGainMatrix, 
                                     const Vector3 angularVelocityControlGainMatrix )
 {
-Vector4 quaternionReference( 10.0, 10.0, 10.0, 10.0 ); 
+Vector4 quaternionReference( 0.0, 0.0, 0.0, 1.0 ); 
 
 Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
                                                                  quaternionCurrent, 
@@ -27,7 +27,6 @@ Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionRefer
                                                                  quaternionControlGainMatrix, 
                                                                  angularVelocityControlGainMatrix ); 
 
-// std::cout << "The controlTorque is: " << controlTorque << std::endl; 
 return controlTorque; 
 
 }  //template 
