@@ -84,14 +84,12 @@ public:
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< ASSUMPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
         Vector3 quaternionControlGainMatrix( 10.0, 10.0, 10.0);
         Vector3 angularVelocityControlGainMatrix( 10.0, 10.0, 10.0); 
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<             >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
         
         torque += dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                     currentAttitudeRate, 
                                                     quaternionControlGainMatrix, 
                                                     angularVelocityControlGainMatrix );
-        // std::cout << "The acceleration is: " << torque << std::endl; 
-        // std::cout << "The counter is: " << p++ << std::endl;
 
         // Angular acceleration on the spacecraft is calculated as. // 
         Vector3 acceleration; 
