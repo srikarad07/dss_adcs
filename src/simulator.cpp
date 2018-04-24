@@ -36,9 +36,9 @@ void executeSimulator( const rapidjson::Document& config )
     std::cout << "Setting up dynamical model ..." << std::endl;
     
     /*  testInt for the gravity gradient model 
-    *   assumptions: raidius is an assumption -> ideally radius should be derived from a ephermeris. 
+    *   assumptions: radius is an assumption -> ideally radius should be derived from a ephemeris. 
     *   direction cosines and conversion from euler angles and quaternions. 
-    *   assumtion: random gravitational parameter defined for now -> ideally should be 
+    *   assumption: random gravitational parameter defined for now -> ideally should be 
     *   taken from a reliable source. 
     */
 

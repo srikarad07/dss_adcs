@@ -41,13 +41,13 @@ public:
      *
      * @param[in] aGravitationalParameter   Gravitational parameter of the central body  [km^3 s^-2]
      * @param[in] aInertiaPrinciple         Princple axes of inertia's of the spacecraft [kg m^2]
-     * @param[in] intial
+     * @param[in] initial
      */
-    DynamicalSystem( const Inertia      aPrincipleInertia,
-                     const Real         aGravitationalParameter,
-                     const Real         aRadius,
-                     const Real         aSemiMajorAxis, 
-                     const bool         aGravityGradientAccelerationModelFlag )
+    DynamicalSystem( const Inertia  aPrincipleInertia,
+                     const Real     aGravitationalParameter,
+                     const Real     aRadius,
+                     const Real     aSemiMajorAxis, 
+                     const bool     aGravityGradientAccelerationModelFlag )
         : principleInertia( aPrincipleInertia ),
           gravitationalParameter( aGravitationalParameter ),
           radius( aRadius ),
@@ -59,13 +59,11 @@ public:
                       Vector7& stateDerivative,
                       const double time  )
     {
-        // Quaterniond currentAttitude( state[3], state[0], state[1], state[2]); 
         Vector4 currentAttitude( state[0], state[1], state[2], state[3] ); 
         Vector3 currentAttitudeRate( state[4], state[5], state[6] );    
 
         Vector4 attitudeDerivative 
             = astro::computeQuaternionDerivative( currentAttitude, currentAttitudeRate );
-        // std::cout << "The attitude derivative: \n" << attitudeDerivative << std::endl; 
         
         // Compute the torque acting on the system due to the un-uniformity of structure of the spacecraft.
         Vector3 torque
