@@ -7,6 +7,10 @@
 #ifndef CONTROL_TORQUE_HPP
 #define CONTROL_TORQUE_HPP
 
+#include <math.h> 
+
+#include <Eigen/Dense>
+
 #include "astro/quaternionFeedbackControl.hpp"
 #include "dss_adcs/reactionWheelConcept.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
@@ -23,7 +27,7 @@ Vector3 computeRealTorqueValue(     const Vector4 quaternionCurrent,
 {
 // <<<<<<<<<<<<<<<<<<<<<<<<< Assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
 // Quaternion reference is just taken as a single value, which is not necessarily true //     
-Vector4 quaternionReference( 0.0, 0.0, 0.0, 1.0 ); 
+Vector4 quaternionReference( 10.0, 10.0, 10.0, 1.0 ); 
 // <<<<<<<<<<<<<<<<<<<<<<<<< End of Assumptions >>>>>>>>>>>>>>>>>>>>>>> // 
 
 Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
@@ -34,16 +38,35 @@ Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionRefer
                                                                  
 ReactionWheel rw1, rw2, rw3; 
 // rw1.mass   = 1.2; 
-rw1.maxTorque = 2.0; 
-rw2.maxTorque = 2.5; 
-rw3.maxTorque = 3.0; 
+rw1.maxTorque = 1.0; 
+rw2.maxTorque = 1.5; 
+rw3.maxTorque = 1.0; 
 
 Concept AxisConcept( rw1, rw2, rw3 ); 
 
 Vector3 torque = AxisConcept(); 
 
-// std::cout << "Trial concept torque: " << torque << std::endl; 
+// std::cout << "The control torque: \n" << controlTorque << std::endl;
+// std::cout << "The real torque: \n" << torque << std::endl; 
 
+// <<<<<<<<<<<<<<<<<<<<<<<<< For reaction wheels >>>>>>>>>>>>>>>>>>>>>> //
+// The torque of the reaction wheel is in the range -maxTorque to + maxTorque //  
+if ( controlTorque.array().abs()[0] > torque.array().abs()[0]  )
+{
+    std::cout << "Not enough torque: " << std::endl; 
+    controlTorque[0]       = torque[0]; 
+}
+
+if ( controlTorque.array().abs()[1] > torque.array().abs()[1]  )
+{
+    controlTorque[1]       = torque[1]; 
+}
+
+if ( controlTorque.array().abs()[2] > torque.array().abs()[2]  )
+{
+    controlTorque[2]       = torque[2]; 
+}
+// std::cout << "Function value: \n" << torque.array().abs()[0]  << std::endl; 
 return controlTorque; 
 
 }  //template 
