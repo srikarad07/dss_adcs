@@ -86,9 +86,7 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     // 
     // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> 
     // std::cout << "<<<<<<<<<<< Start of the test script >>>>>>>>>>>>>>>>>>>>>" << std::endl; 
-    // // char path   = "/home/superman/trial/test-products/reaction_wheels"; 
-    // dss_adcs::ProductSearch productFilesPrint;
-    // productFilesPrint(); 
+     
     
     // std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
     // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>>
