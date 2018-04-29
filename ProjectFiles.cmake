@@ -12,6 +12,7 @@ set(SRC
 # Set project main file.
 set(MAIN_SRC
   "${SRC_PATH}/main.cpp"
+  # "${SRC_PATH}/productSearch.cpp"
 )
 
 # Set project test source files.

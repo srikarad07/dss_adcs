@@ -21,12 +21,5 @@ struct ReactionWheel
     Real maxTorque; 
 }; 
 
-// struct AttributeSchema
-// {
-//     std::string name;
-//     // Real value; 
-//     std::string measurementUnit;  
-// }; 
-
 }
  #endif 
