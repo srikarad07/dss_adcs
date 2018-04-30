@@ -65,6 +65,10 @@ public:
                     const Real               aRelativeTolerance,   
                     const Real               anAbsoluteTolerance, 
                     const bool               aGravityGradientAcclerationModelFlag,
+                    const std::string&       aConceptConfiguration,
+                    const std::string&       aActuator, 
+                    const std::string&       aConceptType,
+                    const std::string&       aActuatorUuid,
                     const std::string&       aMetadataFilePath,
                     const std::string&       aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
@@ -79,6 +83,10 @@ public:
           relativeTolerance( aRelativeTolerance ),
           absoluteTolerance( anAbsoluteTolerance ),
           gravityGradientAcclerationModelFlag( aGravityGradientAcclerationModelFlag ),
+          conceptConfiguration( aConceptConfiguration ),
+          actuator( aActuator ),
+          conceptType( aConceptType ),
+          actuatorUuid( aActuatorUuid ),
           metadataFilePath( aMetadataFilePath ),
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -118,6 +126,18 @@ public:
     
     //! Status of gravity gradient model. 
     const bool gravityGradientAcclerationModelFlag;
+
+    //! Configuration of the concept. 
+    const std::string conceptConfiguration; 
+
+    //! Type of actuator. 
+    const std::string actuator; 
+
+    //! Type of the concept 
+    const std::string conceptType;
+
+    //! Unique identifies of the actuator. 
+    const std::string actuatorUuid; 
 
     //! Metadata file path.
     const std::string metadataFilePath; 

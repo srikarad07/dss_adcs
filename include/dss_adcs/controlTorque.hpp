@@ -20,11 +20,15 @@ namespace dss_adcs
 
 // Compute the value of control torque 
 template < typename Vector3, typename Vector4 >
-Vector3 computeRealTorqueValue(     const Vector4 quaternionCurrent, 
-                                    const Vector3 angularVelocity, 
-                                    const Vector3 quaternionControlGainMatrix, 
-                                    const Vector3 angularVelocityControlGainMatrix )
+Vector3 computeRealTorqueValue(     const Vector4       quaternionCurrent, 
+                                    const Vector3       angularVelocity, 
+                                    const Vector3       quaternionControlGainMatrix, 
+                                    const Vector3       angularVelocityControlGainMatrix,
+                                    ReactionWheel       rw1,
+                                    ReactionWheel       rw2,
+                                    ReactionWheel       rw3 )
 {
+
 // <<<<<<<<<<<<<<<<<<<<<<<<< Assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
 // Quaternion reference is just taken as a single value, which is not necessarily true //     
 Vector4 quaternionReference( 10.0, 10.0, 10.0, 1.0 ); 
@@ -34,22 +38,13 @@ Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionRefer
                                                                  quaternionCurrent, 
                                                                  angularVelocity, 
                                                                  quaternionControlGainMatrix, 
-                                                                 angularVelocityControlGainMatrix ); 
-                                                                 
-ReactionWheel rw1, rw2, rw3; 
-// rw1.mass   = 1.2; 
-rw1.maxTorque = 1.0; 
-rw2.maxTorque = 1.5; 
-rw3.maxTorque = 1.0; 
+                                                                 angularVelocityControlGainMatrix );                           
 
 Concept AxisConcept( rw1, rw2, rw3 ); 
 
 Vector3 torque = AxisConcept(); 
 
-// std::cout << "The control torque: \n" << controlTorque << std::endl;
-// std::cout << "The real torque: \n" << torque << std::endl; 
-
-// <<<<<<<<<<<<<<<<<<<<<<<<< For reaction wheels >>>>>>>>>>>>>>>>>>>>>> //
+// <<<<<<<<<<<<<<<<<<<<<<<<< For reaction wheels >>>>>>>>>>>>>>>>>>>>>>       //
 // The torque of the reaction wheel is in the range -maxTorque to + maxTorque //  
 if ( controlTorque.array().abs()[0] > torque.array().abs()[0]  )
 {

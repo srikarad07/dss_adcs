@@ -18,6 +18,14 @@
     // Gravitational Parameter of the central body [km^3 s^-2]. 
     "gravitational_parameter" : 5.793939e6, 
 
+    // 3-axis reaction wheel model. 
+    // "concept_configuration" : {
+    "concept_configuration" : "3-axis-stabilization", 
+    "actuator": "reaction_wheel",
+    "type":  "homogeneous", 
+    "uuid": "b79236dc-407a-59bb-9215-8bda084cc317", 
+    // },
+            
     // Attitude representation type. 
     "attitude_representation" : "euler", 
 

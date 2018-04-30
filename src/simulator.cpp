@@ -13,7 +13,10 @@
 
 #include <astro/astro.hpp>
 
+#include "dss_adcs/apiCall.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
+#include "dss_adcs/productSearch.hpp"
+#include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
 #include "dss_adcs/outputWriter.hpp"
@@ -32,6 +35,20 @@ void executeSimulator( const rapidjson::Document& config )
     std::cout << "******************************************************************" << std::endl;
     std::cout << std::endl;
 
+    // <<<<<<<<<<<<<<<<<<<<<<< Hardcoded values >>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+    callTheApi( input.actuator, input.actuatorUuid ); 
+    // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> //
+    std::cout << "<<<<<<<<<<< Start of the test script >>>>>>>>>>>>>>>>>>>>>" << std::endl; 
+    dss_adcs::ProductSearch product; 
+    product(); 
+    std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
+    // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
+    ReactionWheel rw1, rw2, rw3; 
+    rw1.maxTorque = 1.0; 
+    rw2.maxTorque = 1.5; 
+    rw3.maxTorque = 1.0; 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>// 
+
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
     
@@ -42,7 +59,8 @@ void executeSimulator( const rapidjson::Document& config )
     *   taken from a reliable source. 
     */
 
-    DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis, input.gravityGradientAcclerationModelFlag );
+    // Dynamics of the system 
+    DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis, input.gravityGradientAcclerationModelFlag, rw1, rw2, rw3 );
     std::cout << "Dynamical model set up successfully!" << std::endl;
     std::cout << std::endl;
 
@@ -185,6 +203,13 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     const bool gravityGradientAcclerationModelFlag = find( config, "is_gravity_gradient_active" )->value.GetBool( );
     std::cout << "Is Gravity Gradient disturbance model active?                " << gravityGradientAcclerationModelFlag << std::endl;
 
+    // Extract actuator model and parameters. 
+    const std::string conceptConfiguration     = find( config, "concept_configuration")->value.GetString();
+    const std::string actuator                 = find( config, "actuator")->value.GetString(); 
+    const std::string conceptType              = find( config, "type" )->value.GetString(); 
+    const std::string actuatorUuid             = find( config, "uuid" )->value.GetString(); 
+    // const std::string attributeUuid         = conceptIterator["uuid"]; 
+
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
     std::cout << "Metadata file path  " <<  metadataFilePath << std::endl;
@@ -203,6 +228,10 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
                             relativeTolerance,
                             absoluteTolerance,
                             gravityGradientAcclerationModelFlag,
+                            conceptConfiguration,
+                            actuator, 
+                            conceptType,
+                            actuatorUuid,
                             metadataFilePath,
                             stateHistoryFilePath);
 };

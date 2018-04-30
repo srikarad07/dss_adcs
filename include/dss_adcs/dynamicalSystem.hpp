@@ -18,6 +18,7 @@
 
 #include "dss_adcs/typedefs.hpp"
 #include "dss_adcs/controlTorque.hpp"
+#include "dss_adcs/reactionWheelSchema.hpp"
 
 namespace dss_adcs
 {
@@ -43,16 +44,22 @@ public:
      * @param[in] aInertiaPrinciple         Princple axes of inertia's of the spacecraft [kg m^2]
      * @param[in] initial
      */
-    DynamicalSystem( const Inertia  aPrincipleInertia,
-                     const Real     aGravitationalParameter,
-                     const Real     aRadius,
-                     const Real     aSemiMajorAxis, 
-                     const bool     aGravityGradientAccelerationModelFlag )
+    DynamicalSystem( const Inertia          aPrincipleInertia,
+                     const Real             aGravitationalParameter,
+                     const Real             aRadius,
+                     const Real             aSemiMajorAxis, 
+                     const bool             aGravityGradientAccelerationModelFlag, 
+                     ReactionWheel          aRw1,
+                     ReactionWheel          aRw2,
+                     ReactionWheel          aRw3   )
         : principleInertia( aPrincipleInertia ),
           gravitationalParameter( aGravitationalParameter ),
           radius( aRadius ),
           semiMajorAxis( aSemiMajorAxis ),
-          gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag )
+          gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag ),
+          rw1( aRw1 ),
+          rw2( aRw2 ),
+          rw3( aRw3 )
     { }
 
     void operator( )( const Vector7& state,
@@ -87,7 +94,10 @@ public:
         torque += dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                     currentAttitudeRate, 
                                                     quaternionControlGainMatrix, 
-                                                    angularVelocityControlGainMatrix );
+                                                    angularVelocityControlGainMatrix, 
+                                                    rw1, 
+                                                    rw2,
+                                                    rw3 );
 
         // Angular acceleration on the spacecraft is calculated as. // 
         Vector3 acceleration; 
@@ -121,8 +131,13 @@ private:
     //! Radius of the spacecraft around the orbit. 
     const Real semiMajorAxis;
 
-    //! Gravity graditen acceleration disturbance model flag. 
+    //! Gravity gradient acceleration disturbance model flag. 
     const bool gravityGradientAccelerationModelFlag;
+
+    //! Reaction wheel 
+    ReactionWheel rw1;
+    ReactionWheel rw2;
+    ReactionWheel rw3;  
 
 };
 

@@ -16,8 +16,6 @@
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/typedefs.hpp"
 
-#include "dss_adcs/productSearch.hpp"
-
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {
 	///////////////////////////////////////////////////////////////////////////
@@ -106,14 +104,6 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     std::cout << std::endl;
     std::cout << "------------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
-
-        
-    // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> //
-    std::cout << "<<<<<<<<<<< Start of the test script >>>>>>>>>>>>>>>>>>>>>" << std::endl; 
-    dss_adcs::ProductSearch product; 
-    product(); 
-    std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
-    // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
 
     return EXIT_SUCCESS;
 

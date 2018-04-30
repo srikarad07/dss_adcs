@@ -13,15 +13,8 @@
 #include <string>
 #include <stdexcept>
 
-// #include <utility>
-// #include <boost/filesystem.hpp>
-// #include <boost/foreach.hpp>
 #include <rapidjson/document.h>
 
-// #include <boost/property_tree/ptree.hpp>
-// #include <boost/property_tree/json_parser.hpp>
-
-// #include <typeinfo>
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/tools.hpp"
 
@@ -67,7 +60,15 @@ void operator( )( )
     	assert(attribute.IsObject()); // each attribute is an object
     	for (rapidjson::Value::ConstMemberIterator itr2 = attribute.MemberBegin(); itr2 != attribute.MemberEnd(); ++itr2) 
 		{	
-        	std::cout << itr2->name.GetString() << " : " << itr2->value.GetString() << std::endl;
+			// std::string value = itr2->value.GetString();
+			if ( !itr2->value.IsNull() )
+			{
+				std::cout << itr2->name.GetString() << " : " << "No value defined" << "\n" << std::endl;	
+			}
+			// else 
+			// {
+			// 	std::cout << itr2->name.GetString() << " : " << itr2->value.GetString() << "\n" << std::endl; 
+			// }
 		}
 	} 
 } // void 
