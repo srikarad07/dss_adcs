@@ -37,6 +37,7 @@ public:
 void operator( )( )
 {
     std::ifstream inputFile( "/home/superman/trial/curl/product.json" );
+	// std::ifstream inputFile( "/home/superman/trial/satsearch-data/documents/products/aerojet-rocketdyne-holdings-inc/mr-103d.json" );
 	std::stringstream jsonDocumentBuffer;
 	std::string inputLine;
 
@@ -60,15 +61,18 @@ void operator( )( )
     	assert(attribute.IsObject()); // each attribute is an object
     	for (rapidjson::Value::ConstMemberIterator itr2 = attribute.MemberBegin(); itr2 != attribute.MemberEnd(); ++itr2) 
 		{	
-			// std::string value = itr2->value.GetString();
-			if ( !itr2->value.IsNull() )
+			if ( itr2->value.IsNull() )
 			{
 				std::cout << itr2->name.GetString() << " : " << "No value defined" << "\n" << std::endl;	
 			}
-			// else 
-			// {
-			// 	std::cout << itr2->name.GetString() << " : " << itr2->value.GetString() << "\n" << std::endl; 
-			// }
+			else if ( itr2->value.IsString() )
+			{
+				std::cout << itr2->name.GetString() << " : " << itr2->value.GetString() << "\n" << std::endl; 
+			}
+			else 
+			{
+				std::cout << itr2->name.GetString() << " : " << itr2->value.GetDouble() << "\n" << std::endl; 
+			}
 		}
 	} 
 } // void 

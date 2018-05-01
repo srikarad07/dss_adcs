@@ -27,7 +27,7 @@
     // },
             
     // Attitude representation type. 
-    "attitude_representation" : "euler", 
+    "attitude_representation" : "quaternions", 
 
     // Radial vector of the satellite from spacecraft [km]. 
     "radius": 500.0,

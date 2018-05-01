@@ -37,12 +37,14 @@ void executeSimulator( const rapidjson::Document& config )
 
     // <<<<<<<<<<<<<<<<<<<<<<< Hardcoded values >>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
     callTheApi( input.actuator, input.actuatorUuid ); 
+    
     // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> //
-    std::cout << "<<<<<<<<<<< Start of the test script >>>>>>>>>>>>>>>>>>>>>" << std::endl; 
-    dss_adcs::ProductSearch product; 
-    product(); 
-    std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
+    // std::cout << "<<<<<<<<<<< Start of the test script >>>>>>>>>>>>>>>>>>>>>" << std::endl; 
+    // dss_adcs::ProductSearch product; 
+    // product(); 
+    // std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
     // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
+    
     ReactionWheel rw1, rw2, rw3; 
     rw1.maxTorque = 1.0; 
     rw2.maxTorque = 1.5; 
@@ -108,9 +110,11 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
 
     // Extract the initial attitude states and angular velocities. 
     ConfigIterator initialAttitudeStateIterator         = find( config, "initial_attitude_state"); 
+    
     // Extract attitude kinematic type. 
-    // const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
-    // std::cout << "Attitude representation string: " << attitudeRepresentationString << std::endl; 
+    const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
+    std::cout << "Attitude representation: " << attitudeRepresentationString << std::endl; 
+    
     Vector7 initialAttitudeState;
     initialAttitudeState[0]                             = initialAttitudeStateIterator->value[0].GetDouble();
     initialAttitudeState[1]                             = initialAttitudeStateIterator->value[1].GetDouble();
@@ -118,20 +122,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     initialAttitudeState[3]                             = initialAttitudeStateIterator->value[3].GetDouble();
     initialAttitudeState[4]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[4].GetDouble()); 
     initialAttitudeState[5]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[5].GetDouble()); 
-    initialAttitudeState[6]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[6].GetDouble()); 
-    // std::cout << "Roll angle:                       "   << initialAttitudeState[0]
-    //           << "[rad]"           << std::endl; 
-    // std::cout << "Pitch angle:                      "   << initialAttitudeState[1]
-    //           << "[rad]"           << std::endl;
-    // std::cout << "Yaw angle                         "   << initialAttitudeState[2]
-    //           << "[rad]"           << std::endl;
-    // std::cout << "Roll rate:                        "   << initialAttitudeState[3]
-    //           << "[rad/sec]"       << std::endl; 
-    // std::cout << "Pitch rate:                       "   << initialAttitudeState[4]
-    //           << "[rad/sec]"       << std::endl;
-    // std::cout << "[Yaw rate]                        "   << initialAttitudeState[5]
-    //           << "[rad/sec]"       << std::endl;
-        
+    initialAttitudeState[6]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[6].GetDouble());    
 
     // Extract integrator type. 
     const std::string integratorString                  = find( config, "integrator" )->value.GetString( );
