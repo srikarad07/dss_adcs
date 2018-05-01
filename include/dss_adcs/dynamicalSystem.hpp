@@ -18,6 +18,7 @@
 
 #include "dss_adcs/typedefs.hpp"
 #include "dss_adcs/controlTorque.hpp"
+#include "dss_adcs/actuatorConfiguration.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 
 namespace dss_adcs
@@ -44,22 +45,18 @@ public:
      * @param[in] aInertiaPrinciple         Princple axes of inertia's of the spacecraft [kg m^2]
      * @param[in] initial
      */
-    DynamicalSystem( const Inertia          aPrincipleInertia,
-                     const Real             aGravitationalParameter,
-                     const Real             aRadius,
-                     const Real             aSemiMajorAxis, 
-                     const bool             aGravityGradientAccelerationModelFlag, 
-                     ReactionWheel          aRw1,
-                     ReactionWheel          aRw2,
-                     ReactionWheel          aRw3   )
+    DynamicalSystem( const Inertia                  aPrincipleInertia,
+                     const Real                     aGravitationalParameter,
+                     const Real                     aRadius,
+                     const Real                     aSemiMajorAxis, 
+                     const bool                     aGravityGradientAccelerationModelFlag,
+                     const ActuatorConfiguration    anActuatorConfiguration  )
         : principleInertia( aPrincipleInertia ),
           gravitationalParameter( aGravitationalParameter ),
           radius( aRadius ),
           semiMajorAxis( aSemiMajorAxis ),
           gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag ),
-          rw1( aRw1 ),
-          rw2( aRw2 ),
-          rw3( aRw3 )
+          actuatorConfiguration( anActuatorConfiguration )
     { }
 
     void operator( )( const Vector7& state,
@@ -75,7 +72,6 @@ public:
         // Compute the torque acting on the system due to the un-uniformity of structure of the spacecraft.
         Vector3 torque
             = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
-        // std::cout << "The acceleration of \n" << acceleration << std::endl; 
         
         // if ( gravityGradientAccelerationModelFlag == true )
         // {
@@ -90,14 +86,12 @@ public:
         Vector3 quaternionControlGainMatrix( 10.0, 10.0, 10.0);
         Vector3 angularVelocityControlGainMatrix( 10.0, 10.0, 10.0); 
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
-        // TO DO: check the controller applicability. // 
+        // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked // 
         torque += dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                     currentAttitudeRate, 
                                                     quaternionControlGainMatrix, 
                                                     angularVelocityControlGainMatrix, 
-                                                    rw1, 
-                                                    rw2,
-                                                    rw3 );
+                                                    actuatorConfiguration );
 
         // Angular acceleration on the spacecraft is calculated as. // 
         Vector3 acceleration; 
@@ -135,9 +129,7 @@ private:
     const bool gravityGradientAccelerationModelFlag;
 
     //! Reaction wheel 
-    ReactionWheel rw1;
-    ReactionWheel rw2;
-    ReactionWheel rw3;  
+    const ActuatorConfiguration actuatorConfiguration; 
 
 };
 

@@ -11,8 +11,8 @@
 
 #include <Eigen/Dense>
 
+#include "dss_adcs/actuatorConfiguration.hpp"
 #include "astro/quaternionFeedbackControl.hpp"
-#include "dss_adcs/reactionWheelConcept.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 
 namespace dss_adcs
@@ -20,13 +20,11 @@ namespace dss_adcs
 
 // Compute the value of control torque 
 template < typename Vector3, typename Vector4 >
-Vector3 computeRealTorqueValue(     const Vector4       quaternionCurrent, 
-                                    const Vector3       angularVelocity, 
-                                    const Vector3       quaternionControlGainMatrix, 
-                                    const Vector3       angularVelocityControlGainMatrix,
-                                    ReactionWheel       rw1,
-                                    ReactionWheel       rw2,
-                                    ReactionWheel       rw3 )
+Vector3 computeRealTorqueValue(     const Vector4               quaternionCurrent, 
+                                    const Vector3               angularVelocity, 
+                                    const Vector3               quaternionControlGainMatrix, 
+                                    const Vector3               angularVelocityControlGainMatrix,
+                                    const ActuatorConfiguration& actuatorConfiguration    )
 {
 
 // <<<<<<<<<<<<<<<<<<<<<<<<< Assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
@@ -40,9 +38,7 @@ Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionRefer
                                                                  quaternionControlGainMatrix, 
                                                                  angularVelocityControlGainMatrix );                           
 
-Concept AxisConcept( rw1, rw2, rw3 ); 
-
-Vector3 torque = AxisConcept(); 
+const Vector3 torque = actuatorConfiguration.computePrincipleAxesTorque(); 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<< For reaction wheels >>>>>>>>>>>>>>>>>>>>>>       //
 // The torque of the reaction wheel is in the range -maxTorque to + maxTorque //  

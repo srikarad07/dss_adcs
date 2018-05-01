@@ -4,8 +4,8 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 */
 
-#ifndef REACTION_WHEEL_CONCEPT_HPP
-#define REACTION_WHEEL_CONCEPT_HPP
+#ifndef ACTUATOR_CONFIGURATION_HPP
+#define ACTUATOR_CONFIGURATION_HPP
 
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/typedefs.hpp"
@@ -13,19 +13,19 @@
 namespace dss_adcs
 {          
 
-class Concept
+class ActuatorConfiguration
 {
 public: 
 
-    Concept(    const ReactionWheel aRw1, 
-                const ReactionWheel aRw2,
-                const ReactionWheel aRw3 )
-            :   rw1( aRw1 ),
-                rw2( aRw2 ), 
-                rw3( aRw3 )  
+    ActuatorConfiguration(    const ReactionWheel& aRw1, 
+                              const ReactionWheel& aRw2,
+                              const ReactionWheel& aRw3 )
+                            : rw1( aRw1 ),
+                              rw2( aRw2 ), 
+                              rw3( aRw3 )  
     { }
 
-    Vector3 operator ( ) ( )
+    Vector3 computePrincipleAxesTorque ( ) const 
     {
         Vector3 torque; 
         torque[0]       = rw1.maxTorque; 
@@ -34,6 +34,7 @@ public:
 
         return torque;     
     }
+    
 protected: 
 
 private: 

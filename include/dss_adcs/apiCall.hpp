@@ -7,13 +7,13 @@
 #ifndef DSS_ADCS_API_CALL_HPP
 #define DSS_ADCS_API_CALL_HPP
 
-#include <dss_adcs/productSearch.hpp>
+// #include <dss_adcs/productSearch.hpp>
 
 template < typename Identifier, typename Actuator >
 void callTheApi(    Identifier actuatorUuid,
                     Actuator actuator )
 {
-    std::cout << "The API is being called to extract the parameters ... " << std::endl;   
+      
 } 
 
 #endif // DSS_ADCS_API_CALL_HPP

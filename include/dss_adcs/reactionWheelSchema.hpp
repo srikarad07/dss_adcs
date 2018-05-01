@@ -14,11 +14,34 @@ namespace dss_adcs
 
 struct ReactionWheel
 {
-    Real mass; 
-    Real length; 
-    Real height; 
-    Real width; 
-    Real maxTorque; 
+public: 
+
+    ReactionWheel(  const Real aMass, 
+                    const Real aLength, 
+                    const Real aHeight, 
+                    const Real aWidth, 
+                    const Real aMaxTorque )
+                :   mass( aMass ),
+                    length( aLength ),
+                    height( aHeight ),
+                    width( aWidth ),
+                    maxTorque( aMaxTorque )  
+    { }
+
+    const Real mass; 
+
+    const Real length; 
+
+    const Real height; 
+
+    const Real width;
+
+    const Real maxTorque;
+
+protected: 
+
+private: 
+
 }; 
 
 }

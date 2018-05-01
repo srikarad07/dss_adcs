@@ -53,7 +53,7 @@ void operator( )( )
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
-	int counter = 0; 
+	// int counter = 0; 
  
 	for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 
 	{
