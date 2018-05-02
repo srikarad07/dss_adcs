@@ -63,6 +63,7 @@ void executeSimulator( const rapidjson::Document& config )
     *   taken from a reliable source. 
     */
 
+    // std::map< double, Vector3 > controlTorqueMap; 
     // Dynamics of the system 
     DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis, input.gravityGradientAcclerationModelFlag, actuatorConfiguration );
     std::cout << "Dynamical model set up successfully!" << std::endl;
@@ -92,6 +93,20 @@ void executeSimulator( const rapidjson::Document& config )
         std::cout << "Numerical integrator not defined" << std::endl;
         throw;
     }
+
+    // std::map< double, Vector3 >::iterator it = dynamics.controlTorqueMap.end();
+    // std::cout << "Something: " << it->first << std::endl; 
+
+    for( std::map<double,Vector3>::iterator it = dynamics.controlTorqueMap.begin(); it != dynamics.controlTorqueMap.end(); ++it) 
+    {
+        std::cout << it->first << "\n";
+    }   
+
+    // while(it != dynamics.controlTorqueMap.end())
+    // {
+    //     std::cout<<it->first<<" :: "<<it->second[0] <<std::endl;
+    //     it++;
+    // }
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 

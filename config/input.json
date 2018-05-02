@@ -6,13 +6,13 @@
         1000.0
     ],
     "initial_attitude_state": [
-        10.0,
-        10.0,
-        10.0,
+        0.0,
+        0.0,
+        0.0,
         1.0,
-        0.01,
-        0.01,
-        0.01
+        0.0,
+        0.0,
+        0.0
     ],
     "is_gravity_gradient_active": false,
     // Gravitational Parameter of the central body [km^3 s^-2]. 
@@ -44,7 +44,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 100.0,
+    "end_epoch": 1000.0,
     "time_step": 1.0,
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,

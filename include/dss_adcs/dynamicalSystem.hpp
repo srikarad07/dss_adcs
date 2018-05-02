@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <map>
 
 #include <Eigen/Dense>
 #include <Eigen/LU>
@@ -35,7 +36,7 @@ namespace dss_adcs
 class DynamicalSystem
 {
 public:
-
+    std::map< double, Vector3> controlTorqueMap;
     //! Construct dynamical system.
     /*!
      * Constructor for dynamical system, taking model parameters to define the dynamical
@@ -50,7 +51,7 @@ public:
                      const Real                     aRadius,
                      const Real                     aSemiMajorAxis, 
                      const bool                     aGravityGradientAccelerationModelFlag,
-                     const ActuatorConfiguration    anActuatorConfiguration  )
+                     const ActuatorConfiguration    anActuatorConfiguration )
         : principleInertia( aPrincipleInertia ),
           gravitationalParameter( aGravitationalParameter ),
           radius( aRadius ),
@@ -86,12 +87,15 @@ public:
         Vector3 quaternionControlGainMatrix( 10.0, 10.0, 10.0);
         Vector3 angularVelocityControlGainMatrix( 10.0, 10.0, 10.0); 
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
-        // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked // 
-        torque += dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                    currentAttitudeRate, 
-                                                    quaternionControlGainMatrix, 
-                                                    angularVelocityControlGainMatrix, 
-                                                    actuatorConfiguration );
+        // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked //
+
+        Vector3 controlTorque = dss_adcs::computeRealTorqueValue(   currentAttitude, 
+                                                            currentAttitudeRate, 
+                                                            quaternionControlGainMatrix, 
+                                                            angularVelocityControlGainMatrix, 
+                                                            actuatorConfiguration );
+                                                            
+        torque  += controlTorque; 
 
         // Angular acceleration on the spacecraft is calculated as. // 
         Vector3 acceleration; 
@@ -129,7 +133,7 @@ private:
     const bool gravityGradientAccelerationModelFlag;
 
     //! Reaction wheel 
-    const ActuatorConfiguration actuatorConfiguration; 
+    const ActuatorConfiguration actuatorConfiguration;
 
 };
 
