@@ -55,6 +55,7 @@ public:
      */
     simulatorInput( const Inertia            aPrincipleInertia,
                     const State              anInitialAttitudeState, 
+                    const Vector4            aReferenceAttitudeState,
                     const Integrator         anIntegrator,
                     const Real               aStartEpoch,
                     const Real               anEndEpoch, 
@@ -73,6 +74,7 @@ public:
                     const std::string&       aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
           initialAttitudeState( anInitialAttitudeState ),
+          referenceAttitudeState( aReferenceAttitudeState ),
           integrator( anIntegrator ),
           startEpoch( aStartEpoch ),
           endEpoch( anEndEpoch ),
@@ -97,6 +99,9 @@ public:
     //! Initial attitude state and angular velocities of the spacecraft [deg], [deg/sec].
     const State initialAttitudeState; 
 
+    //! Reference attitude state defined by the user. 
+    const Vector4 referenceAttitudeState; 
+    
     //! Selected numerical intergrator. 
     const Integrator integrator; 
 

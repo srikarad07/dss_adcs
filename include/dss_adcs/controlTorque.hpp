@@ -20,17 +20,13 @@ namespace dss_adcs
 
 // Compute the value of control torque 
 template < typename Vector3, typename Vector4 >
-Vector3 computeRealTorqueValue(     const Vector4               quaternionCurrent, 
-                                    const Vector3               angularVelocity, 
-                                    const Vector3               quaternionControlGainMatrix, 
-                                    const Vector3               angularVelocityControlGainMatrix,
-                                    const ActuatorConfiguration& actuatorConfiguration    )
+Vector3 computeRealTorqueValue(     const Vector4                   quaternionCurrent, 
+                                    const Vector4                   quaternionReference,
+                                    const Vector3                   angularVelocity, 
+                                    const Vector3                   quaternionControlGainMatrix, 
+                                    const Vector3                   angularVelocityControlGainMatrix,
+                                    const ActuatorConfiguration&    actuatorConfiguration    )
 {
-
-// <<<<<<<<<<<<<<<<<<<<<<<<< Assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-// Quaternion reference is just taken as a single value, which is not necessarily true //     
-Vector4 quaternionReference( 0.0, 0.0, 0.0, 1.0 ); 
-// <<<<<<<<<<<<<<<<<<<<<<<<< End of Assumptions >>>>>>>>>>>>>>>>>>>>>>> // 
 
 Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
                                                                  quaternionCurrent, 

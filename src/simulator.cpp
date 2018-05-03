@@ -15,7 +15,7 @@
 
 #include "dss_adcs/apiCall.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
-#include "dss_adcs/dynamicalSystemSetup.hpp"
+// #include "dss_adcs/dynamicalSystemSetup.hpp"
 #include "dss_adcs/productSearch.hpp"
 #include "dss_adcs/actuatorConfiguration.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
@@ -70,7 +70,8 @@ void executeSimulator( const rapidjson::Document& config )
 
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
-    State currentState = input.initialAttitudeState;
+    State   currentState                = input.initialAttitudeState;
+    Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
 
     // Set up dynamical model.
     std::cout << "Dynamical model setting up ..." << std::endl;
@@ -81,16 +82,49 @@ void executeSimulator( const rapidjson::Document& config )
 
     for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
     {
-        // <<<<<<< To Do: Remove the class for the dynamics system setup. //
-        // <<<< Compute the disturbances and control accelerations separetly and pass as an input >> // 
         
         // Get the accelerations for the model. 
-        DynamicalSystemSetup dynamicsSetup( currentState, input.timeStep, input.principleInertia, integrationStartTime, actuatorConfiguration ); 
+        // DynamicalSystemSetup dynamicsSetup( currentState, refrenceState, input.timeStep, input.principleInertia, integrationStartTime, actuatorConfiguration ); 
 
-        // Angular acceleration for the model. 
-        Vector3 acceleration = dynamicsSetup.computeAngularAcceleration( ); 
+        Real integrationEndTime = integrationStartTime + input.timeStep; 
+
+        Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
+        Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+
+        Vector3 torque = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+
+        // Disturbance torques. 
+        // if ( gravityGradientAccelerationModelFlag == true )
+        // {
+        //        Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
+
+        //        acceleration += astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ); 
+ 
+        // }
+
+        // Control torque on the dynamics: 
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< ASSUMPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+        Vector3 quaternionControlGainMatrix( 10.0, 10.0, 10.0 );
+        Vector3 angularVelocityControlGainMatrix( 10.0, 10.0, 10.0 ); 
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+        // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked //
         
-        StateHistoryWriter writer( stateHistoryFile, dynamicsSetup.controlTorque );
+        Vector3 controlTorque = dss_adcs::computeRealTorqueValue(   currentAttitude, 
+                                                                    referenceAttitudeState,
+                                                                    currentAttitudeRate, 
+                                                                    quaternionControlGainMatrix, 
+                                                                    angularVelocityControlGainMatrix, 
+                                                                    actuatorConfiguration );
+
+        torque  += controlTorque; 
+
+        // Angular acceleration on the spacecraft. // 
+        Vector3 acceleration; 
+        acceleration[0]     = torque[0] / input.principleInertia[0]; 
+        acceleration[1]     = torque[1] / input.principleInertia[1]; 
+        acceleration[2]     = torque[2] / input.principleInertia[2];   
+        
+        StateHistoryWriter writer( stateHistoryFile, controlTorque );
             
         // Dynamics of the system 
         DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis,  input.gravityGradientAcclerationModelFlag, actuatorConfiguration, acceleration );
@@ -102,7 +136,7 @@ void executeSimulator( const rapidjson::Document& config )
                              dynamics,
                              currentState,
                              integrationStartTime,
-                             dynamicsSetup.integrationEndTime,
+                             integrationEndTime,
                              input.timeStep,
                              writer );
         }
@@ -138,6 +172,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
     std::cout << "Attitude representation: " << attitudeRepresentationString << std::endl; 
     
+    // Extract the initial state of the quaternion. 
     Vector7 initialAttitudeState;
     initialAttitudeState[0]                             = initialAttitudeStateIterator->value[0].GetDouble();
     initialAttitudeState[1]                             = initialAttitudeStateIterator->value[1].GetDouble();
@@ -147,6 +182,14 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     initialAttitudeState[5]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[5].GetDouble()); 
     initialAttitudeState[6]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[6].GetDouble());    
 
+    // Extract the reference state for the quaternion. 
+    ConfigIterator referenceAttitudeStateIterator       = find( config, "quaternion_reference_state" );
+    Vector4 referenceAttitudeState;
+    referenceAttitudeState[0]                           = referenceAttitudeStateIterator->value[0].GetDouble();
+    referenceAttitudeState[1]                           = referenceAttitudeStateIterator->value[1].GetDouble();
+    referenceAttitudeState[2]                           = referenceAttitudeStateIterator->value[2].GetDouble();    
+    referenceAttitudeState[3]                           = referenceAttitudeStateIterator->value[3].GetDouble();      
+      
     // Extract integrator type. 
     const std::string integratorString                  = find( config, "integrator" )->value.GetString( );
     Integrator integrator = rk4;
@@ -232,6 +275,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
 
     return simulatorInput(  principleInertia,
                             initialAttitudeState,
+                            referenceAttitudeState,
                             integrator,
                             startEpoch,
                             endEpoch,
