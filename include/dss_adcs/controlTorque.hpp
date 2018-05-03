@@ -29,7 +29,7 @@ Vector3 computeRealTorqueValue(     const Vector4               quaternionCurren
 
 // <<<<<<<<<<<<<<<<<<<<<<<<< Assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
 // Quaternion reference is just taken as a single value, which is not necessarily true //     
-Vector4 quaternionReference( 0.01, 0.01, 0.01, 1.0 ); 
+Vector4 quaternionReference( 0.0, 0.0, 0.0, 1.0 ); 
 // <<<<<<<<<<<<<<<<<<<<<<<<< End of Assumptions >>>>>>>>>>>>>>>>>>>>>>> // 
 
 Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 

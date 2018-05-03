@@ -48,7 +48,7 @@ void executeSimulator( const rapidjson::Document& config )
     // // std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
     // // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
     
-    const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 1.0 ), rw2( 0.0, 0.0, 0.0, 0.0, 1.5 ), rw3( 0.0, 0.0, 0.0, 0.0, 1.0 ); 
+    const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw2( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
 
     // Define the actuator configuration. 
     std::cout << "The actuator configuration is being defined: \n" << std::endl; 
@@ -81,6 +81,9 @@ void executeSimulator( const rapidjson::Document& config )
 
     for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
     {
+        // <<<<<<< To Do: Remove the class for the dynamics system setup. //
+        // <<<< Compute the disturbances and control accelerations separetly and pass as an input >> // 
+        
         // Get the accelerations for the model. 
         DynamicalSystemSetup dynamicsSetup( currentState, input.timeStep, input.principleInertia, integrationStartTime, actuatorConfiguration ); 
 
