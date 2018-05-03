@@ -36,7 +36,7 @@ namespace dss_adcs
 class DynamicalSystem
 {
 public:
-    std::map< double, Vector3> controlTorqueMap;
+    // std::map< double, Vector3> controlTorqueMap;
     //! Construct dynamical system.
     /*!
      * Constructor for dynamical system, taking model parameters to define the dynamical
@@ -51,13 +51,15 @@ public:
                      const Real                     aRadius,
                      const Real                     aSemiMajorAxis, 
                      const bool                     aGravityGradientAccelerationModelFlag,
-                     const ActuatorConfiguration    anActuatorConfiguration )
+                     const ActuatorConfiguration    anActuatorConfiguration,
+                     const Vector3                  anAcceleration )
         : principleInertia( aPrincipleInertia ),
           gravitationalParameter( aGravitationalParameter ),
           radius( aRadius ),
           semiMajorAxis( aSemiMajorAxis ),
           gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag ),
-          actuatorConfiguration( anActuatorConfiguration )
+          actuatorConfiguration( anActuatorConfiguration ),
+          acceleration( anAcceleration )
     { }
 
     void operator( )( const Vector7& state,
@@ -68,40 +70,7 @@ public:
         Vector3 currentAttitudeRate( state[4], state[5], state[6] );    
 
         Vector4 attitudeDerivative 
-            = astro::computeQuaternionDerivative( currentAttitude, currentAttitudeRate );
-        
-        // Compute the torque acting on the system due to the un-uniformity of structure of the spacecraft.
-        Vector3 torque
-            = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
-        
-        // if ( gravityGradientAccelerationModelFlag == true )
-        // {
-        //        Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
-
-        //        acceleration += astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ); 
- 
-        // }
-
-        // Control torque on the dynamics: 
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< ASSUMPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-        Vector3 quaternionControlGainMatrix( 10.0, 10.0, 10.0);
-        Vector3 angularVelocityControlGainMatrix( 10.0, 10.0, 10.0); 
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
-        // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked //
-
-        Vector3 controlTorque = dss_adcs::computeRealTorqueValue(   currentAttitude, 
-                                                            currentAttitudeRate, 
-                                                            quaternionControlGainMatrix, 
-                                                            angularVelocityControlGainMatrix, 
-                                                            actuatorConfiguration );
-                                                            
-        torque  += controlTorque; 
-
-        // Angular acceleration on the spacecraft is calculated as. // 
-        Vector3 acceleration; 
-        acceleration[0]     = torque[0] / principleInertia[0]; 
-        acceleration[1]     = torque[1] / principleInertia[1]; 
-        acceleration[2]     = torque[2] / principleInertia[2];                              
+            = astro::computeQuaternionDerivative( currentAttitude, currentAttitudeRate );       
                      
         // Set the derivative of the velocity elements to the computed total acceleration.
         stateDerivative[ 0 ] = attitudeDerivative[ 0 ];
@@ -115,6 +84,7 @@ public:
     }
 
 protected:
+
 private:
 
     //! Principle Inertia of the orbiting body [km m^2].
@@ -132,9 +102,11 @@ private:
     //! Gravity gradient acceleration disturbance model flag. 
     const bool gravityGradientAccelerationModelFlag;
 
-    //! Reaction wheel 
+    //! Actuator configuration for concept generation. 
     const ActuatorConfiguration actuatorConfiguration;
 
+    //! Acceleration
+    const Vector3 acceleration; 
 };
 
 } // namespace dss_adcs

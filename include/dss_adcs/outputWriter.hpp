@@ -86,8 +86,10 @@ public:
      * @param[in] aGravitationalParameter   Gravitation parameter of central body        [km^3 s^-2]
      */
 
-    StateHistoryWriter( std::ostream& aStateHistoryStream )
-        : stateHistoryStream( aStateHistoryStream )
+    StateHistoryWriter( std::ostream& aStateHistoryStream, 
+                        const Vector3 aControlTorque )
+        : stateHistoryStream( aStateHistoryStream ),
+          controlTorque( aControlTorque )  
     { }
 
     //! Overload ()-operator to write state to output stream.
@@ -106,14 +108,17 @@ public:
         // const State stateAttitudeElements = state; 
 
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
-                            << time         << ','
-                            << state[ 0 ]   << ','
-                            << state[ 1 ]   << ','
-                            << state[ 2 ]   << ','
-                            << state[ 3 ]   << ','
-                            << state[ 4 ]   << ','
-                            << state[ 5 ]   << ','
-                            << state[ 6 ]   << std::endl;                            
+                            << time             << ','
+                            << state[ 0 ]       << ','
+                            << state[ 1 ]       << ','
+                            << state[ 2 ]       << ','
+                            << state[ 3 ]       << ','
+                            << state[ 4 ]       << ','
+                            << state[ 5 ]       << ','
+                            << state[ 6 ]       << ','
+                            << controlTorque[0] << ','
+                            << controlTorque[1] << ',' 
+                            << controlTorque[2] << std::endl;                            
     }
 
 protected:
@@ -122,6 +127,9 @@ private:
 
     //! Output stream to write state history to.
     std::ostream& stateHistoryStream;
+
+    //! Control torque 
+    Vector3 controlTorque; 
 };
 
 }

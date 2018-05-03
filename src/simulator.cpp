@@ -2,7 +2,7 @@
  * Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
  * Distributed under the MIT License.
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
- */
+*/
 
 #include <fstream>
 #include <iostream>
@@ -15,6 +15,7 @@
 
 #include "dss_adcs/apiCall.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
+#include "dss_adcs/dynamicalSystemSetup.hpp"
 #include "dss_adcs/productSearch.hpp"
 #include "dss_adcs/actuatorConfiguration.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
@@ -37,7 +38,7 @@ void executeSimulator( const rapidjson::Document& config )
     std::cout << std::endl;
 
     // <<<<<<<<<<<<<<<<<<<<<<< Hardcoded values >>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-     std::cout << "The API is being called to extract the parameters ... " << std::endl;
+    std::cout << "The API is being called to extract the parameters ... " << std::endl;
     callTheApi( input.actuator, input.actuatorUuid ); 
     
     // // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> //
@@ -63,50 +64,52 @@ void executeSimulator( const rapidjson::Document& config )
     *   taken from a reliable source. 
     */
 
-    // std::map< double, Vector3 > controlTorqueMap; 
-    // Dynamics of the system 
-    DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis, input.gravityGradientAcclerationModelFlag, actuatorConfiguration );
-    std::cout << "Dynamical model set up successfully!" << std::endl;
-    std::cout << std::endl;
-
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3" << std::endl;
-    StateHistoryWriter writer( stateHistoryFile );
+    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3,tow1,tow2,tow3" << std::endl;
 
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
     State currentState = input.initialAttitudeState;
-    if ( input.integrator == rk4 )
+
+    // Set up dynamical model.
+    std::cout << "Dynamical model setting up ..." << std::endl;
+    
+    // Set up dynamical model.
+    std::cout << "Generating angular accelerations ..." << std::endl;
+    std::cout << std::endl;
+
+    for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
     {
-        using namespace boost::numeric::odeint;
-        integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
-                         dynamics,
-                         currentState,
-                         input.startEpoch,
-                         input.endEpoch,
-                         input.timeStep,
-                         writer );
+        // Get the accelerations for the model. 
+        DynamicalSystemSetup dynamicsSetup( currentState, input.timeStep, input.principleInertia, integrationStartTime, actuatorConfiguration ); 
+
+        // Angular acceleration for the model. 
+        Vector3 acceleration = dynamicsSetup.computeAngularAcceleration( ); 
+        
+        StateHistoryWriter writer( stateHistoryFile, dynamicsSetup.controlTorque );
+            
+        // Dynamics of the system 
+        DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis,  input.gravityGradientAcclerationModelFlag, actuatorConfiguration, acceleration );
+
+        if ( input.integrator == rk4 )
+        {
+            using namespace boost::numeric::odeint;
+            integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
+                             dynamics,
+                             currentState,
+                             integrationStartTime,
+                             dynamicsSetup.integrationEndTime,
+                             input.timeStep,
+                             writer );
+        }
+        else
+        {
+            std::cout << "Numerical integrator not defined" << std::endl;
+            throw;
+        } 
     }
-    else
-    {
-        std::cout << "Numerical integrator not defined" << std::endl;
-        throw;
-    }
 
-    // std::map< double, Vector3 >::iterator it = dynamics.controlTorqueMap.end();
-    // std::cout << "Something: " << it->first << std::endl; 
-
-    for( std::map<double,Vector3>::iterator it = dynamics.controlTorqueMap.begin(); it != dynamics.controlTorqueMap.end(); ++it) 
-    {
-        std::cout << it->first << "\n";
-    }   
-
-    // while(it != dynamics.controlTorqueMap.end())
-    // {
-    //     std::cout<<it->first<<" :: "<<it->second[0] <<std::endl;
-    //     it++;
-    // }
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
@@ -184,7 +187,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     std::cout << "Timestep of the integration is:   " << timeStep 
               << "[sec]" << std::endl; 
     
-    // Ectract gravitational parameter of the central body.  
+    // Extract gravitational parameter of the central body.  
     const Real gravitationalParameter                 = find( config, "gravitational_parameter")->value.GetDouble(); 
     std::cout << "Gravitational Parameter: " << gravitationalParameter
               << "[km^3 s^-2]" << std::endl; 

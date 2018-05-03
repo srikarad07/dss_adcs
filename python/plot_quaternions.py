@@ -97,8 +97,37 @@ ax4.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
 ax4.grid()
 
 plt.tight_layout()
-# plt.grid()
+plt.grid()
 
+#Generate figure with 2D plots. 
+fig = plt.figure()
+ax1 = fig.add_subplot(3,1,1)
+ax2 = fig.add_subplot(3,1,2)
+ax3 = fig.add_subplot(3,1,3)
+
+#Plot angular velocity with respect to time. 
+ax1.plot(state_history['t'], state_history['tow1'], color='k')
+ax1.set_xlabel('time[sec]')
+ax1.set_ylabel('Control_X [N/m]')
+ax1.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+ax1.grid()
+
+ax2.plot(state_history['t'], state_history['tow2'], color='k')
+ax2.set_xlabel('time[sec]')
+ax2.set_ylabel('Control_Y [N/m]')
+ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+ax2.grid()
+
+ax3.plot(state_history['t'], state_history['tow3'], color='k')
+ax3.set_xlabel('time[sec]')
+ax3.set_ylabel('Control_Z [N/m]')
+ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+ax3.grid()
+
+plt.tight_layout()
+plt.grid()
+
+#Generate control torque plots.
 #Generate figure with 2D plots. 
 fig = plt.figure()
 ax1 = fig.add_subplot(3,1,1)
@@ -125,7 +154,7 @@ ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
 ax3.grid()
 
 plt.tight_layout()
-# plt.grid()
+plt.grid()
 
 plt.show()
 
