@@ -27,6 +27,8 @@ public:
 
     Vector3 computePrincipleAxesTorque ( ) const 
     {
+        // Update this to the reaction wheel orientation matrix to convert the RW torques to 
+        // principle axes torques.
         Vector3 torque; 
         torque[0]       = rw1.maxTorque; 
         torque[1]       = rw2.maxTorque;

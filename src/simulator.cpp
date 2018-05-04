@@ -48,7 +48,7 @@ void executeSimulator( const rapidjson::Document& config )
     // // std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
     // // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
     
-    const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw2( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
+    const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 0.1, input.wheelOrientation[0] ), rw2( 0.0, 0.0, 0.0, 0.0, 0.1, input.wheelOrientation[1] ), rw3( 0.0, 0.0, 0.0, 0.0, 0.1, input.wheelOrientation[2] ); 
 
     // Define the actuator configuration. 
     std::cout << "The actuator configuration is being defined: \n" << std::endl; 
@@ -84,7 +84,7 @@ void executeSimulator( const rapidjson::Document& config )
     {
         
         // Get the accelerations for the model. 
-        // DynamicalSystemSetup dynamicsSetup( currentState, refrenceState, input.timeStep, input.principleInertia, integrationStartTime, actuatorConfiguration ); 
+        // DynamicalSystemSetup dynamicsSetup( currentState, referenceState, input.timeStep, input.principleInertia, integrationStartTime, actuatorConfiguration ); 
 
         Real integrationEndTime = integrationStartTime + input.timeStep; 
 
@@ -150,11 +150,11 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     principleInertia[0]                                 = principleInertiaDiagonalIterator->value[0].GetDouble( ); 
     principleInertia[1]                                 = principleInertiaDiagonalIterator->value[1].GetDouble( ); 
     principleInertia[2]                                 = principleInertiaDiagonalIterator->value[2].GetDouble( );
-    std::cout << "Principle inertia around X axis:    " << principleInertia[0]
+    std::cout << "Principle inertia around X axis:                              " << principleInertia[0]
               << "[kg/m^2]" << std::endl; 
-    std::cout << "Principle inertia around Y axis:    " << principleInertia[1]
+    std::cout << "Principle inertia around Y axis:                              " << principleInertia[1]
               << "[kg/m^2]" << std::endl;          
-    std::cout << "Principle inertia around Z axis:    " << principleInertia[2]
+    std::cout << "Principle inertia around Z axis:                              " << principleInertia[2]
               << "[kg/m^2]" << std::endl;
 
     // Extract the initial attitude states and angular velocities. 
@@ -162,7 +162,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     
     // Extract attitude kinematic type. 
     const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
-    std::cout << "Attitude representation: " << attitudeRepresentationString << std::endl; 
+    std::cout << "Attitude representation:                                      " << attitudeRepresentationString << std::endl; 
     
     // Extract the initial state of the quaternion. 
     Vector7 initialAttitudeState;
@@ -212,51 +212,78 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
             throw;
         }
     }
-    std::cout << "Integrator                         " << integratorString << std::endl;
+    std::cout << "Integrator                                                    " << integratorString << std::endl;
 
     // Extract integrator time setttings. 
     const Real startEpoch                              = find( config, "start_epoch")->value.GetDouble( );
-    std::cout << "Intergration start epoch:         " << startEpoch 
+    std::cout << "Intergration start epoch:                                     " << startEpoch 
               << "[sec]"        << std::endl; 
     const Real endEpoch                                = find( config, "end_epoch")->value.GetDouble( );
-    std::cout << "Integration end epoch:            " << endEpoch 
+    std::cout << "Integration end epoch:                                        " << endEpoch 
               << "[sec]" << std::endl;
     const Real timeStep                                = find( config, "time_step" )->value.GetDouble( );
-    std::cout << "Timestep of the integration is:   " << timeStep 
+    std::cout << "Timestep of the integration is:                               " << timeStep 
               << "[sec]" << std::endl; 
     
     // Extract gravitational parameter of the central body.  
     const Real gravitationalParameter                 = find( config, "gravitational_parameter")->value.GetDouble(); 
-    std::cout << "Gravitational Parameter: " << gravitationalParameter
+    std::cout << "Gravitational Parameter:                                      " << gravitationalParameter
               << "[km^3 s^-2]" << std::endl; 
 
     // Extract the radial distance of the central body. 
     const Real radius                                 = find( config, "radius")->value.GetDouble();
-    std::cout << "Radial vector: "      << radius
+    std::cout << "Radial vector:                                                "      << radius
               << "[km]" << std::endl; 
 
     // Exract the semi major axis of the orbit. 
     const Real semiMajorAxis                          = find( config, "semi_major_axis")->value.GetDouble(); 
-    std::cout << "Semi major axis: "   << semiMajorAxis
+    std::cout << "Semi major axis:                                              "   << semiMajorAxis
               << "[km]" << std::endl; 
 
     // Extract integrator tolerances.  
     const Real relativeTolerance                      = find( config, "relative_tolerance")->value.GetDouble(); 
-    std::cout << "Relative Tolerance: " << relativeTolerance
+    std::cout << "Relative Tolerance:                                           " << relativeTolerance
               << "[-]" << std::endl; 
     const Real absoluteTolerance                      = find( config, "absolute_tolerance")->value.GetDouble(); 
-    std::cout << "Absolute Tolerance: " << absoluteTolerance
+    std::cout << "Absolute Tolerance:                                           " << absoluteTolerance
               << "[-]" << std::endl;
 
     // Extract gravity gradient model .
     const bool gravityGradientAcclerationModelFlag = find( config, "is_gravity_gradient_active" )->value.GetBool( );
-    std::cout << "Is Gravity Gradient disturbance model active?                " << gravityGradientAcclerationModelFlag << std::endl;
+    std::cout << "Is Gravity Gradient disturbance model active?                 " << gravityGradientAcclerationModelFlag << std::endl;
 
     // Extract actuator model and parameters. 
-    const std::string conceptConfiguration     = find( config, "attitude_control_configuration")->value.GetString();
-    const std::string actuator                 = find( config, "actuator")->value.GetString(); 
-    const std::string conceptType              = find( config, "type" )->value.GetString(); 
-    const std::string actuatorUuid             = find( config, "uuid" )->value.GetString(); 
+    const std::string attitudeControlMethod     = find( config, "attitude_control_method")->value.GetString();
+    std::cout << "Attitude control method:                                      " << attitudeControlMethod << std::endl; 
+    
+    const std::string actuator                  = find( config, "actuator")->value.GetString(); 
+    std::cout << "Actuators to be evaluated:                                    " << actuator << std::endl; 
+    
+    // const std::string conceptType               = find( config, "type" )->value.GetString(); 
+    // std::cout << "Actuator configuration type:                                  " << conceptType << std::endl; 
+    
+    // const std::string actuatorUuid              = find( config, "uuid" )->value.GetString(); 
+    // std::cout << "Actuator Uuid to be evaluated:                                " << actuatorUuid << std::endl; 
+
+    // const int numberOfReactionWheels    = find( config, "number_of_reaction_wheels" )->value.GetInt(); 
+    // std::cout << "The number of " << actuator << "                                  " << numberOfReactionWheels << std::endl; 
+
+    // Extract the wheel offset of the reaction wheels (defined in radians). 
+    // ConfigIterator wheelOffsetiterator          = find( config, "wheel_offset" );
+    // if ( numberOfReactionWheels == 3 )
+    // {
+    //     Vector3 wheelOffset; 
+    //     wheelOffset[0]                         = wheelOffsetiterator->value[0].GetDouble(); 
+    //     wheelOffset[1]                         = wheelOffsetiterator->value[1].GetDouble(); 
+    //     wheelOffset[2]                         = wheelOffsetiterator->value[2].GetDouble(); 
+    // }
+    
+    // const Vector3 actuatorUuid; 
+    const std::string actuatorUuid1         = "1354b545-a497-5660-85a6-097f7cabb6b7";
+
+    const Vector3 wheelOrientation( 0.0, 0.0, 0.0 ); 
+    // actuatorUuid2         = "1354b545-a497-5660-85a6-097f7cabb6b7"; 
+    // actuatorUuid3         = "1354b545-a497-5660-85a6-097f7cabb6b7";
 
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
@@ -277,10 +304,10 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
                             relativeTolerance,
                             absoluteTolerance,
                             gravityGradientAcclerationModelFlag,
-                            conceptConfiguration,
+                            attitudeControlMethod,
                             actuator, 
-                            conceptType,
-                            actuatorUuid,
+                            actuatorUuid1,
+                            wheelOrientation,
                             metadataFilePath,
                             stateHistoryFilePath);
 };

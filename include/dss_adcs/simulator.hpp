@@ -68,8 +68,8 @@ public:
                     const bool               aGravityGradientAcclerationModelFlag,
                     const std::string&       aConceptConfiguration,
                     const std::string&       aActuator, 
-                    const std::string&       aConceptType,
                     const std::string&       aActuatorUuid,
+                    const Vector3            aWheelOrientation,
                     const std::string&       aMetadataFilePath,
                     const std::string&       aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
@@ -87,8 +87,8 @@ public:
           gravityGradientAcclerationModelFlag( aGravityGradientAcclerationModelFlag ),
           conceptConfiguration( aConceptConfiguration ),
           actuator( aActuator ),
-          conceptType( aConceptType ),
           actuatorUuid( aActuatorUuid ),
+          wheelOrientation( aWheelOrientation ),
           metadataFilePath( aMetadataFilePath ),
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -138,11 +138,11 @@ public:
     //! Type of actuator. 
     const std::string actuator; 
 
-    //! Type of the concept 
-    const std::string conceptType;
-
     //! Unique identifies of the actuator. 
     const std::string actuatorUuid; 
+
+    //! Wheel offset values for the reaction wheels. 
+    const Vector3 wheelOrientation; 
 
     //! Metadata file path.
     const std::string metadataFilePath; 
