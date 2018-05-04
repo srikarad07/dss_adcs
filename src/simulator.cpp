@@ -91,7 +91,7 @@ void executeSimulator( const rapidjson::Document& config )
         Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
         Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
 
-        Vector3 torque = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+        const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
 
         // Disturbance torques. 
         // if ( gravityGradientAccelerationModelFlag == true )
@@ -99,7 +99,7 @@ void executeSimulator( const rapidjson::Document& config )
         //        Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
 
         //        acceleration += astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ); 
- 
+        const Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
         // }
 
         // Control torque on the dynamics: 
@@ -109,25 +109,17 @@ void executeSimulator( const rapidjson::Document& config )
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
         // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked //
         
-        Vector3 controlTorque = dss_adcs::computeRealTorqueValue(   currentAttitude, 
+        const Vector3 controlTorque = dss_adcs::computeRealTorqueValue(   currentAttitude, 
                                                                     referenceAttitudeState,
                                                                     currentAttitudeRate, 
                                                                     quaternionControlGainMatrix, 
                                                                     angularVelocityControlGainMatrix, 
                                                                     actuatorConfiguration );
-
-        torque  += controlTorque; 
-
-        // Angular acceleration on the spacecraft. // 
-        Vector3 acceleration; 
-        acceleration[0]     = torque[0] / input.principleInertia[0]; 
-        acceleration[1]     = torque[1] / input.principleInertia[1]; 
-        acceleration[2]     = torque[2] / input.principleInertia[2];   
         
         StateHistoryWriter writer( stateHistoryFile, controlTorque );
             
         // Dynamics of the system 
-        DynamicalSystem dynamics( input.principleInertia, input.gravitationalParameter, input.radius, input.semiMajorAxis,  input.gravityGradientAcclerationModelFlag, actuatorConfiguration, acceleration );
+        DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
 
         if ( input.integrator == rk4 )
         {
@@ -261,11 +253,10 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     std::cout << "Is Gravity Gradient disturbance model active?                " << gravityGradientAcclerationModelFlag << std::endl;
 
     // Extract actuator model and parameters. 
-    const std::string conceptConfiguration     = find( config, "concept_configuration")->value.GetString();
+    const std::string conceptConfiguration     = find( config, "attitude_control_configuration")->value.GetString();
     const std::string actuator                 = find( config, "actuator")->value.GetString(); 
     const std::string conceptType              = find( config, "type" )->value.GetString(); 
     const std::string actuatorUuid             = find( config, "uuid" )->value.GetString(); 
-    // const std::string attributeUuid         = conceptIterator["uuid"]; 
 
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 

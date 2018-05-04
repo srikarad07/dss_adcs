@@ -46,20 +46,14 @@ public:
      * @param[in] aInertiaPrinciple         Princple axes of inertia's of the spacecraft [kg m^2]
      * @param[in] initial
      */
-    DynamicalSystem( const Inertia                  aPrincipleInertia,
-                     const Real                     aGravitationalParameter,
-                     const Real                     aRadius,
-                     const Real                     aSemiMajorAxis, 
-                     const bool                     aGravityGradientAccelerationModelFlag,
-                     const ActuatorConfiguration    anActuatorConfiguration,
-                     const Vector3                  anAcceleration )
-        : principleInertia( aPrincipleInertia ),
-          gravitationalParameter( aGravitationalParameter ),
-          radius( aRadius ),
-          semiMajorAxis( aSemiMajorAxis ),
-          gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag ),
-          actuatorConfiguration( anActuatorConfiguration ),
-          acceleration( anAcceleration )
+    DynamicalSystem(    const Vector3                  aAsymmetricBodyTorque, 
+                        const Vector3                  aControlTorque,
+                        const Vector3                  aDisturbanceTorque,
+                        const Inertia                  aPrincipleInertia )
+          : asymmetricBodyTorque( aAsymmetricBodyTorque ),  
+            controlTorque( aControlTorque ),
+            disturbanceTorque( aDisturbanceTorque ),
+            principleInertia( aPrincipleInertia )
     { }
 
     void operator( )( const Vector7& state,
@@ -71,7 +65,17 @@ public:
 
         Vector4 attitudeDerivative 
             = astro::computeQuaternionDerivative( currentAttitude, currentAttitudeRate );       
-                     
+
+        Vector3 torque    = asymmetricBodyTorque + controlTorque + disturbanceTorque; 
+ 
+        // std::cout << "the value of the torque is: " << torque << std::endl; 
+
+        // Angular acceleration on the spacecraft. // 
+        Vector3 acceleration; 
+        acceleration[0]     = torque[0] / principleInertia[0]; 
+        acceleration[1]     = torque[1] / principleInertia[1]; 
+        acceleration[2]     = torque[2] / principleInertia[2];   
+
         // Set the derivative of the velocity elements to the computed total acceleration.
         stateDerivative[ 0 ] = attitudeDerivative[ 0 ];
         stateDerivative[ 1 ] = attitudeDerivative[ 1 ];
@@ -87,26 +91,17 @@ protected:
 
 private:
 
-    //! Principle Inertia of the orbiting body [km m^2].
-    const Inertia principleInertia;
+    //! Torque due to uneven principle moments of inertia. 
+    const Vector3 asymmetricBodyTorque; 
 
-    //! Gravitational parameter of the central body [km^3 s⁻2].gravitationalParameter
-    const Real gravitationalParameter;
+    //! Torque due to control torque applied on the model
+    const Vector3 controlTorque; 
+    
+    //! Torque on  the model due to disturbances. 
+    const Vector3 disturbanceTorque;
 
-    //! Magnitude of the radial vector of the orbiting body from the central body.
-    const Real radius;
-
-    //! Radius of the spacecraft around the orbit. 
-    const Real semiMajorAxis;
-
-    //! Gravity gradient acceleration disturbance model flag. 
-    const bool gravityGradientAccelerationModelFlag;
-
-    //! Actuator configuration for concept generation. 
-    const ActuatorConfiguration actuatorConfiguration;
-
-    //! Acceleration
-    const Vector3 acceleration; 
+    //! Principle inertia of the spacecraft. 
+    const Inertia principleInertia; 
 };
 
 } // namespace dss_adcs
