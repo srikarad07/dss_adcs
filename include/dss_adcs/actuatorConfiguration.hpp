@@ -7,6 +7,10 @@
 #ifndef ACTUATOR_CONFIGURATION_HPP
 #define ACTUATOR_CONFIGURATION_HPP
 
+#include <math.h> 
+
+#include <Eigen/QR>    
+
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/typedefs.hpp"
 
@@ -17,33 +21,61 @@ class ActuatorConfiguration
 {
 public: 
 
-    ActuatorConfiguration(    const ReactionWheel& aRw1, 
-                              const ReactionWheel& aRw2,
-                              const ReactionWheel& aRw3 )
-                            : rw1( aRw1 ),
-                              rw2( aRw2 ), 
-                              rw3( aRw3 )  
+    ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel, 
+                            const std::vector< Vector3 > aWheelOrientation )
+                    : reactionWheel( aReactionWheel ), 
+                      wheelOrientation( aWheelOrientation )   
     { }
 
     Vector3 computePrincipleAxesTorque ( ) const 
     {
         // Update this to the reaction wheel orientation matrix to convert the RW torques to 
         // principle axes torques.
-        Vector3 torque; 
-        torque[0]       = rw1.maxTorque; 
-        torque[1]       = rw2.maxTorque;
-        torque[2]       = rw3.maxTorque;    
+        Vector3 reactionWheelTorque; 
 
-        return torque;     
+        if ( reactionWheel.size() != wheelOrientation.size() )
+        {
+            std::cout << "The number of reaction wheel and the given wheel orientations are not equal" << std::endl; 
+            throw; 
+        }
+
+        // TO DO: << This should be dynamicall allocated >>
+        Matrix33 reactionWheelTorqueToControlTorqueMappingMatrix; 
+
+        // TO DO: Need to test this function for accuracy. And in simulator convert the degree 
+        // to radians before it is called here for wheelOrientation. 
+
+        for ( unsigned int i = 0; i < reactionWheel.size(); ++i )
+        {
+            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[0] = sin( wheelOrientation[i][2] ) * cos( wheelOrientation[i][1] );
+            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[1] = sin( wheelOrientation[i][2] ) * sin( wheelOrientation[i][1] );
+            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[2] = cos( wheelOrientation[i][2] ); 
+
+            // Generate torque from the reaction wheel. 
+            reactionWheelTorque[i]      = reactionWheel[i].maxTorque; 
+        }
+
+        Matrix33 inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
+        
+        Vector3 controlTorque   = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelTorque; 
+        
+        // Vector3 controlTorque; 
+        // controlTorque[0]    = reactionWheelTorqueToControlTorqueMappingMatrix.col(0)[0] * reactionWheelTorque[0] + reactionWheelTorqueToControlTorqueMappingMatrix.col(1)[0] * reactionWheelTorque[1] + reactionWheelTorqueToControlTorqueMappingMatrix.col(2)[0] * reactionWheelTorque[2]; 
+
+        // controlTorque[1]    = reactionWheelTorqueToControlTorqueMappingMatrix.col(0)[1] * reactionWheelTorque[0] + reactionWheelTorqueToControlTorqueMappingMatrix.col(1)[1] * reactionWheelTorque[1] + reactionWheelTorqueToControlTorqueMappingMatrix.col(2)[1] * reactionWheelTorque[2]; 
+
+        // controlTorque[2]    = reactionWheelTorqueToControlTorqueMappingMatrix.col(0)[2] * reactionWheelTorque[0] + reactionWheelTorqueToControlTorqueMappingMatrix.col(1)[2] * reactionWheelTorque[1] + reactionWheelTorqueToControlTorqueMappingMatrix.col(2)[2] * reactionWheelTorque[2]; 
+
+        return controlTorque;     
     }
     
 protected: 
 
 private: 
 
-const ReactionWheel rw1; 
-const ReactionWheel rw2;
-const ReactionWheel rw3;
+const std::vector< ReactionWheel > reactionWheel; 
+
+const std::vector< Vector3 > wheelOrientation;  
 
 }; // class 
 

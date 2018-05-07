@@ -8,6 +8,7 @@
 #define DSS_ADCS_SIMULATOR_HPP
 
 #include <string>
+#include <vector>
 
 #include <rapidjson/document.h>
 
@@ -53,25 +54,25 @@ public:
      * @param[in] aMetadataFilePath           Path to output file for metadata
      * @param[in] aStateHistoryFilePath       Path to output file for state history
      */
-    simulatorInput( const Inertia            aPrincipleInertia,
-                    const State              anInitialAttitudeState, 
-                    const Vector4            aReferenceAttitudeState,
-                    const Integrator         anIntegrator,
-                    const Real               aStartEpoch,
-                    const Real               anEndEpoch, 
-                    const Real               aTimeStep,
-                    const Real               aGravitationalParameter, 
-                    const Real               aRadius,
-                    const Real               aSemiMajorAxis,   
-                    const Real               aRelativeTolerance,   
-                    const Real               anAbsoluteTolerance, 
-                    const bool               aGravityGradientAcclerationModelFlag,
-                    const std::string&       aConceptConfiguration,
-                    const std::string&       aActuator, 
-                    const std::string&       aActuatorUuid,
-                    const Vector3            aWheelOrientation,
-                    const std::string&       aMetadataFilePath,
-                    const std::string&       aStateHistoryFilePath )     
+    simulatorInput( const Inertia                   aPrincipleInertia,
+                    const State                     anInitialAttitudeState, 
+                    const Vector4                   aReferenceAttitudeState,
+                    const Integrator                anIntegrator,
+                    const Real                      aStartEpoch,
+                    const Real                      anEndEpoch, 
+                    const Real                      aTimeStep,
+                    const Real                      aGravitationalParameter, 
+                    const Real                      aRadius,
+                    const Real                      aSemiMajorAxis,   
+                    const Real                      aRelativeTolerance,   
+                    const Real                      anAbsoluteTolerance, 
+                    const bool                      aGravityGradientAcclerationModelFlag,
+                    const std::string&              aConceptConfiguration,
+                    const std::string&              aActuator, 
+                    const std::string&              aActuatorUuid,
+                    const std::vector< Vector3 >    aWheelOrientation,
+                    const std::string&              aMetadataFilePath,
+                    const std::string&              aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
           initialAttitudeState( anInitialAttitudeState ),
           referenceAttitudeState( aReferenceAttitudeState ),
@@ -142,7 +143,7 @@ public:
     const std::string actuatorUuid; 
 
     //! Wheel offset values for the reaction wheels. 
-    const Vector3 wheelOrientation; 
+    const std::vector< Vector3 > wheelOrientation; 
 
     //! Metadata file path.
     const std::string metadataFilePath; 

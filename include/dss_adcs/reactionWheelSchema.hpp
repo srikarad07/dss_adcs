@@ -20,14 +20,12 @@ public:
                     const Real aLength, 
                     const Real aHeight, 
                     const Real aWidth, 
-                    const Real aMaxTorque, 
-                    const Real aWheelOrientation )
+                    const Real aMaxTorque   )
                 :   mass( aMass ),
                     length( aLength ),
                     height( aHeight ),
                     width( aWidth ),
-                    maxTorque( aMaxTorque ),
-                    wheelOrientation( aWheelOrientation )  
+                    maxTorque( aMaxTorque )
     { }
 
     const Real mass; 
@@ -39,8 +37,6 @@ public:
     const Real width;
 
     const Real maxTorque;
-
-    const Real wheelOrientation; 
 
 protected: 
 

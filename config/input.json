@@ -42,18 +42,33 @@
     //"type":  "homogeneous", 
     //"uuid": "b79236dc-407a-59bb-9215-8bda084cc317",
 
+    // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
+    // Angles given by the user in radians. 
+    
     "reaction_wheels": [
         {
             "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
-            "wheel_offset": 0.0 
+            "wheel_orientation": [
+                0.0,
+                0.0, 
+                0.0
+            ] 
         },
         {
             "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
-            "wheel_offset": 0.0
+            "wheel_orientation": [
+                0.0,
+                0.0, 
+                0.0
+            ]
         },
         {
             "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
-            "wheel_offset": 0.0
+            "wheel_orientation": [
+                0.0,
+                0.0, 
+                0.0
+            ]
         }        
     ],
             

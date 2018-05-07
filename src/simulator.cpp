@@ -12,6 +12,7 @@
 #include <boost/numeric/odeint.hpp>
 
 #include <astro/astro.hpp>
+#include <sml/sml.hpp>
 
 #include "dss_adcs/apiCall.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
@@ -48,11 +49,17 @@ void executeSimulator( const rapidjson::Document& config )
     // // std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
     // // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
     
-    const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 0.1, input.wheelOrientation[0] ), rw2( 0.0, 0.0, 0.0, 0.0, 0.1, input.wheelOrientation[1] ), rw3( 0.0, 0.0, 0.0, 0.0, 0.1, input.wheelOrientation[2] ); 
+    std::vector< ReactionWheel > reactionWheel; 
+
+    const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw2( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
+
+    reactionWheel.push_back( rw1 );
+    reactionWheel.push_back( rw2 );
+    reactionWheel.push_back( rw3 );
 
     // Define the actuator configuration. 
     std::cout << "The actuator configuration is being defined: \n" << std::endl; 
-    const ActuatorConfiguration actuatorConfiguration( rw1, rw2, rw3 ); 
+    const ActuatorConfiguration actuatorConfiguration( reactionWheel, input.wheelOrientation ); 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
@@ -109,12 +116,12 @@ void executeSimulator( const rapidjson::Document& config )
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
         // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked //
         
-        const Vector3 controlTorque = dss_adcs::computeRealTorqueValue(   currentAttitude, 
-                                                                    referenceAttitudeState,
-                                                                    currentAttitudeRate, 
-                                                                    quaternionControlGainMatrix, 
-                                                                    angularVelocityControlGainMatrix, 
-                                                                    actuatorConfiguration );
+        const Vector3 controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                                        referenceAttitudeState,
+                                                                        currentAttitudeRate, 
+                                                                        quaternionControlGainMatrix, 
+                                                                        angularVelocityControlGainMatrix, 
+                                                                        actuatorConfiguration );
         
         StateHistoryWriter writer( stateHistoryFile, controlTorque );
             
@@ -280,8 +287,22 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     
     // const Vector3 actuatorUuid; 
     const std::string actuatorUuid1         = "1354b545-a497-5660-85a6-097f7cabb6b7";
+    
+    std::vector< Vector3 > wheelOrientation; 
+    double angleInRadians   = sml::SML_PI / 2.0;
 
-    const Vector3 wheelOrientation( 0.0, 0.0, 0.0 ); 
+    Vector3 x( 0.0, 0.0, angleInRadians ); 
+    Vector3 y( 0.0, angleInRadians, angleInRadians );
+    Vector3 z( 0.0, angleInRadians, 0.0 );
+
+    wheelOrientation.push_back ( x ); 
+    wheelOrientation.push_back ( y ); 
+    wheelOrientation.push_back ( z ); 
+    // wheelOrientation.push_back ( 0.0, 0.0, 0.0 ); 
+    // wheelOrientation.push_back ( 0.0, 0.0, 0.0 ); 
+
+
+    // const Vector3 wheelOrientation( 0.0, 0.0, 0.0 ); 
     // actuatorUuid2         = "1354b545-a497-5660-85a6-097f7cabb6b7"; 
     // actuatorUuid3         = "1354b545-a497-5660-85a6-097f7cabb6b7";
 

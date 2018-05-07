@@ -38,6 +38,9 @@ typedef Eigen::Matrix< double, 3, 3 > Matrix33;
 //! Set type for a 4 by 4 matrix. 
 typedef Eigen::Matrix< double, 4, 4 > Matrix44;
 
+//! Set type for an unknown vector. 
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> MatrixXd;
+
 //! Set type for position vector to 3D vector.
 typedef Vector3 Position;
 
