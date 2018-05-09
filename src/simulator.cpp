@@ -16,7 +16,6 @@
 
 #include "dss_adcs/apiCall.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
-// #include "dss_adcs/dynamicalSystemSetup.hpp"
 #include "dss_adcs/productSearch.hpp"
 #include "dss_adcs/actuatorConfiguration.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
@@ -50,7 +49,7 @@ void executeSimulator( const rapidjson::Document& config )
     // // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
     
     std::vector< ReactionWheel > reactionWheel; 
-
+    // <<<<<<<<<<<<< This should be populated using the API >>>>>>>>>>>>>>> // 
     const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw2( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
 
     reactionWheel.push_back( rw1 );
