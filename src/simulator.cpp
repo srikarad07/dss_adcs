@@ -57,7 +57,9 @@ void executeSimulator( const rapidjson::Document& config )
     reactionWheel.push_back( rw3 );
 
     // Define the actuator configuration. 
-    std::cout << "The actuator configuration is being defined: \n" << std::endl; 
+    std::cout << "The actuator configuration is being defined: \n" << std::endl;
+     
+    // TO DO: Move the wheel orientation as a property of the reaction wheel //
     const ActuatorConfiguration actuatorConfiguration( reactionWheel, input.wheelOrientation ); 
 
     // Create instance of dynamical system.

@@ -17,6 +17,18 @@
 namespace dss_adcs
 {          
 
+double signFunction( double x )
+{
+        if ( x > 0 )
+        {
+            return 1.0; 
+        }
+        else 
+        {
+            return -1.0;
+        }
+} 
+
 class ActuatorConfiguration
 {
 public: 
@@ -27,11 +39,13 @@ public:
                       wheelOrientation( aWheelOrientation )   
     { }
 
-    Vector3 computePrincipleAxesTorque ( ) const 
+    // const Matrix33 inverseReactionWheelTorqueToControlTorqueMappingMatrix; 
+    
+    Vector3 computePrincipleAxesTorque ( const Vector3 controlTorque ) const 
     {
         // Update this to the reaction wheel orientation matrix to convert the RW torques to 
         // principle axes torques.
-        Vector3 reactionWheelTorque; 
+        Vector3 reactionWheelTorqueMax; 
 
         if ( reactionWheel.size() != wheelOrientation.size() )
         {
@@ -52,12 +66,23 @@ public:
             reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[2] = cos( wheelOrientation[i][2] ); 
 
             // Generate torque from the reaction wheel. 
-            reactionWheelTorque[i]      = reactionWheel[i].maxTorque; 
+            reactionWheelTorqueMax[i]      = reactionWheel[i].maxTorque; 
         }
 
         Matrix33 inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
         
-        Vector3 controlTorque   = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelTorque; 
+        Vector3 reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * controlTorque; 
+
+        for ( unsigned int iterator = 0; iterator < reactionWheelMotorTorque.size(); ++iterator )
+        {
+            if ( reactionWheelTorqueMax.array().abs()[iterator] < reactionWheelMotorTorque.array().abs()[iterator] )
+            {
+                double errorSign        = signFunction( reactionWheelMotorTorque[ iterator ] ); 
+                reactionWheelMotorTorque[iterator]  = errorSign*reactionWheelTorqueMax[iterator]; 
+            }   
+        }
+
+        Vector3 controlTorque1   = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelMotorTorque; 
         
         // Vector3 controlTorque; 
         // controlTorque[0]    = reactionWheelTorqueToControlTorqueMappingMatrix.col(0)[0] * reactionWheelTorque[0] + reactionWheelTorqueToControlTorqueMappingMatrix.col(1)[0] * reactionWheelTorque[1] + reactionWheelTorqueToControlTorqueMappingMatrix.col(2)[0] * reactionWheelTorque[2]; 
@@ -66,7 +91,7 @@ public:
 
         // controlTorque[2]    = reactionWheelTorqueToControlTorqueMappingMatrix.col(0)[2] * reactionWheelTorque[0] + reactionWheelTorqueToControlTorqueMappingMatrix.col(1)[2] * reactionWheelTorque[1] + reactionWheelTorqueToControlTorqueMappingMatrix.col(2)[2] * reactionWheelTorque[2]; 
 
-        return controlTorque;     
+        return controlTorque1;     
     }
     
 protected: 
@@ -82,3 +107,4 @@ const std::vector< Vector3 > wheelOrientation;
 } // namespace 
 
 #endif 
+
