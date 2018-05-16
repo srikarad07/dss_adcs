@@ -74,10 +74,6 @@ void executeSimulator( const rapidjson::Document& config )
 
     for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
     {
-        
-        // Get the accelerations for the model. 
-        // DynamicalSystemSetup dynamicsSetup( currentState, referenceState, input.timeStep, input.principleInertia, integrationStartTime, actuatorConfiguration ); 
-
         Real integrationEndTime = integrationStartTime + input.timeStep; 
 
         Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
@@ -99,7 +95,6 @@ void executeSimulator( const rapidjson::Document& config )
         Vector3 quaternionControlGainMatrix( 7.11, 7.11, 7.11 );
         Vector3 angularVelocityControlGainMatrix( 18.67, 8.67, 10.67 ); 
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
-        // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked //
         
         const Vector3 controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                         referenceAttitudeState,

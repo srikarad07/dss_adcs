@@ -64,11 +64,6 @@ ReactionWheel getReactionWheelAttributes(  )
 	} 
 } 
 
-private: 
-
-
-}; 
-
 } // namespace dss_adcs
 
 #endif //DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTE_HPP

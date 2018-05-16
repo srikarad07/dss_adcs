@@ -8,7 +8,7 @@
 #define GET_REACTION_WHEEL_HPP
 
 #include "dss_adcs/apiCall.hpp"
-#include "dss_adcs/productSearch.hpp"
+#include "dss_adcs/getReactionWheelAttribute.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 
 namespace dss_adcs
