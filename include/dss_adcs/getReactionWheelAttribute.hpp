@@ -4,8 +4,8 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 */
 
-#ifndef DSS_ADCS_PRODUCT_SEARCH_HPP
-#define DSS_ADCS_PRODUCT_SEARCH_HPP
+#ifndef DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTE_HPP
+#define DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTE_HPP
 
 #include <fstream>
 #include <iostream>
@@ -20,24 +20,11 @@
 
 namespace dss_adcs
 {
-    //! Class containing members and functions that are required to search for a product 
-    //! and extract it's attributes. 
-    /*  This class contains the members and function required to search for the required
-    *   product and extract the attributes for that particular product. 
-    */ 
 
-class ProductSearch
-{
-public: 
-    // ProductSearch( const std::string aProductFolderPath )
-    //         : productFolderPath( aProductFolderPath )   
-     ProductSearch( )   
-    { }
-
-void operator( )( )
+ReactionWheel getReactionWheelAttributes(  )
 {
     std::ifstream inputFile( "/home/superman/trial/curl/product.json" );
-	// std::ifstream inputFile( "/home/superman/trial/satsearch-data/documents/products/aerojet-rocketdyne-holdings-inc/mr-103d.json" );
+
 	std::stringstream jsonDocumentBuffer;
 	std::string inputLine;
 
@@ -75,13 +62,13 @@ void operator( )( )
 			}
 		}
 	} 
-} // void 
+} 
 
 private: 
-// const std::string productFolderPath; 
 
-}; // class ProductSearch 
+
+}; 
 
 } // namespace dss_adcs
 
-#endif //DSS_ADCS_PRODUCT_SEARCH_HPP
+#endif //DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTE_HPP
