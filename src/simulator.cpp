@@ -14,10 +14,9 @@
 #include <astro/astro.hpp>
 #include <sml/sml.hpp>
 
-#include "dss_adcs/apiCall.hpp"
-#include "dss_adcs/dynamicalSystem.hpp"
-#include "dss_adcs/productSearch.hpp"
 #include "dss_adcs/actuatorConfiguration.hpp"
+#include "dss_adcs/dynamicalSystem.hpp"
+#include "dss_adcs/getReactionWheel.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
@@ -37,30 +36,15 @@ void executeSimulator( const rapidjson::Document& config )
     std::cout << "******************************************************************" << std::endl;
     std::cout << std::endl;
 
-    // <<<<<<<<<<<<<<<<<<<<<<< Hardcoded values >>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
     std::cout << "The API is being called to extract the parameters ... " << std::endl;
-    callTheApi( input.actuator, input.actuatorUuid ); 
-    
-    // // <<<<<<<<<<<<<<<<<< Test script >>>>>>>>>>>>>>>>>>>> //
-    // // std::cout << "<<<<<<<<<<< Start of the test script >>>>>>>>>>>>>>>>>>>>>" << std::endl; 
-    // // dss_adcs::ProductSearch product; 
-    // // product(); 
-    // // std::cout << "<<<<<<<<<<< End of test script >>>>>>>>>>>>>>>>>>>>" << std::endl; 
-    // // <<<<<<<<<<<<<<<<<<<<<< End test script >>>>>>>>>>>>>>>>>> //
-    
-    std::vector< ReactionWheel > reactionWheel; 
-    // <<<<<<<<<<<<< This should be populated using the API >>>>>>>>>>>>>>> // 
-    const ReactionWheel rw1( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw2( 0.0, 0.0, 0.0, 0.0, 0.1 ), rw3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
-
-    reactionWheel.push_back( rw1 );
-    reactionWheel.push_back( rw2 );
-    reactionWheel.push_back( rw3 );
+    std::vector< ReactionWheel > reactionWheels; 
+    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
 
     // Define the actuator configuration. 
     std::cout << "The actuator configuration is being defined: \n" << std::endl;
      
     // TO DO: Move the wheel orientation as a property of the reaction wheel //
-    const ActuatorConfiguration actuatorConfiguration( reactionWheel, input.wheelOrientation ); 
+    const ActuatorConfiguration actuatorConfiguration( reactionWheels, input.wheelOrientation ); 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
@@ -264,48 +248,33 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     const std::string attitudeControlMethod     = find( config, "attitude_control_method")->value.GetString();
     std::cout << "Attitude control method:                                      " << attitudeControlMethod << std::endl; 
     
+    // Extract the name of the actuator
     const std::string actuator                  = find( config, "actuator")->value.GetString(); 
-    std::cout << "Actuators to be evaluated:                                    " << actuator << std::endl; 
+    std::cout << "Actuator used for control:                                    " << actuator << std::endl; 
     
-    // const std::string conceptType               = find( config, "type" )->value.GetString(); 
-    // std::cout << "Actuator configuration type:                                  " << conceptType << std::endl; 
+    // <<<<<<<<<<<<<<<<<<<<< TO DO: Extract it from the API file >>>>>>>>>>>>>>>>>>> // 
+    std::vector < std::string > actuatorUuid; 
+    const std::string actuatorUuid1         = "1354b545-a497-5660-85a6-097f7cabb6b7"; 
+    const std::string actuatorUuid2         = "1354b545-a497-5660-85a6-097f7cabb6b7";
+    const std::string actuatorUuid3         = "1354b545-a497-5660-85a6-097f7cabb6b7";
     
-    // const std::string actuatorUuid              = find( config, "uuid" )->value.GetString(); 
-    // std::cout << "Actuator Uuid to be evaluated:                                " << actuatorUuid << std::endl; 
+    actuatorUuid.push_back( actuatorUuid1 ); 
+    actuatorUuid.push_back( actuatorUuid2 );
+    actuatorUuid.push_back( actuatorUuid3 );
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 
-    // const int numberOfReactionWheels    = find( config, "number_of_reaction_wheels" )->value.GetInt(); 
-    // std::cout << "The number of " << actuator << "                                  " << numberOfReactionWheels << std::endl; 
-
-    // Extract the wheel offset of the reaction wheels (defined in radians). 
-    // ConfigIterator wheelOffsetiterator          = find( config, "wheel_offset" );
-    // if ( numberOfReactionWheels == 3 )
-    // {
-    //     Vector3 wheelOffset; 
-    //     wheelOffset[0]                         = wheelOffsetiterator->value[0].GetDouble(); 
-    //     wheelOffset[1]                         = wheelOffsetiterator->value[1].GetDouble(); 
-    //     wheelOffset[2]                         = wheelOffsetiterator->value[2].GetDouble(); 
-    // }
-    
-    // const Vector3 actuatorUuid; 
-    const std::string actuatorUuid1         = "1354b545-a497-5660-85a6-097f7cabb6b7";
-    
+    // <<<<<<<<<<<<<<<<<<<<< TO DO: Extract it from the API file >>>>>>>>>>>>>>>>>>> //  
     std::vector< Vector3 > wheelOrientation; 
     double angleInRadians   = sml::SML_PI / 2.0;
 
-    Vector3 x( 0.0, 0.0, angleInRadians ); 
-    Vector3 y( 0.0, angleInRadians, angleInRadians );
-    Vector3 z( 0.0, angleInRadians, 0.0 );
+    Vector3 orientation1( 0.0, 0.0, angleInRadians ); 
+    Vector3 orientation2( 0.0, angleInRadians, angleInRadians );
+    Vector3 orientation3( 0.0, angleInRadians, 0.0 );
 
-    wheelOrientation.push_back ( x ); 
-    wheelOrientation.push_back ( y ); 
-    wheelOrientation.push_back ( z ); 
-    // wheelOrientation.push_back ( 0.0, 0.0, 0.0 ); 
-    // wheelOrientation.push_back ( 0.0, 0.0, 0.0 ); 
-
-
-    // const Vector3 wheelOrientation( 0.0, 0.0, 0.0 ); 
-    // actuatorUuid2         = "1354b545-a497-5660-85a6-097f7cabb6b7"; 
-    // actuatorUuid3         = "1354b545-a497-5660-85a6-097f7cabb6b7";
+    wheelOrientation.push_back ( orientation1 ); 
+    wheelOrientation.push_back ( orientation2 ); 
+    wheelOrientation.push_back ( orientation3 ); 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
@@ -328,7 +297,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
                             gravityGradientAcclerationModelFlag,
                             attitudeControlMethod,
                             actuator, 
-                            actuatorUuid1,
+                            actuatorUuid,
                             wheelOrientation,
                             metadataFilePath,
                             stateHistoryFilePath);

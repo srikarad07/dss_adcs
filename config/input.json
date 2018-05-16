@@ -32,15 +32,6 @@
     // "control_method_settings": {
 
     "actuator": "reaction_wheel",
-    // "number_of_reaction_wheels": 3,
-    //"configuration_scheme": "random",
-    //"wheel_offset": [
-    //        0.0, 
-    //        0.0, 
-    //        0.0
-    //],
-    //"type":  "homogeneous", 
-    //"uuid": "b79236dc-407a-59bb-9215-8bda084cc317",
 
     // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
     // Angles given by the user in radians. 

@@ -36,25 +36,6 @@ Vector3 controlTorque   = astro::computeQuaternionControlTorque( quaternionRefer
 
 const Vector3 realTorque = actuatorConfiguration.computePrincipleAxesTorque( controlTorque ); 
 
-// <<<<<<<<<<<<<<<<<<<<<<<<< For reaction wheels >>>>>>>>>>>>>>>>>>>>>>       //
-// The torque of the reaction wheel is in the range -maxTorque to + maxTorque //  
-// if ( controlTorque.array().abs()[0] > torque.array().abs()[0]  )
-// {
-//     std::cout << "Not enough torque: " << std::endl; 
-//     controlTorque[0]       = torque[0]; 
-// }
-
-// if ( controlTorque.array().abs()[1] > torque.array().abs()[1]  )
-// {
-//     controlTorque[1]       = torque[1]; 
-// }
-
-// if ( controlTorque.array().abs()[2] > torque.array().abs()[2]  )
-// {
-//     controlTorque[2]       = torque[2]; 
-// }
-
-// // std::cout << controlTorque[0] << std::endl; 
 return realTorque; 
 
 }  //template 

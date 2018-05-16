@@ -69,7 +69,7 @@ public:
                     const bool                      aGravityGradientAcclerationModelFlag,
                     const std::string&              aConceptConfiguration,
                     const std::string&              aActuator, 
-                    const std::string&              aActuatorUuid,
+                    const std::vector <std::string> aActuatorUuid,
                     const std::vector< Vector3 >    aWheelOrientation,
                     const std::string&              aMetadataFilePath,
                     const std::string&              aStateHistoryFilePath )     
@@ -140,7 +140,7 @@ public:
     const std::string actuator; 
 
     //! Unique identifies of the actuator. 
-    const std::string actuatorUuid; 
+    const std::vector <std::string> actuatorUuid; 
 
     //! Wheel offset values for the reaction wheels. 
     const std::vector< Vector3 > wheelOrientation; 
