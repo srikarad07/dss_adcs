@@ -112,8 +112,8 @@ void executeSimulator( const rapidjson::Document& config )
 
         // Control torque on the dynamics: 
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< ASSUMPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-        Vector3 quaternionControlGainMatrix( 10.0, 10.0, 10.0 );
-        Vector3 angularVelocityControlGainMatrix( 10.0, 10.0, 10.0 ); 
+        Vector3 quaternionControlGainMatrix( 7.11, 7.11, 7.11 );
+        Vector3 angularVelocityControlGainMatrix( 18.67, 8.67, 10.67 ); 
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
         // TO DO: check the controller applicability. Nonlinearity of the equations as well need to be checked //
         

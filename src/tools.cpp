@@ -25,4 +25,17 @@ ConfigIterator find( const rapidjson::Document& config, const std::string& param
     return iterator;
 }
 
+
+double signFunction( double x )
+{
+        if ( x > 0 )
+        {
+            return 1.0; 
+        }
+        else 
+        {
+            return -1.0;
+        }
+} 
+
 } // namespace dss_adcs

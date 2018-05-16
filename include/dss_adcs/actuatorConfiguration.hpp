@@ -12,22 +12,11 @@
 #include <Eigen/QR>    
 
 #include "dss_adcs/reactionWheelSchema.hpp"
+#include "dss_adcs/tools.hpp"
 #include "dss_adcs/typedefs.hpp"
 
 namespace dss_adcs
 {          
-
-double signFunction( double x )
-{
-        if ( x > 0 )
-        {
-            return 1.0; 
-        }
-        else 
-        {
-            return -1.0;
-        }
-} 
 
 class ActuatorConfiguration
 {
@@ -77,7 +66,7 @@ public:
         {
             if ( reactionWheelTorqueMax.array().abs()[iterator] < reactionWheelMotorTorque.array().abs()[iterator] )
             {
-                double errorSign        = signFunction( reactionWheelMotorTorque[ iterator ] ); 
+                double errorSign        = dss_adcs::signFunction( reactionWheelMotorTorque[ iterator ] ); 
                 reactionWheelMotorTorque[iterator]  = errorSign*reactionWheelTorqueMax[iterator]; 
             }   
         }

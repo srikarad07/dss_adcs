@@ -27,6 +27,8 @@ namespace dss_adcs
  */
 ConfigIterator find( const rapidjson::Document& config, const std::string& parameterName );
 
+double signFunction( double integer );
+
 } // namespace dss_adcs
 
 #endif // DSS_ADCS_TOOLS_HPP
