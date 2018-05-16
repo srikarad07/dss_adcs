@@ -21,9 +21,10 @@
 namespace dss_adcs
 {
 
-ReactionWheel getReactionWheelAttributes(  )
+// ReactionWheel getReactionWheelAttributes(  )
+void getReactionWheelAttributes(  )
 {
-    std::ifstream inputFile( "/home/superman/trial/curl/product.json" );
+    std::ifstream inputFile( "/home/superman/trial/curl/rw1.json" );
 
 	std::stringstream jsonDocumentBuffer;
 	std::string inputLine;
@@ -40,31 +41,16 @@ ReactionWheel getReactionWheelAttributes(  )
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
-	// int counter = 0; 
- 
-	for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 
+	std::vector<std::string> keysToRetrieve = {"maximumValue", "value"};
+	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName(attributes, "name", "mass", keysToRetrieve);	
+	
+	for (auto &mapItem : mapForResult) 
 	{
-    	const rapidjson::Value& attribute = *itr;
-    	assert(attribute.IsObject()); // each attribute is an object
-    	for (rapidjson::Value::ConstMemberIterator itr2 = attribute.MemberBegin(); itr2 != attribute.MemberEnd(); ++itr2) 
-		{	
-			if ( itr2->value.IsNull() )
-			{
-				std::cout << itr2->name.GetString() << " : " << "No value defined" << "\n" << std::endl;	
-			}
-			else if ( itr2->value.IsString() )
-			{
-				std::cout << itr2->name.GetString() << " : " << itr2->value.GetString() << "\n" << std::endl; 
-			}
-			else 
-			{
-				std::cout << itr2->name.GetString() << " : " << itr2->value.GetDouble() << "\n" << std::endl; 
-			}
-		}
-	} 
+    	std::cout << mapItem.first << ":" << mapItem.second << "\n";
+	}
 
-	ReactionWheel reactionWheel( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
-	return reactionWheel; 
+	// ReactionWheel reactionWheel( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
+	// return reactionWheel; 
 } 
 
 } // namespace dss_adcs

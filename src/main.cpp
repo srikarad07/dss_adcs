@@ -13,7 +13,9 @@
 
 #include <rapidjson/document.h>
 
+#include "dss_adcs/getReactionWheelAttribute.hpp"
 #include "dss_adcs/simulator.hpp"
+#include "dss_adcs/tools.hpp"
 #include "dss_adcs/typedefs.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
@@ -40,6 +42,7 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     std::cout << "                      Extract input parameters                    " << std::endl;
     std::cout << "******************************************************************" << std::endl;
     std::cout << std::endl;
+
 
     // Check that only one input has been provided (a JSON file).
     if ( numberOfInputs - 1 != 1 )
@@ -97,6 +100,9 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
 
     ///////////////////////////////////////////////////////////////////////////
 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<< TEST SCRIPT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>// 
+    dss_adcs::getReactionWheelAttributes(); 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<< END Test SCRIPT >>>>>>>>>>>>>>>>>>>>>>>>>>>// 
     std::cout << std::endl;
     std::cout << "------------------------------------------------------------------" << std::endl;
     std::cout << std::endl;

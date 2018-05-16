@@ -89,12 +89,6 @@ void executeSimulator( const rapidjson::Document& config )
         //        acceleration += astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ); 
         const Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
         // }
-
-        // Control torque on the dynamics: 
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< ASSUMPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-        // Real quaternionControlGain = 7.11;
-        // Vector3 angularVelocityControlGainMatrix( 18.67, 8.67, 10.67 ); 
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
         
         const Vector3 controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                         referenceAttitudeState,
