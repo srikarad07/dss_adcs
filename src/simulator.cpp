@@ -44,7 +44,7 @@ void executeSimulator( const rapidjson::Document& config )
     std::cout << "The actuator configuration is being defined: \n" << std::endl;
      
     // TO DO: Move the wheel orientation as a property of the reaction wheel //
-    const ActuatorConfiguration actuatorConfiguration( reactionWheels, input.wheelOrientation ); 
+    ActuatorConfiguration actuatorConfiguration( reactionWheels, input.wheelOrientation ); 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
@@ -58,7 +58,7 @@ void executeSimulator( const rapidjson::Document& config )
 
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3,tow1,tow2,tow3" << std::endl;
+    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3" << std::endl;
 
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
@@ -103,7 +103,7 @@ void executeSimulator( const rapidjson::Document& config )
                                                                         angularVelocityControlGainMatrix, 
                                                                         actuatorConfiguration );
         
-        StateHistoryWriter writer( stateHistoryFile, controlTorque );
+        StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque );
             
         // Dynamics of the system 
         DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );

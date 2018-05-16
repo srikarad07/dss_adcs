@@ -62,6 +62,9 @@ ReactionWheel getReactionWheelAttributes(  )
 			}
 		}
 	} 
+
+	ReactionWheel reactionWheel( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
+	return reactionWheel; 
 } 
 
 } // namespace dss_adcs

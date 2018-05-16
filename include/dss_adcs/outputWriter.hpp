@@ -87,9 +87,11 @@ public:
      */
 
     StateHistoryWriter( std::ostream& aStateHistoryStream, 
-                        const Vector3 aControlTorque )
+                        const Vector3 aControlTorque, 
+                        const Vector3 aMotorTorque )
         : stateHistoryStream( aStateHistoryStream ),
-          controlTorque( aControlTorque )  
+          controlTorque( aControlTorque ),
+          motorTorque( aMotorTorque )  
     { }
 
     //! Overload ()-operator to write state to output stream.
@@ -118,7 +120,10 @@ public:
                             << state[ 6 ]       << ','
                             << controlTorque[0] << ','
                             << controlTorque[1] << ',' 
-                            << controlTorque[2] << std::endl;                            
+                            << controlTorque[2] << ','
+                            << motorTorque[0]   << ','
+                            << motorTorque[1]   << ','
+                            << motorTorque[2]   << std::endl;                            
     }
 
 protected:
@@ -129,7 +134,10 @@ private:
     std::ostream& stateHistoryStream;
 
     //! Control torque 
-    Vector3 controlTorque; 
+    const Vector3 controlTorque; 
+
+    //! Motor torque 
+    const Vector3 motorTorque; 
 };
 
 }

@@ -22,15 +22,15 @@ class ActuatorConfiguration
 {
 public: 
 
+    Vector3 reactionWheelMotorTorque;
+
     ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel, 
                             const std::vector< Vector3 > aWheelOrientation )
                     : reactionWheel( aReactionWheel ), 
                       wheelOrientation( aWheelOrientation )   
     { }
-
-    // const Matrix33 inverseReactionWheelTorqueToControlTorqueMappingMatrix; 
     
-    Vector3 computePrincipleAxesTorque ( const Vector3 controlTorque ) const 
+    Vector3 computePrincipleAxesTorque ( const Vector3 controlTorque ) 
     {
         // Update this to the reaction wheel orientation matrix to convert the RW torques to 
         // principle axes torques.
@@ -60,13 +60,13 @@ public:
 
         Matrix33 inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
         
-        Vector3 reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * controlTorque; 
+        reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * controlTorque; 
 
         for ( unsigned int iterator = 0; iterator < reactionWheelMotorTorque.size(); ++iterator )
         {
             if ( reactionWheelTorqueMax.array().abs()[iterator] < reactionWheelMotorTorque.array().abs()[iterator] )
             {
-                double errorSign        = dss_adcs::signFunction( reactionWheelMotorTorque[ iterator ] ); 
+                Real errorSign        = dss_adcs::signFunction( reactionWheelMotorTorque[ iterator ] ); 
                 reactionWheelMotorTorque[iterator]  = errorSign*reactionWheelTorqueMax[iterator]; 
             }   
         }
