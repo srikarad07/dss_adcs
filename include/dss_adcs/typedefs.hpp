@@ -20,6 +20,9 @@ typedef int Int;
 //! Set type for floating-point real numbers.
 typedef double Real;
 
+//! Set type for 2-dimensional vector.
+typedef Eigen::Matrix< double, 2, 1 > Vector2;
+
 //! Set type for 3-dimensional vector.
 typedef Eigen::Matrix< double, 3, 1 > Vector3;
 

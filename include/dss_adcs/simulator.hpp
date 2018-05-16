@@ -70,7 +70,9 @@ public:
                     const std::string&              aConceptConfiguration,
                     const std::string&              aActuator, 
                     const std::vector <std::string> aActuatorUuid,
-                    const std::vector< Vector3 >    aWheelOrientation,
+                    const std::vector< Vector2 >    aWheelOrientation,
+                    const Real                      aQuaternionControlGain, 
+                    const Vector3                   anAngularVelocityControlGainVector, 
                     const std::string&              aMetadataFilePath,
                     const std::string&              aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
@@ -90,6 +92,8 @@ public:
           actuator( aActuator ),
           actuatorUuid( aActuatorUuid ),
           wheelOrientation( aWheelOrientation ),
+          quaternionControlGain( aQuaternionControlGain ),
+          angularVelocityControlGainVector( anAngularVelocityControlGainVector ),
           metadataFilePath( aMetadataFilePath ),
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -143,7 +147,13 @@ public:
     const std::vector <std::string> actuatorUuid; 
 
     //! Wheel offset values for the reaction wheels. 
-    const std::vector< Vector3 > wheelOrientation; 
+    const std::vector< Vector2 > wheelOrientation; 
+
+    //! Quaternion control gain values. 
+    const Real quaternionControlGain; 
+
+    //! Angular Velocity control gain vector. 
+    const Vector3 angularVelocityControlGainVector; 
 
     //! Metadata file path.
     const std::string metadataFilePath; 

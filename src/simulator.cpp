@@ -92,15 +92,15 @@ void executeSimulator( const rapidjson::Document& config )
 
         // Control torque on the dynamics: 
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< ASSUMPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-        Vector3 quaternionControlGainMatrix( 7.11, 7.11, 7.11 );
-        Vector3 angularVelocityControlGainMatrix( 18.67, 8.67, 10.67 ); 
+        // Real quaternionControlGain = 7.11;
+        // Vector3 angularVelocityControlGainMatrix( 18.67, 8.67, 10.67 ); 
         // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of assumptions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
         
         const Vector3 controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                         referenceAttitudeState,
                                                                         currentAttitudeRate, 
-                                                                        quaternionControlGainMatrix, 
-                                                                        angularVelocityControlGainMatrix, 
+                                                                        input.quaternionControlGain, 
+                                                                        input.angularVelocityControlGainVector, 
                                                                         actuatorConfiguration );
         
         StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque );
@@ -246,30 +246,52 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     // Extract the name of the actuator
     const std::string actuator                  = find( config, "actuator")->value.GetString(); 
     std::cout << "Actuator used for control:                                    " << actuator << std::endl; 
-    
-    // <<<<<<<<<<<<<<<<<<<<< TO DO: Extract it from the API file >>>>>>>>>>>>>>>>>>> // 
+
+    // Extract reaction wheel attributes.
     std::vector < std::string > actuatorUuid; 
-    const std::string actuatorUuid1         = "1354b545-a497-5660-85a6-097f7cabb6b7"; 
-    const std::string actuatorUuid2         = "1354b545-a497-5660-85a6-097f7cabb6b7";
-    const std::string actuatorUuid3         = "1354b545-a497-5660-85a6-097f7cabb6b7";
+    std::vector< Vector2 > wheelOrientation; 
     
-    actuatorUuid.push_back( actuatorUuid1 ); 
-    actuatorUuid.push_back( actuatorUuid2 );
-    actuatorUuid.push_back( actuatorUuid3 );
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+    const rapidjson::Value& reactionWheelsIterator 	= config["reaction_wheels"];
+	assert(reactionWheelsIterator.IsArray()); 
+    
+    for (rapidjson::Value::ConstValueIterator itr = reactionWheelsIterator.Begin(); itr != reactionWheelsIterator.End(); ++itr) 
+	{
+    	const rapidjson::Value& reactionWheelPropertiesUserDefined = *itr;
+    	assert(reactionWheelPropertiesUserDefined.IsObject()); // each reactionWheelPropertiesUserDefined is an object
+    	for (rapidjson::Value::ConstMemberIterator itr2 = reactionWheelPropertiesUserDefined.MemberBegin(); itr2 != reactionWheelPropertiesUserDefined.MemberEnd(); ++itr2) 
+		{ 
+            std::string nameString = itr2->name.GetString(); 
+            if ( nameString.compare( "uuid" ) == 0 ) // Extract the uuids of the reaction wheels 
+            {
+                actuatorUuid.push_back(  itr2->value.GetString());
+            }
+            else // Extract the orientations of the reaction wheel. 
+            {
+                Vector2 orientation( sml::convertDegreesToRadians( itr2->value[0].GetDouble() ), sml::convertDegreesToRadians( itr2->value[1].GetDouble() ) ); 
+                wheelOrientation.push_back( orientation );
+            }
+		}
+	}
 
     // <<<<<<<<<<<<<<<<<<<<< TO DO: Extract it from the API file >>>>>>>>>>>>>>>>>>> //  
-    std::vector< Vector3 > wheelOrientation; 
-    double angleInRadians   = sml::SML_PI / 2.0;
+    // double angleInRadians   = sml::SML_PI / 2.0;
 
-    Vector3 orientation1( 0.0, 0.0, angleInRadians ); 
-    Vector3 orientation2( 0.0, angleInRadians, angleInRadians );
-    Vector3 orientation3( 0.0, angleInRadians, 0.0 );
+    // Vector2 orientation1( 0.0, angleInRadians ); 
+    // Vector2 orientation2( angleInRadians, angleInRadians );
+    // Vector2 orientation3( angleInRadians, 0.0 );
 
-    wheelOrientation.push_back ( orientation1 ); 
-    wheelOrientation.push_back ( orientation2 ); 
-    wheelOrientation.push_back ( orientation3 ); 
+    // wheelOrientation.push_back ( orientation1 ); 
+    // wheelOrientation.push_back ( orientation2 ); 
+    // wheelOrientation.push_back ( orientation3 ); 
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+
+    // Control gains for the controller. 
+    const Real quaternionControlGain    = find( config, "attitude_control_gain")->value.GetDouble(); 
+    ConfigIterator angularVelocityControlGainIterator   = find( config, "angular_velocity_control_gains");
+    Vector3 angularVelocityControlGainVector; 
+    angularVelocityControlGainVector[0]     =  angularVelocityControlGainIterator->value[0].GetDouble(); 
+    angularVelocityControlGainVector[1]     =  angularVelocityControlGainIterator->value[1].GetDouble();
+    angularVelocityControlGainVector[2]     =  angularVelocityControlGainIterator->value[2].GetDouble();
 
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
@@ -294,6 +316,8 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
                             actuator, 
                             actuatorUuid,
                             wheelOrientation,
+                            quaternionControlGain,
+                            angularVelocityControlGainVector,
                             metadataFilePath,
                             stateHistoryFilePath);
 };

@@ -40,31 +40,37 @@
         {
             "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
             "wheel_orientation": [
-                0.0,
                 0.0, 
-                0.0
+                90.0
             ] 
         },
         {
             "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
             "wheel_orientation": [
-                0.0,
-                0.0, 
-                0.0
+                90.0, 
+                90.0
             ]
         },
         {
             "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
             "wheel_orientation": [
-                0.0,
-                0.0, 
+                90.0, 
                 0.0
             ]
         }        
     ],
-            
+          
     // Attitude representation type. 
     "attitude_representation" : "quaternions", 
+
+    // Control gains. 
+    "attitude_control_gain" : 7.11, 
+
+    "angular_velocity_control_gains": [
+        18.67, 
+        8.67,
+        10.67 
+    ],
 
     // Radial vector of the satellite from spacecraft [km]. 
     "radius": 500.0,

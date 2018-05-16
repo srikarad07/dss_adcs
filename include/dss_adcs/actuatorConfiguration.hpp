@@ -25,7 +25,7 @@ public:
     Vector3 reactionWheelMotorTorque;
 
     ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel, 
-                            const std::vector< Vector3 > aWheelOrientation )
+                            const std::vector< Vector2 > aWheelOrientation )
                     : reactionWheel( aReactionWheel ), 
                       wheelOrientation( aWheelOrientation )   
     { }
@@ -36,11 +36,11 @@ public:
         // principle axes torques.
         Vector3 reactionWheelTorqueMax; 
 
-        if ( reactionWheel.size() != wheelOrientation.size() )
-        {
-            std::cout << "The number of reaction wheel and the given wheel orientations are not equal" << std::endl; 
-            throw; 
-        }
+        // if ( reactionWheel.size() != wheelOrientation.size() )
+        // {
+        //     std::cout << "The number of reaction wheel and the given wheel orientations are not equal" << std::endl; 
+        //     throw; 
+        // }
 
         // TO DO: << This should be dynamicall allocated >>
         Matrix33 reactionWheelTorqueToControlTorqueMappingMatrix; 
@@ -50,9 +50,9 @@ public:
 
         for ( unsigned int i = 0; i < reactionWheel.size(); ++i )
         {
-            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[0] = sin( wheelOrientation[i][2] ) * cos( wheelOrientation[i][1] );
-            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[1] = sin( wheelOrientation[i][2] ) * sin( wheelOrientation[i][1] );
-            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[2] = cos( wheelOrientation[i][2] ); 
+            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[0] = sin( wheelOrientation[i][1] ) * cos( wheelOrientation[i][0] );
+            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[1] = sin( wheelOrientation[i][1] ) * sin( wheelOrientation[i][0] );
+            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[2] = cos( wheelOrientation[i][1] ); 
 
             // Generate torque from the reaction wheel. 
             reactionWheelTorqueMax[i]      = reactionWheel[i].maxTorque; 
@@ -89,7 +89,7 @@ private:
 
 const std::vector< ReactionWheel > reactionWheel; 
 
-const std::vector< Vector3 > wheelOrientation;  
+const std::vector< Vector2 > wheelOrientation;  
 
 }; // class 
 
