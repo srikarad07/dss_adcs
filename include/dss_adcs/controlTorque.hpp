@@ -25,7 +25,7 @@ Vector3 computeRealTorqueValue(     const Vector4                   quaternionCu
                                     const Vector3                   angularVelocity, 
                                     const Real                      quaternionControlGain, 
                                     const Vector3                   angularVelocityControlGainMatrix,
-                                    ActuatorConfiguration&    actuatorConfiguration    )
+                                    ActuatorConfiguration&          actuatorConfiguration    )
 {
 
 Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
@@ -34,7 +34,7 @@ Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quater
                                                                  quaternionControlGain, 
                                                                  angularVelocityControlGainMatrix );                           
 
-Vector3 feasibleContolTorque = actuatorConfiguration.computePrincipleAxesTorque( commandedControlTorque ); 
+Vector3 feasibleContolTorque = actuatorConfiguration.computePrincipleAxesTorque( commandedControlTorque );  
 return feasibleContolTorque; 
 
 }  //template 

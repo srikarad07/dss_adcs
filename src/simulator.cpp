@@ -40,11 +40,23 @@ void executeSimulator( const rapidjson::Document& config )
     std::vector< ReactionWheel > reactionWheels; 
     reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
 
+    // <<<<<<<<<<<<<<<<<<<<<<< TEST SCRIPT >>>>>>>>>>>>>>>>>>>>>>>>>>>// 
+    // std::cout << reactionWheels[0].mass << std::endl;
+    // std::cout << reactionWheels[1].mass << std::endl;
+    // std::cout << reactionWheels[2].mass << std::endl;  
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+
     // Define the actuator configuration. 
     std::cout << "The actuator configuration is being defined: \n" << std::endl;
      
     // TO DO: Move the wheel orientation as a property of the reaction wheel //
     ActuatorConfiguration actuatorConfiguration( reactionWheels, input.wheelOrientation ); 
+
+    // <<<<<<<<<<<<<<<<<<<<<<< TEST SCRIPT >>>>>>>>>>>>>>>>>>>>>>>>>>>// 
+    // std::cout << reactionWheels[0].maxTorque << std::endl;
+    // std::cout << reactionWheels[1].maxTorque << std::endl;
+    // std::cout << reactionWheels[2].maxTorque << std::endl;  
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>// 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
@@ -266,18 +278,6 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
             }
 		}
 	}
-
-    // <<<<<<<<<<<<<<<<<<<<< TO DO: Extract it from the API file >>>>>>>>>>>>>>>>>>> //  
-    // double angleInRadians   = sml::SML_PI / 2.0;
-
-    // Vector2 orientation1( 0.0, angleInRadians ); 
-    // Vector2 orientation2( angleInRadians, angleInRadians );
-    // Vector2 orientation3( angleInRadians, 0.0 );
-
-    // wheelOrientation.push_back ( orientation1 ); 
-    // wheelOrientation.push_back ( orientation2 ); 
-    // wheelOrientation.push_back ( orientation3 ); 
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 
     // Control gains for the controller. 
     const Real quaternionControlGain    = find( config, "attitude_control_gain")->value.GetDouble(); 

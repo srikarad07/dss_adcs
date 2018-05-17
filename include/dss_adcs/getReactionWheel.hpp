@@ -18,21 +18,24 @@ namespace dss_adcs
                                                         const std::vector< std::string >actuatorUuid )
     {
         std::vector < ReactionWheel > reactionWheels;
-        
+        //  ReactionWheel reactionWheel;
         // Get reaction wheels from the API.
         for ( unsigned int iterator = 0; iterator < actuatorUuid.size(); ++iterator )
         {
         //     std::string reactionWheelString = callTheApi( actuatorUuid[iterator] );
-        //     ReactionWheel reactionWheel     = getReactionWheelAttributes( reactionWheelString ); 
+                // reactionWheel     = getReactionWheelAttributes(  ); 
         //     reactionWheels.push_back( reactionWheel ); 
-                getReactionWheelAttributes(); 
+               reactionWheels.push_back( getReactionWheelAttributes(  ) ); 
+            //    std::cout << reactionWheels[iterator].maxTorque << std::endl;  
         }
 
-        const ReactionWheel reactionWheel1( 0.0, 0.0, 0.0, 0.0, 0.1 ), reactionWheel2( 0.0, 0.0, 0.0, 0.0, 0.1 ), reactionWheel3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
-         
-        reactionWheels.push_back( reactionWheel1 );
-        reactionWheels.push_back( reactionWheel2 );
-        reactionWheels.push_back( reactionWheel3 );
+        // const ReactionWheel reactionWheel1( 0.0, 0.0, 0.0, 0.0, 0.1 ), reactionWheel2( 0.0, 0.0, 0.0, 0.0, 0.1 ), reactionWheel3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
+        // std::cout << reactionWheels[0].maxTorque << std::endl;
+        // std::cout << reactionWheels[1].maxTorque << std::endl;
+        // std::cout << reactionWheels[2].maxTorque << std::endl;  
+        // reactionWheels.push_back( reactionWheel1 );
+        // reactionWheels.push_back( reactionWheel2 );
+        // reactionWheels.push_back( reactionWheel3 );
 
         return reactionWheels;
     }

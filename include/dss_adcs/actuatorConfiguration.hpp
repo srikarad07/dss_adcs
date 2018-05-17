@@ -35,12 +35,12 @@ public:
         // Update this to the reaction wheel orientation matrix to convert the RW torques to 
         // principle axes torques.
         Vector3 reactionWheelTorqueMax; 
-
-        // if ( reactionWheel.size() != wheelOrientation.size() )
-        // {
-        //     std::cout << "The number of reaction wheel and the given wheel orientations are not equal" << std::endl; 
-        //     throw; 
-        // }
+        // std::cout << reactionWheel[0].maxTorque << std::endl; 
+        if ( reactionWheel.size() != wheelOrientation.size() )
+        {
+            std::cout << "The number of reaction wheel and the given wheel orientations are not equal" << std::endl; 
+            throw; 
+        }
 
         // TO DO: << This should be dynamicall allocated >>
         Matrix33 reactionWheelTorqueToControlTorqueMappingMatrix; 
@@ -57,7 +57,7 @@ public:
             // Generate torque from the reaction wheel. 
             reactionWheelTorqueMax[i]      = reactionWheel[i].maxTorque; 
         }
-
+        // std::cout << "Torques: "<< reactionWheelTorqueMax << std::endl; 
         Matrix33 inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
         
         reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * controlTorque; 
