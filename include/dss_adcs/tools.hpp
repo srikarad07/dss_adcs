@@ -32,7 +32,7 @@ ConfigIterator find( const rapidjson::Document& config, const std::string& param
 double signFunction( double integer );
 
 std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjson::Value& attributes, const std::string& findMemberName, const std::string& findMemberValue, const std::vector<std::string>& keysToRetrieve); 
- 
+
 } // namespace dss_adcs
 
 #endif // DSS_ADCS_TOOLS_HPP

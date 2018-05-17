@@ -6,6 +6,8 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <locale> 
+#include <iostream>
 
 #include "dss_adcs/tools.hpp"
 
@@ -38,22 +40,22 @@ double signFunction( double x )
         }
 } 
 
-std::map<std::string, std::string> mapForAttributeThatMatchesName( const rapidjson::Value& attributes, const std::string& findMemberName, const std::string& findMemberValue, const std::vector<std::string>& keysToRetrieve ) 
+std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjson::Value& attributes, const std::string& findMemberName, const std::string& findMemberValue, const std::vector<std::string>& keysToRetrieve) 
 {
     std::map<std::string, std::string> result;
-    for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) {
-
+    for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 
+    {
         const rapidjson::Value::ConstMemberIterator currentAttribute = itr->FindMember(findMemberName.c_str());
-        if (currentAttribute != itr->MemberEnd() && currentAttribute->value.IsString()) {
-
-            if (currentAttribute->value == findMemberValue.c_str()) {
-
-                for (auto &keyToRetrieve : keysToRetrieve) {
-
+        if (currentAttribute != itr->MemberEnd() && currentAttribute->value.IsString()) 
+        {
+            if (currentAttribute->value == findMemberValue.c_str()) 
+            {
+                for (auto &keyToRetrieve : keysToRetrieve) 
+                {
                     const rapidjson::Value::ConstMemberIterator currentAttributeToReturn = itr->FindMember(keyToRetrieve.c_str());
-                    if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString()) {
-
-                        result[keyToRetrieve] = currentAttributeToReturn->value.GetString();
+                    if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString()) 
+                    {
+                        result[findMemberValue + "-" + keyToRetrieve] = currentAttributeToReturn->value.GetString();
                     }
                 }
                 return result;
@@ -62,5 +64,50 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName( const rapidjs
     }
     return result;
 }
+
+// ProductAttributeStruct structForAttributeSearchThatMatchedNames( const rapidjson::Value& attributes, const std::string& findMemberName, const std::string& findMemberValue, const std::vector<std::string>& keysToRetrieve )
+// {
+//         ProductAttributeStruct result( 0.0, 0.0, 0.0, " " );
+//         // ProductAttributeStruct result; 
+//         for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 
+//         {
+//         const rapidjson::Value::ConstMemberIterator currentAttribute = itr->FindMember(findMemberName.c_str());
+//         if (currentAttribute != itr->MemberEnd() && currentAttribute->value.IsString()) 
+//         {
+//             if (currentAttribute->value == findMemberValue.c_str()) 
+//             {
+
+//                 for (auto &keyToRetrieve : keysToRetrieve) 
+//                 {
+//                     const rapidjson::Value::ConstMemberIterator currentAttributeToReturn = itr->FindMember(keyToRetrieve.c_str());
+//                     std::string productAttributeNameValue   = currentAttributeToReturn->name.GetString(); 
+//                     std::cout << "Attribute name: " << productAttributeNameValue << std::endl; 
+//                     if (currentAttributeToReturn != itr->MemberEnd() && productAttributeNameValue.compare("measurementUnit") != 1 ) 
+//                     {
+//                         // result[keyToRetrieve] = currentAttributeToReturn->value.GetString();
+//                         std::cout << currentAttributeToReturn->value.GetString() << std::endl;
+//                     }
+//                     else if (currentAttributeToReturn != itr->MemberEnd() && productAttributeNameValue.compare("value") != 1 )
+//                     {
+//                         std::cout << currentAttributeToReturn->value.GetDouble() << std::endl; 
+//                     } 
+//                     // if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString() )
+//                     // {
+//                     //     result.measurementUnit = currentAttributeToReturn->value.GetString();
+//                     //     std::cout << "Measurement loop " << std::endl; 
+//                     // }
+//                     // // else if ( currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsDouble() )
+//                     // {
+//                     //     result.value  = currentAttributeToReturn->value.GetDouble();
+//                     //     std::cout << "value loop " << std::endl; 
+//                     // }
+//                 }
+//                 // return result;
+//             }
+//         }
+//     }
+//     // ProductAttributeStruct result( 0.0, 0.0, productValue, measurementUnit ); 
+//     return result; 
+// }
 
 } // namespace dss_adcs

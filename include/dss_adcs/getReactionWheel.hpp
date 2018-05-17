@@ -8,24 +8,25 @@
 #define GET_REACTION_WHEEL_HPP
 
 #include "dss_adcs/apiCall.hpp"
-// #include "dss_adcs/getReactionWheelAttribute.hpp"
+#include "dss_adcs/getReactionWheelAttribute.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 
 namespace dss_adcs
 {
    
-    std::vector < ReactionWheel > getReactionWheels(   const std::string actuator, 
+    std::vector < ReactionWheel > getReactionWheels(    const std::string actuator, 
                                                         const std::vector< std::string >actuatorUuid )
     {
         std::vector < ReactionWheel > reactionWheels;
         
         // Get reaction wheels from the API.
-        // for ( unsigned int iterator = 0; iterator < actuator.size(); ++iterator )
-        // {
+        for ( unsigned int iterator = 0; iterator < actuatorUuid.size(); ++iterator )
+        {
         //     std::string reactionWheelString = callTheApi( actuatorUuid[iterator] );
         //     ReactionWheel reactionWheel     = getReactionWheelAttributes( reactionWheelString ); 
         //     reactionWheels.push_back( reactionWheel ); 
-        // }
+                getReactionWheelAttributes(); 
+        }
 
         const ReactionWheel reactionWheel1( 0.0, 0.0, 0.0, 0.0, 0.1 ), reactionWheel2( 0.0, 0.0, 0.0, 0.0, 0.1 ), reactionWheel3( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
          

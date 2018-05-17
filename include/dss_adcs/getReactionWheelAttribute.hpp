@@ -11,9 +11,14 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <stdexcept>
+#include <stdexcept> 
+#include <locale> 
+
+#include <typeinfo>
 
 #include <rapidjson/document.h>
+
+#include <sml/sml.hpp>
 
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/tools.hpp"
@@ -41,15 +46,35 @@ void getReactionWheelAttributes(  )
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
-	std::vector<std::string> keysToRetrieve = {"maximumValue", "value"};
-	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName(attributes, "name", "mass", keysToRetrieve);	
-	
-	for (auto &mapItem : mapForResult) 
+	std::vector<std::string> keysToRetrieve = {"measurementUnit", "value"};
+	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum-torque" };
+	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", "mass", keysToRetrieve);	
+
+	Real reactionWheelMass; 
+	// Attributes defined as strings in the json file. To convert them into double use std::stod function. 
+	std::string::size_type sz; // size type for stod function. 
+ 
+	if ( mapForResult["mass-measurementUnit"].compare("kg") != 0 )
 	{
-    	std::cout << mapItem.first << ":" << mapItem.second << "\n";
+		if ( mapForResult["mass-measurementUnit"].compare("g") != 0 )
+		{
+			reactionWheelMass = sml::convertGramsToKilograms( std::stod( mapForResult["mass-value"], &sz ) ); 
+		}
+		else if ( mapForResult["mass-measurementUnit"].compare("mg") != 0 )
+		{
+			reactionWheelMass = sml::convertMilligramsToKilograms( std::stod( mapForResult["mass-value"], &sz ) ); 
+		}
+		else 
+		{
+			std::cout << "The measurement unit " << mapForResult[ "mass-measurementUnit"] << "cannot be converted into kgs. The conversion function hasn't been implemented." << std::endl; 
+		}
+	}
+	else 
+	{
+		reactionWheelMass = std::stod( mapForResult["mass-value"], &sz );
 	}
 
-	// ReactionWheel reactionWheel( 0.0, 0.0, 0.0, 0.0, 0.1 ); 
+	// ReactionWheel reactionWheel(  0.0, 0.0, 0.0, 0.0, 0.1 ); 
 	// return reactionWheel; 
 } 
 
