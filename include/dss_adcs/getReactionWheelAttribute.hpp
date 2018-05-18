@@ -50,7 +50,12 @@ ReactionWheel getReactionWheelAttributes(  )
 	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum-torque" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve);	
 
-	Real reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque; 
+	Real reactionWheelMass(0.0);
+	Real reactionWheellength(0.0);
+	Real reactionWheelWidth(0.0);
+	Real reactionWheelHeight(0.0);
+	Real reactionWheelTorque(0.0); 
+
 	// Attributes defined as strings in the json file. To convert them into double use std::stod function. 
 	std::string::size_type sz; // size type for stod function. 
  
