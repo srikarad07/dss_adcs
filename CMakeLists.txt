@@ -88,6 +88,7 @@ endif(WIN32)
 #      "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -fopenmp -ffast-math")
 #endif(CMAKE_COMPILER_IS_GNUCXX)
 
+# include_directories(${CPR_INCLUDE_DIRS})
 include(Dependencies.cmake)
 include(ProjectFiles.cmake)
 include_directories(AFTER "${INCLUDE_PATH}")
@@ -113,6 +114,7 @@ if(BUILD_MAIN)
     ${LIB_NAME}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
+    ${CPR_LIBRARIES}
 #    ${PYKEP_LIBRARY}
 #    ${SQLITECPP_LIBRARY}
 #    ${SQLITE3_LIBRARY}

@@ -7,6 +7,11 @@ include(ExternalProject)
 
 # -------------------------------
 
+# CPR include directories: 
+# Add the subdirectory for cpr. 
+add_subdirectory(cpr)
+include_directories(SYSTEM AFTER "${CPR_INCLUDE_DIRS}")
+
 # Eigen: https://eigen.tuxfamily.org/dox/
 
 find_package(Eigen3 3.1.2)
