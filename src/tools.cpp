@@ -46,29 +46,47 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
     std::map<std::string, std::string> result;
     for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 
     {
-        const rapidjson::Value::ConstMemberIterator currentAttribute = itr->FindMember(findMemberName.c_str());
-        if (currentAttribute != itr->MemberEnd() && currentAttribute->value.IsString()) 
+
+        const rapidjson::Value& attributeClass = (*itr)["class"]; 
+        for (rapidjson::Value::ConstMemberIterator itr2 = attributeClass.MemberBegin(); itr2 != attributeClass.MemberEnd(); ++itr2 )
         {
-            std::string attributeName = currentAttribute->value.GetString(); 
-            if ( std::any_of( findMemberValue.cbegin(), findMemberValue.cend(), [&attributeName]( std::string attributeString ){ return attributeString == attributeName; } ) ) 
+            // std::cout << itr2->name.GetString() << std::endl; 
+
+        // }
+        // for (rapidjson::Value::ConstValueIterator itr2 = attributeClass.Begin(); itr2 != attributeClass.End(); ++itr2 )
+        // {   
+        //     std::cout << "Works until here" << std::endl; 
+        //     // const rapidjson::Value::ConstMemberIterator currentAttribute = itr2->FindMember(findMemberName.c_str()); 
+        //     const rapidjson::Value::ConstMemberIterator currentAttribute = itr2->FindMember(findMemberName.c_str());
+        //     std::cout << "Works until here" << std::endl; 
+            // if (currentAttribute != itr2->MemberEnd() && currentAttribute->value.IsString())
+            // {
+            //         std::cout << findMemberName.c_str() << std::endl;
+            // }
+            
+            // std::cout << currentAttribute->value.GetString() << std::endl; 
+            std::string attributeName = itr2->value.GetString(); 
+            // std::cout << (findMemberName == itr2->name.GetString()) << std::endl; 
+            // std::cout <<  attributeName << std::endl; 
+            if ( findMemberName== itr2->name.GetString() && std::any_of( findMemberValue.cbegin(), findMemberValue.cend(), [&attributeName]( std::string attributeString ){ return attributeString == attributeName; } ) ) 
             {   
-                // ++ii; 
-                // std::cout << "The counter is: " << ii << std::endl; 
-                // std::cout << currentAttribute->value.GetString() << std::endl; 
                 for (auto &keyToRetrieve : keysToRetrieve) 
                 {
+                    std::cout << "Keys! " << keysToRetrieve[0] << std::endl; 
                     const rapidjson::Value::ConstMemberIterator currentAttributeToReturn = itr->FindMember(keyToRetrieve.c_str());
                     if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString()) 
                     {
                         // std::string tempString =  currentAttribute->value.GetString() + keyToRetrieve; 
-                        // std::cout << tempString << std::endl;
+                        std::cout << "Map element test: " << attributeName + "-" + keyToRetrieve << std::endl;
                         result[attributeName + "-" + keyToRetrieve] = currentAttributeToReturn->value.GetString();
                     }
                 }
                 // return result;
             }
         }
+        // }
     }
+
     return result;
 }
 

@@ -60,7 +60,6 @@ int main()
 	
 	for (auto &mapItem : mapForResult) 
 	{
-
     	std::cout << mapItem.first << ":" << mapItem.second << "\n";
 	}
 	// for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 

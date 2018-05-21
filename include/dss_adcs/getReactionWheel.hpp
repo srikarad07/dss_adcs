@@ -23,7 +23,7 @@ namespace dss_adcs
         for ( unsigned int iterator = 0; iterator < actuatorUuid.size(); ++iterator )
         {
             std::string reactionWheelString = callTheApi( actuatorUuid[iterator] );
-            reactionWheels.push_back( getReactionWheelAttributes(  ) );  
+            reactionWheels.push_back( getReactionWheelAttributes( reactionWheelString ) ); 
         }
 
         return reactionWheels;

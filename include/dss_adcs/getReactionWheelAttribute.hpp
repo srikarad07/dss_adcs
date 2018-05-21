@@ -26,28 +26,29 @@
 namespace dss_adcs
 {
 
-ReactionWheel getReactionWheelAttributes(  )
+ReactionWheel getReactionWheelAttributes( const std::string productJson )
 // void getReactionWheelAttributes(  )
 {
-    std::ifstream inputFile( "/home/superman/trial/curl/rw1.json" );
+    // std::ifstream inputFile( productJson );
 
-	std::stringstream jsonDocumentBuffer;
-	std::string inputLine;
+	// std::stringstream jsonDocumentBuffer;
+	// std::string inputLine;
 
-	while ( std::getline( inputFile, inputLine ) )
-	{
-	     jsonDocumentBuffer << inputLine << "\n";
-	}
+	// while ( std::getline( productJson, inputLine ) )
+	// {
+	//      jsonDocumentBuffer << inputLine << "\n";
+	// }
 	rapidjson::Document config;
-	config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
+	// config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
+	config.Parse<0>(productJson.c_str()).HasParseError();
 
 	assert(config.IsObject()); 
 	
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
-	std::vector<std::string> keysToRetrieve = {"measurementUnit", "value"};
-	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum-torque" };
+	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value"};
+	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve);	
 
 	Real reactionWheelMass(0.0);
@@ -58,38 +59,38 @@ ReactionWheel getReactionWheelAttributes(  )
 
 	// Attributes defined as strings in the json file. To convert them into double use std::stod function. 
 	std::string::size_type sz; // size type for stod function. 
- 
+
 	// Check the measurement unit for the mass. It needs to be kg. 
-	if ( mapForResult["mass-measurementUnit"].compare("kg") != 0 )
+	if ( mapForResult["mass-measurement_unit"].compare("kg") != 0 )
 	{
-		if ( mapForResult["mass-measurementUnit"].compare("g") != 0 )
+		if ( mapForResult["mass-measurement_unit"].compare("g") == 0 )
 		{
 			reactionWheelMass = sml::convertGramsToKilograms( std::stod( mapForResult["mass-value"], &sz ) ); 
 		}
-		else if ( mapForResult["mass-measurementUnit"].compare("mg") != 0 )
+		else if ( mapForResult["mass-measurement_unit"].compare("mg") == 0 )
 		{
 			reactionWheelMass = sml::convertMilligramsToKilograms( std::stod( mapForResult["mass-value"], &sz ) ); 
 		}
 		else 
 		{
-			std::cout << "The measurement unit " << mapForResult[ "mass-measurementUnit"] << "cannot be converted into kgs. The conversion function hasn't been implemented." << std::endl; 
+			std::cout << "The measurement unit " << mapForResult[ "mass-measurement_unit"] << "cannot be converted into kgs. The conversion function hasn't been implemented." << std::endl; 
 		}
 	}
 	else 
 	{
 		reactionWheelMass = std::stod( mapForResult["mass-value"], &sz );
 	}
-
+	// std::cout << "It went okay until mass extration! " << std::endl; 
 	// Check the measurement unit for the length, height and width. It needs to be 'm'. 
-	if ( mapForResult["length-measurementUnit"].compare("m") != 0 )
+	if ( mapForResult["length-measurement_unit"].compare("m") != 0 )
 	{
-		if ( mapForResult["length-measurementUnit"].compare("cm") != 0 )
+		if ( mapForResult["length-measurement_unit"].compare("cm") != 0 )
 		{
 			reactionWheellength = sml::convertCentimeterToMeter( std::stod( mapForResult["length-value"], &sz ) ); 
 			reactionWheelWidth = sml::convertGramsToKilograms( std::stod( mapForResult["width-value"], &sz ) ); 
 			reactionWheelHeight = sml::convertGramsToKilograms( std::stod( mapForResult["height-value"], &sz ) ); 
 		}
-		else if ( mapForResult["length-measurementUnit"].compare("mm") != 0 )
+		else if ( mapForResult["length-measurement_unit"].compare("mm") != 0 )
 		{
 			reactionWheellength = sml::convertMillimeterToMeter( std::stod( mapForResult["length-value"], &sz ) ); 
 			reactionWheelWidth = sml::convertMilligramsToKilograms( std::stod( mapForResult["width-value"], &sz ) ); 
@@ -97,7 +98,7 @@ ReactionWheel getReactionWheelAttributes(  )
 		}
 		else 
 		{
-			std::cout << "The measurement unit " << mapForResult[ "length-measurementUnit"] << "cannot be converted into kgs. The conversion function hasn't been implemented." << std::endl; 
+			std::cout << "The measurement unit " << mapForResult[ "length-measurement_unit"] << "cannot be converted into kgs. The conversion function hasn't been implemented." << std::endl; 
 		}
 	}
 	else 
@@ -106,16 +107,19 @@ ReactionWheel getReactionWheelAttributes(  )
 		reactionWheelWidth 		= std::stod( mapForResult["width-value"], &sz );
 		reactionWheelHeight 	= std::stod( mapForResult["height-value"], &sz );
 	}
-
-	if ( mapForResult["maximum-torque-measurementUnit"].compare("N m") != 0 )
+	// std::cout << "It went okay until length-width-height extration! " << std::endl; 
+	// std::cout << "Measurement unit " << mapForResult["maximum torque-measurement_unit"] << std::endl; 
+	if ( mapForResult["maximum torque-measurement_unit"].compare("N m") != 0 )
 	{
-		reactionWheelTorque		= sml::convertMilliNewtonMeterToNewtonMeter( std::stod( mapForResult["maximum-torque-value"], &sz ) );
+		reactionWheelTorque		= sml::convertMilliNewtonMeterToNewtonMeter( std::stod( mapForResult["maximum torque-value"], &sz ) );
 	}
 	else 
 	{
-		reactionWheelTorque		= std::stod( mapForResult["maximum-torque-value"], &sz );	
+		reactionWheelTorque		= std::stod( mapForResult["maximum torque-value"], &sz );	
 	}
-	// std::cout << "Torque: " << reactionWheelTorque << std::endl; 
+	std::cout << "Torque: " << reactionWheelTorque << std::endl;
+	std::cout << "Mass: " << reactionWheelMass << std::endl;	 
+	
 	// ReactionWheel reactionWheel; 
 	ReactionWheel reactionWheel( reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque ); 
 	return reactionWheel; 
