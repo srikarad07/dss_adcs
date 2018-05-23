@@ -51,6 +51,12 @@ ReactionWheel getReactionWheelAttributes( const std::string productJson )
 	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve);	
 
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+	/*	Convert this into a separate function to obtain the value of reaction Wheels. 
+	* 	This was the initialisation problem of the attributes can be solved. 
+	*/
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+
 	Real reactionWheelMass(0.0);
 	Real reactionWheellength(0.0);
 	Real reactionWheelWidth(0.0);
