@@ -26,9 +26,9 @@ std::string callTheApi( const std::string actuatorUuid )
 
     auto r = session.Get();
 
-    // std::cout << r.url << std::endl; // http://www.httpbin.org/get
-    // std::cout << r.status_code << std::endl; // 200
-    std::cout << r.text << std::endl;
+    // std::cout << r.url << std::endl; 
+    std::cout << r.status_code << std::endl; // 200
+    // std::cout << r.text << std::endl;
 
     return r.text; 
 } 

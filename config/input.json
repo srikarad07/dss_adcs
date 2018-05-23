@@ -38,21 +38,21 @@
     
     "reaction_wheels": [
         {
-            "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
+            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
             "wheel_orientation": [
                 0.0, 
                 90.0
             ] 
         },
         {
-            "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
+            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "1354b545-a497-5660-85a6-097f7cabb6b7",
+            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
             "wheel_orientation": [
                 90.0, 
                 0.0

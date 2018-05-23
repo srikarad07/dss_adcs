@@ -40,23 +40,11 @@ void executeSimulator( const rapidjson::Document& config )
     std::vector< ReactionWheel > reactionWheels; 
     reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
 
-    // <<<<<<<<<<<<<<<<<<<<<<< TEST SCRIPT >>>>>>>>>>>>>>>>>>>>>>>>>>>// 
-    // std::cout << reactionWheels[0].mass << std::endl;
-    // std::cout << reactionWheels[1].mass << std::endl;
-    // std::cout << reactionWheels[2].mass << std::endl;  
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-
     // Define the actuator configuration. 
-    std::cout << "The actuator configuration is being defined: \n" << std::endl;
+    std::cout << "Defining actuator configuration ... \n" << std::endl;
      
     // TO DO: Move the wheel orientation as a property of the reaction wheel //
     ActuatorConfiguration actuatorConfiguration( reactionWheels, input.wheelOrientation ); 
-
-    // <<<<<<<<<<<<<<<<<<<<<<< TEST SCRIPT >>>>>>>>>>>>>>>>>>>>>>>>>>>// 
-    // std::cout << reactionWheels[0].maxTorque << std::endl;
-    // std::cout << reactionWheels[1].maxTorque << std::endl;
-    // std::cout << reactionWheels[2].maxTorque << std::endl;  
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>// 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
