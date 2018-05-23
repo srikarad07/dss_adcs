@@ -44,6 +44,9 @@ ReactionWheel getReactionWheelAttributes( const std::string productJson )
 
 	assert(config.IsObject()); 
 	
+	const std::string reactionWheelName 	= config["name"].GetString();
+	const std::string supplierName 			= config["supplier_name"].GetString();
+	
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
@@ -113,8 +116,7 @@ ReactionWheel getReactionWheelAttributes( const std::string productJson )
 		reactionWheelWidth 		= std::stod( mapForResult["width-value"], &sz );
 		reactionWheelHeight 	= std::stod( mapForResult["height-value"], &sz );
 	}
-	// std::cout << "It went okay until length-width-height extration! " << std::endl; 
-	// std::cout << "Measurement unit " << mapForResult["maximum torque-measurement_unit"] << std::endl; 
+
 	if ( mapForResult["maximum torque-measurement_unit"].compare("N m") != 0 )
 	{
 		reactionWheelTorque		= sml::convertMilliNewtonMeterToNewtonMeter( std::stod( mapForResult["maximum torque-value"], &sz ) );
@@ -127,7 +129,8 @@ ReactionWheel getReactionWheelAttributes( const std::string productJson )
 	std::cout << "Mass: " << reactionWheelMass << std::endl;	 
 	
 	// ReactionWheel reactionWheel; 
-	ReactionWheel reactionWheel( reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque ); 
+	ReactionWheel reactionWheel( reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
+
 	return reactionWheel; 
 } 
 

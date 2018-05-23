@@ -9,7 +9,7 @@
         0.1,
         0.1,
         0.1,
-        1.0,
+        0.5,
         0.0,
         0.0,
         0.0
@@ -22,15 +22,14 @@
         1.0
     ],
 
-    "is_gravity_gradient_active": false,
+    "is_gravity_gradient_active": true,
+
     // Gravitational Parameter of the central body [km^3 s^-2]. 
     "gravitational_parameter" : 5.793939e6, 
 
     // 3-axis reaction wheel model. 
-    // "concept_configuration" : {
     "attitude_control_method" : "3-axis-stabilization", 
-    // "control_method_settings": {
-
+    
     "actuator": "reaction_wheel",
 
     // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 

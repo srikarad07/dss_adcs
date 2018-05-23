@@ -16,16 +16,20 @@ struct ReactionWheel
 {
 public: 
 
-    ReactionWheel(  const Real aMass, 
-                    const Real aLength, 
-                    const Real aHeight, 
-                    const Real aWidth, 
-                    const Real aMaxTorque   )
+    ReactionWheel(  const Real          aMass, 
+                    const Real          aLength, 
+                    const Real          aHeight, 
+                    const Real          aWidth, 
+                    const Real          aMaxTorque, 
+                    const std::string   aName, 
+                    const std::string   aSupplierName   )
                 :   mass( aMass ),
                     length( aLength ),
                     height( aHeight ),
                     width( aWidth ),
-                    maxTorque( aMaxTorque )
+                    maxTorque( aMaxTorque ), 
+                    name( aName ), 
+                    supplierName( aSupplierName )
     { }
 
     const Real mass; 
@@ -37,6 +41,10 @@ public:
     const Real width;
 
     const Real maxTorque;
+    
+    const std::string name; 
+
+    const std::string supplierName;
 
 protected: 
 

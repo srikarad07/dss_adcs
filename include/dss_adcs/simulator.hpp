@@ -66,7 +66,7 @@ public:
                     const Real                      aSemiMajorAxis,   
                     const Real                      aRelativeTolerance,   
                     const Real                      anAbsoluteTolerance, 
-                    const bool                      aGravityGradientAcclerationModelFlag,
+                    const bool                      aGravityGradientAccelerationModelFlag,
                     const std::string&              aConceptConfiguration,
                     const std::string&              aActuator, 
                     const std::vector <std::string> aActuatorUuid,
@@ -87,7 +87,7 @@ public:
           semiMajorAxis( aSemiMajorAxis ),
           relativeTolerance( aRelativeTolerance ),
           absoluteTolerance( anAbsoluteTolerance ),
-          gravityGradientAcclerationModelFlag( aGravityGradientAcclerationModelFlag ),
+          gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag ),
           conceptConfiguration( aConceptConfiguration ),
           actuator( aActuator ),
           actuatorUuid( aActuatorUuid ),
@@ -135,7 +135,7 @@ public:
     const Real absoluteTolerance;
     
     //! Status of gravity gradient model. 
-    const bool gravityGradientAcclerationModelFlag;
+    const bool gravityGradientAccelerationModelFlag;
 
     //! Configuration of the concept. 
     const std::string conceptConfiguration; 

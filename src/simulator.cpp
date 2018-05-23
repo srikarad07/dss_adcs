@@ -81,15 +81,21 @@ void executeSimulator( const rapidjson::Document& config )
 
         const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
 
+        Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
         // Disturbance torques. 
-        // if ( gravityGradientAccelerationModelFlag == true )
-        // {
-        //        Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
+        if ( input.gravityGradientAccelerationModelFlag != false )
+        {
+            //    Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
 
-        //        acceleration += astro::computeGravityGradientTorque( gravitationalParameter, radius, principleInertia, directionCosineMatrix ); 
-        const Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
-        // }
+            gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
+        }
         
+        Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
+
+        disturbanceTorque[0] += gravityGradientTorque[0];
+        disturbanceTorque[1] += gravityGradientTorque[1];
+        disturbanceTorque[2] += gravityGradientTorque[2]; 
+
         const Vector3 controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                         referenceAttitudeState,
                                                                         currentAttitudeRate, 
@@ -230,8 +236,8 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
               << "[-]" << std::endl;
 
     // Extract gravity gradient model .
-    const bool gravityGradientAcclerationModelFlag = find( config, "is_gravity_gradient_active" )->value.GetBool( );
-    std::cout << "Is Gravity Gradient disturbance model active?                 " << gravityGradientAcclerationModelFlag << std::endl;
+    const bool gravityGradientAccelerationModelFlag = find( config, "is_gravity_gradient_active" )->value.GetBool( );
+    std::cout << "Is Gravity Gradient disturbance model active?                 " << gravityGradientAccelerationModelFlag << std::endl;
 
     // Extract actuator model and parameters. 
     const std::string attitudeControlMethod     = find( config, "attitude_control_method")->value.GetString();
@@ -293,7 +299,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
                             semiMajorAxis,
                             relativeTolerance,
                             absoluteTolerance,
-                            gravityGradientAcclerationModelFlag,
+                            gravityGradientAccelerationModelFlag,
                             attitudeControlMethod,
                             actuator, 
                             actuatorUuid,
