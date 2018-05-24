@@ -88,10 +88,12 @@ public:
 
     StateHistoryWriter( std::ostream& aStateHistoryStream, 
                         const Vector3 aControlTorque, 
-                        const Vector3 aMotorTorque )
+                        const Vector3 aMotorTorque, 
+                        const Vector3 aDisturbanceTorque )
         : stateHistoryStream( aStateHistoryStream ),
           controlTorque( aControlTorque ),
-          motorTorque( aMotorTorque )  
+          motorTorque( aMotorTorque ), 
+          disturbanceTorque( aDisturbanceTorque )  
     { }
 
     //! Overload ()-operator to write state to output stream.
@@ -110,20 +112,23 @@ public:
         // const State stateAttitudeElements = state; 
 
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
-                            << time             << ','
-                            << state[ 0 ]       << ','
-                            << state[ 1 ]       << ','
-                            << state[ 2 ]       << ','
-                            << state[ 3 ]       << ','
-                            << state[ 4 ]       << ','
-                            << state[ 5 ]       << ','
-                            << state[ 6 ]       << ','
-                            << controlTorque[0] << ','
-                            << controlTorque[1] << ',' 
-                            << controlTorque[2] << ','
-                            << motorTorque[0]   << ','
-                            << motorTorque[1]   << ','
-                            << motorTorque[2]   << std::endl;                            
+                            << time                     << ','
+                            << state[ 0 ]               << ','
+                            << state[ 1 ]               << ','
+                            << state[ 2 ]               << ','
+                            << state[ 3 ]               << ','
+                            << state[ 4 ]               << ','
+                            << state[ 5 ]               << ','
+                            << state[ 6 ]               << ','
+                            << controlTorque[0]         << ','
+                            << controlTorque[1]         << ',' 
+                            << controlTorque[2]         << ','
+                            << motorTorque[0]           << ','
+                            << motorTorque[1]           << ','
+                            << motorTorque[2]           << ','
+                            << disturbanceTorque[0]     << ','
+                            << disturbanceTorque[1]     << ',' 
+                            << disturbanceTorque[2]     << std::endl;                            
     }
 
 protected:
@@ -138,6 +143,9 @@ private:
 
     //! Motor torque 
     const Vector3 motorTorque; 
+
+    //! Distubance Torque
+    const Vector3 disturbanceTorque; 
 };
 
 }

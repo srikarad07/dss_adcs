@@ -58,7 +58,7 @@ void executeSimulator( const rapidjson::Document& config )
 
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3" << std::endl;
+    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
@@ -103,7 +103,7 @@ void executeSimulator( const rapidjson::Document& config )
                                                                         input.angularVelocityControlGainVector, 
                                                                         actuatorConfiguration );
         
-        StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque );
+        StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque, disturbanceTorque );
             
         // Dynamics of the system 
         DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );

@@ -47,6 +47,9 @@ ReactionWheel getReactionWheelAttributes( const std::string productJson )
 	const std::string reactionWheelName 	= config["name"].GetString();
 	const std::string supplierName 			= config["supplier_name"].GetString();
 	
+	std::cout << "Reaction wheel name: 	" << reactionWheelName << std::endl; 
+	std::cout << "Supplier name: 		" << supplierName << std::endl; 
+	
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
