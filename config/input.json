@@ -2,18 +2,29 @@
     "mode": "simulator",
     "principle_inertia": [
         1000.0,
-        1000.0,
-        1000.0
+        1200.0,
+        1100.0
     ],
+
     "initial_attitude_state": [
-        0.1,
-        0.1,
-        0.1,
-        0.5,
+        -0.532035,
+        0.740302,
+        0.410964,
+        0.0,
         0.0,
         0.0,
         0.0
     ],
+
+    // "initial_attitude_state": [
+    //     0.0,
+    //     0.0,
+    //     0.0,
+    //     1.0,
+    //     0.0,
+    //     0.0,
+    //     0.0
+    // ],
 
     "quaternion_reference_state": [
         0.0, 
@@ -24,8 +35,10 @@
 
     "is_gravity_gradient_active": false,
 
-    // Gravitational Parameter of the central body [km^3 s^-2]. 
-    "gravitational_parameter" : 5.793939e6, 
+    "is_control_torque_active": true, 
+
+    // Gravitational Parameter of the central body [m^3 s^-2]. 
+    "gravitational_parameter" : 3.986004418e14, 
 
     // 3-axis reaction wheel model. 
     "attitude_control_method" : "3-axis-stabilization", 
@@ -71,8 +84,8 @@
         10.67 
     ],
 
-    // Radial vector of the satellite from spacecraft [km]. 
-    "radius": 500000.0,
+    // Radial vector of the satellite from spacecraft [m]. 
+    "radius": 7371000.0,
 
     // Semi major axis of the orbit of the satellite [km].
     "semi_major_axis" : 500.0,
@@ -86,7 +99,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 2000.0,
+    "end_epoch": 60000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).

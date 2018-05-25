@@ -95,13 +95,18 @@ void executeSimulator( const rapidjson::Document& config )
         disturbanceTorque[0] += gravityGradientTorque[0];
         disturbanceTorque[1] += gravityGradientTorque[1];
         disturbanceTorque[2] += gravityGradientTorque[2]; 
-
-        const Vector3 controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                                        referenceAttitudeState,
-                                                                        currentAttitudeRate, 
-                                                                        input.quaternionControlGain, 
-                                                                        input.angularVelocityControlGainVector, 
-                                                                        actuatorConfiguration );
+        
+        Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
+        if ( input.controlTorqueActiveModelFlag != 0 )
+        {
+            controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                                            referenceAttitudeState,
+                                                                            currentAttitudeRate, 
+                                                                            input.quaternionControlGain, 
+                                                                            input.angularVelocityControlGainVector, 
+                                                                            actuatorConfiguration );
+        }
+        
         
         StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque, disturbanceTorque );
             
@@ -125,7 +130,7 @@ void executeSimulator( const rapidjson::Document& config )
             throw;
         } 
     }
-
+    
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
@@ -273,6 +278,9 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
 		}
 	}
 
+    // Check if the control torque is active.
+    const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
+    std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
     // Control gains for the controller. 
     const Real quaternionControlGain    = find( config, "attitude_control_gain")->value.GetDouble(); 
     ConfigIterator angularVelocityControlGainIterator   = find( config, "angular_velocity_control_gains");
@@ -304,6 +312,7 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
                             actuator, 
                             actuatorUuid,
                             wheelOrientation,
+                            controlTorqueActiveModelFlag,
                             quaternionControlGain,
                             angularVelocityControlGainVector,
                             metadataFilePath,

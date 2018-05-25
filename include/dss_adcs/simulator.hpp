@@ -71,6 +71,7 @@ public:
                     const std::string&              aActuator, 
                     const std::vector <std::string> aActuatorUuid,
                     const std::vector< Vector2 >    aWheelOrientation,
+                    const bool                      aControlTorqueActiveModelFlag,
                     const Real                      aQuaternionControlGain, 
                     const Vector3                   anAngularVelocityControlGainVector, 
                     const std::string&              aMetadataFilePath,
@@ -92,6 +93,7 @@ public:
           actuator( aActuator ),
           actuatorUuid( aActuatorUuid ),
           wheelOrientation( aWheelOrientation ),
+          controlTorqueActiveModelFlag( aControlTorqueActiveModelFlag ),
           quaternionControlGain( aQuaternionControlGain ),
           angularVelocityControlGainVector( anAngularVelocityControlGainVector ),
           metadataFilePath( aMetadataFilePath ),
@@ -148,6 +150,9 @@ public:
 
     //! Wheel offset values for the reaction wheels. 
     const std::vector< Vector2 > wheelOrientation; 
+
+    //! Check if the control torque is active or not. 
+    const bool controlTorqueActiveModelFlag; 
 
     //! Quaternion control gain values. 
     const Real quaternionControlGain; 
