@@ -85,8 +85,6 @@ void executeSimulator( const rapidjson::Document& config )
         // Disturbance torques. 
         if ( input.gravityGradientAccelerationModelFlag != false )
         {
-            //    Matrix33 directionCosineMatrix( astro::computeEulerAngleToDcmConversionMatrix(rotationSequence, currentAttitude) );
-
             gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
         }
         
@@ -100,13 +98,12 @@ void executeSimulator( const rapidjson::Document& config )
         if ( input.controlTorqueActiveModelFlag != 0 )
         {
             controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                                            referenceAttitudeState,
-                                                                            currentAttitudeRate, 
-                                                                            input.quaternionControlGain, 
-                                                                            input.angularVelocityControlGainVector, 
-                                                                            actuatorConfiguration );
+                                                              referenceAttitudeState,
+                                                              currentAttitudeRate, 
+                                                              input.quaternionControlGain, 
+                                                              input.angularVelocityControlGainVector, 
+                                                              actuatorConfiguration );
         }
-        
         
         StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque, disturbanceTorque );
             

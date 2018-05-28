@@ -128,7 +128,7 @@ public:
                             << motorTorque[2]           << ','
                             << disturbanceTorque[0]     << ','
                             << disturbanceTorque[1]     << ',' 
-                            << disturbanceTorque[2]     << std::endl;                            
+                            << disturbanceTorque[2]     << std::endl;                      
     }
 
 protected:
