@@ -69,6 +69,7 @@ public:
                     const bool                      aGravityGradientAccelerationModelFlag,
                     const std::string&              aConceptConfiguration,
                     const std::string&              aActuator, 
+                    const std::string&              aReactionWheelConfiguration,
                     const std::vector <std::string> aActuatorUuid,
                     const std::vector< Vector2 >    aWheelOrientation,
                     const bool                      aControlTorqueActiveModelFlag,
@@ -91,6 +92,7 @@ public:
           gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag ),
           conceptConfiguration( aConceptConfiguration ),
           actuator( aActuator ),
+          reactionWheelConfiguration( aReactionWheelConfiguration ), 
           actuatorUuid( aActuatorUuid ),
           wheelOrientation( aWheelOrientation ),
           controlTorqueActiveModelFlag( aControlTorqueActiveModelFlag ),
@@ -144,6 +146,9 @@ public:
 
     //! Type of actuator. 
     const std::string actuator; 
+
+    //! Type of actuator configuration. 
+    const std::string reactionWheelConfiguration; 
 
     //! Unique identifies of the actuator. 
     const std::vector <std::string> actuatorUuid; 

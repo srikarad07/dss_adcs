@@ -74,9 +74,7 @@
     // Semi major axis of the orbit of the satellite [km].
     "semi_major_axis" : 500.0,
     
-    ////
     // Numerical integrator
-    ////
     // Select numerical integrator.
     // (rk4|dopri5|rkf78|bs)
     "integrator": "rk4",
@@ -89,9 +87,8 @@
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,
     "absolute_tolerance": 1.0e-12,
-    ////
+
     // Output
-    ////
     // Set up file writer options.
     "metadata_file_path": "/home/superman/desktop/metadata.csv",
     "state_history_file_path": "/home/superman/Desktop/state_history.csv"

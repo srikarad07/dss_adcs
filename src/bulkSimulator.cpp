@@ -262,10 +262,23 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     const std::string actuator                  = find( config, "actuator")->value.GetString(); 
     std::cout << "Actuator used for control:                                    " << actuator << std::endl; 
 
-    // Extract reaction wheel attributes.
-    std::vector < std::string > actuatorUuid; 
-    std::vector< Vector2 > wheelOrientation; 
+    // Extract reaction wheel configuration type. 
+    const std::string reactionWheelConfiguration    = find( config, "reaction_wheel_config_type" )->value.GetString(); 
+    std::cout << "The configuration of reaction wheels                          " << reactionWheelConfiguration << std::endl; 
     
+    // if ( reactionWheelConfiguration.compare("homogenous") == 0 )
+    // {
+            
+    // }
+    // else 
+    // {
+    //     std::cout << reactionWheelConfiguration << "configuration is not defined in the model yet! " << std::endl; 
+    // }
+
+    // Extract reaction wheel attributes.
+    std::vector < Vector2 > wheelOrientation; 
+    std::vector < std::string > actuatorUuid;  
+
     const rapidjson::Value& reactionWheelsIterator 	= config["wheel_orientation"];
 	assert(reactionWheelsIterator.IsArray()); 
     
@@ -285,33 +298,35 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
 
     assert(uuidConfig.IsObject()); 
 
-    for (rapidjson::Value::ConstValueIterator itr = reactionWheelsIterator.Begin(); itr != reactionWheelsIterator.End(); ++itr) 
+    for(rapidjson::Value::ConstMemberIterator reactionWheelNameIterator = uuidConfig.MemberBegin(); reactionWheelNameIterator != uuidConfig.MemberEnd(); ++reactionWheelNameIterator )
+    {
+        actuatorUuid.push_back( reactionWheelNameIterator->value.GetString() ); 
+    }
+        
+    for (rapidjson::Value::ConstValueIterator itr = reactionWheelsIterator.Begin(); itr !=  reactionWheelsIterator.End(); ++itr) 
 	{
     	const rapidjson::Value& reactionWheelPropertiesUserDefined = *itr;
-        Vector2 orientation( sml::convertDegreesToRadians( reactionWheelPropertiesUserDefined[0].GetDouble() ), sml::convertDegreesToRadians( reactionWheelPropertiesUserDefined[1].GetDouble() ) ); 
+        Vector2 orientation( sml::convertDegreesToRadians( reactionWheelPropertiesUserDefined[0].GetDouble() ), sml::convertDegreesToRadians(reactionWheelPropertiesUserDefined[1].GetDouble()  ) ); 
         wheelOrientation.push_back( orientation );
-        actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
-	}
-
-    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
-    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
-
+    }
+       
+    
     // Check if the control torque is active.
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
     std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
     
     // Control gains for the controller. 
-    const Real quaternionControlGain    = find( config, "attitude_control_gain")->value.GetDouble(); 
+    const Real quaternionControlGain                    = find( config, "attitude_control_gain")->value.GetDouble(); 
     ConfigIterator angularVelocityControlGainIterator   = find( config, "angular_velocity_control_gains");
     Vector3 angularVelocityControlGainVector; 
-    angularVelocityControlGainVector[0]     =  angularVelocityControlGainIterator->value[0].GetDouble(); 
-    angularVelocityControlGainVector[1]     =  angularVelocityControlGainIterator->value[1].GetDouble();
-    angularVelocityControlGainVector[2]     =  angularVelocityControlGainIterator->value[2].GetDouble();
+    angularVelocityControlGainVector[0]                 =  angularVelocityControlGainIterator->value[0].GetDouble(); 
+    angularVelocityControlGainVector[1]                 =  angularVelocityControlGainIterator->value[1].GetDouble();
+    angularVelocityControlGainVector[2]                 =  angularVelocityControlGainIterator->value[2].GetDouble();
 
     // Extract file writer settings.
-    const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
+    const std::string metadataFilePath                  = find( config, "metadata_file_path" )->value.GetString( ); 
     std::cout << "Metadata file path  " <<  metadataFilePath << std::endl;
-    const std::string stateHistoryFilePath            = find( config, "state_history_file_path" )->value.GetString( ); 
+    const std::string stateHistoryFilePath              = find( config, "state_history_file_path" )->value.GetString( ); 
     std::cout << "State history file path  " <<  stateHistoryFilePath << std::endl;  
 
     return simulatorInput(  principleInertia,
@@ -329,13 +344,14 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
                             gravityGradientAccelerationModelFlag,
                             attitudeControlMethod,
                             actuator, 
+                            reactionWheelConfiguration,
                             actuatorUuid,
                             wheelOrientation,
                             controlTorqueActiveModelFlag,
                             quaternionControlGain,
                             angularVelocityControlGainVector,
                             metadataFilePath,
-                            stateHistoryFilePath);
+                            stateHistoryFilePath    );
 };
 
 } // namespace dss_adcs

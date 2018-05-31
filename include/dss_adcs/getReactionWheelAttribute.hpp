@@ -27,7 +27,6 @@ namespace dss_adcs
 {
 
 inline ReactionWheel getReactionWheelAttributes( const std::string productJson )
-// void getReactionWheelAttributes(  )
 {
     // std::ifstream inputFile( productJson );
 
@@ -38,8 +37,10 @@ inline ReactionWheel getReactionWheelAttributes( const std::string productJson )
 	// {
 	//      jsonDocumentBuffer << inputLine << "\n";
 	// }
-	rapidjson::Document config;
 	// config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
+	
+	rapidjson::Document config;
+
 	config.Parse<0>(productJson.c_str()).HasParseError();
 
 	assert(config.IsObject()); 
@@ -92,7 +93,7 @@ inline ReactionWheel getReactionWheelAttributes( const std::string productJson )
 	{
 		reactionWheelMass = std::stod( mapForResult["mass-value"], &sz );
 	}
-	// std::cout << "It went okay until mass extration! " << std::endl; 
+
 	// Check the measurement unit for the length, height and width. It needs to be 'm'. 
 	if ( mapForResult["length-measurement_unit"].compare("m") != 0 )
 	{
