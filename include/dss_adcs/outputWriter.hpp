@@ -7,6 +7,9 @@
 #include <iomanip>
 #include <iostream>
 
+#include <astro/quaternionToEulerAngleTransformation.hpp>
+#include <sml/sml.hpp>
+
 #include "dss_adcs/typedefs.hpp"
 
 #ifndef DSS_ADCS_OUTPUT_WRITER_HPP
@@ -109,26 +112,35 @@ public:
      */
     void operator( )( const State& state, const double time )
     {
-        // const State stateAttitudeElements = state; 
+        const Vector4 quaternion( state[0], state[1], state[2], state[3] ); 
+        const Vector3 eulerAngles   = astro::transformQuaternionToEulerAngles( quaternion ); 
 
+        // std::cout << "Quaternion :  " << tempQuaternion.coeffs() << std::endl; 
+        // double pi( 3.14159265 );
+        // std::cout << "Sin of the angle" << sin( acos(quaternion[3]) ) << std::endl;  
+        // std::cout << "The angle is: " << 2 * acos(quaternion[3]) * 180.0 / pi << "for time " << time << std::endl; 
+        
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
-                            << time                     << ','
-                            << state[ 0 ]               << ','
-                            << state[ 1 ]               << ','
-                            << state[ 2 ]               << ','
-                            << state[ 3 ]               << ','
-                            << state[ 4 ]               << ','
-                            << state[ 5 ]               << ','
-                            << state[ 6 ]               << ','
-                            << controlTorque[0]         << ','
-                            << controlTorque[1]         << ',' 
-                            << controlTorque[2]         << ','
-                            << motorTorque[0]           << ','
-                            << motorTorque[1]           << ','
-                            << motorTorque[2]           << ','
-                            << disturbanceTorque[0]     << ','
-                            << disturbanceTorque[1]     << ',' 
-                            << disturbanceTorque[2]     << std::endl;                      
+                            << time                                                     << ','
+                            << state[ 0 ]                                               << ','
+                            << state[ 1 ]                                               << ','
+                            << state[ 2 ]                                               << ','
+                            << state[ 3 ]                                               << ','
+                            << sml::convertRadiansToDegrees( eulerAngles[0] )           << ','
+                            << sml::convertRadiansToDegrees( eulerAngles[1] )           << ','
+                            << sml::convertRadiansToDegrees( eulerAngles[2] )           << ','
+                            << state[ 4 ]                                               << ','
+                            << state[ 5 ]                                               << ','
+                            << state[ 6 ]                                               << ','
+                            << controlTorque[0]                                         << ','
+                            << controlTorque[1]                                         << ',' 
+                            << controlTorque[2]                                         << ','
+                            << motorTorque[0]                                           << ','
+                            << motorTorque[1]                                           << ','
+                            << motorTorque[2]                                           << ','
+                            << disturbanceTorque[0]                                     << ','
+                            << disturbanceTorque[1]                                     << ',' 
+                            << disturbanceTorque[2]                                     << std::endl;                      
     }
 
 protected:

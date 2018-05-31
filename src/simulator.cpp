@@ -58,7 +58,7 @@ void executeSimulator( const rapidjson::Document& config )
 
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t,q1,q2,q3,q4,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+    stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
@@ -144,33 +144,46 @@ simulatorInput checkSimulatorInput( const rapidjson::Document& config )
     std::cout << "Principle inertia around Y axis:                              " << principleInertia[1]
               << "[kg/m^2]" << std::endl;          
     std::cout << "Principle inertia around Z axis:                              " << principleInertia[2]
-              << "[kg/m^2]" << std::endl;
-
-    // Extract the initial attitude states and angular velocities. 
-    ConfigIterator initialAttitudeStateIterator         = find( config, "initial_attitude_state"); 
+              << "[kg/m^2]" << std::endl; 
     
     // Extract attitude kinematic type. 
     const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
     std::cout << "Attitude representation:                                      " << attitudeRepresentationString << std::endl; 
     
+    // Extract the initial attitude states and angular velocities. 
+    ConfigIterator initialAttitudeStateEulerIterator         = find( config, "initial_attitude_state");
+
     // Extract the initial state of the quaternion. 
     Vector7 initialAttitudeState;
-    initialAttitudeState[0]                             = initialAttitudeStateIterator->value[0].GetDouble();
-    initialAttitudeState[1]                             = initialAttitudeStateIterator->value[1].GetDouble();
-    initialAttitudeState[2]                             = initialAttitudeStateIterator->value[2].GetDouble();
-    initialAttitudeState[3]                             = initialAttitudeStateIterator->value[3].GetDouble();
-    initialAttitudeState[4]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[4].GetDouble()); 
-    initialAttitudeState[5]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[5].GetDouble()); 
-    initialAttitudeState[6]                             = sml::convertDegreesToRadians(initialAttitudeStateIterator->value[6].GetDouble());    
+
+    Vector3 initialAttitudeStateEuler; 
+
+    initialAttitudeStateEuler[0]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[0].GetDouble() );
+    initialAttitudeStateEuler[1]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[1].GetDouble() );
+    initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
+    
+    Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
+    initialAttitudeState[0]                        = quaternionInitialState[0];
+    initialAttitudeState[1]                        = quaternionInitialState[1];
+    initialAttitudeState[2]                        = quaternionInitialState[2];
+    initialAttitudeState[3]                        = quaternionInitialState[3];   
+    initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[3].GetDouble() ); 
+    initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
+    initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
+
+    std::cout << "Initial state in quaternion:                                  " << quaternionInitialState[0] << "," <<  quaternionInitialState[1] << "," << quaternionInitialState[2] << "," << quaternionInitialState[3] << std::endl;    
 
     // Extract the reference state for the quaternion. 
     ConfigIterator referenceAttitudeStateIterator       = find( config, "quaternion_reference_state" );
-    Vector4 referenceAttitudeState;
-    referenceAttitudeState[0]                           = referenceAttitudeStateIterator->value[0].GetDouble();
-    referenceAttitudeState[1]                           = referenceAttitudeStateIterator->value[1].GetDouble();
-    referenceAttitudeState[2]                           = referenceAttitudeStateIterator->value[2].GetDouble();    
-    referenceAttitudeState[3]                           = referenceAttitudeStateIterator->value[3].GetDouble();      
-      
+    Vector3 referenceAttitudeStateEuler; 
+
+    referenceAttitudeStateEuler[0]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[0].GetDouble() );
+    referenceAttitudeStateEuler[1]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[1].GetDouble() );
+    referenceAttitudeStateEuler[2]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[2].GetDouble() );  
+    
+    const Vector4 referenceAttitudeState           = astro::transformEulerToQuaternion( referenceAttitudeStateEuler );      
+
+    std::cout << "Reference state in quaternion:                                " << referenceAttitudeState[0]<< "," << referenceAttitudeState[1]<< "," << referenceAttitudeState[2]<< "," << referenceAttitudeState[3] << std::endl;  
     // Extract integrator type. 
     const std::string integratorString                  = find( config, "integrator" )->value.GetString( );
     Integrator integrator = rk4;
