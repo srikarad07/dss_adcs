@@ -15,20 +15,20 @@
 #include <sml/sml.hpp>
 
 #include "dss_adcs/actuatorConfiguration.hpp"
+#include "dss_adcs/bulkSimulator.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/getReactionWheel.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
-#include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
 #include "dss_adcs/outputWriter.hpp"
 
 namespace dss_adcs
 {
 
-void executeSingleSimulator( const rapidjson::Document& config )
+void executeBulkSimulator( const rapidjson::Document& config )
 {
     // Verify config parameters. Exception is thrown if any of the parameters are missing.
-    const SingleSimulatorInput input = checkSingleSimulatorInput( config );
+    const simulatorInput input = checkBulkSimulatorInput( config );
 
     std::cout << std::endl;
     std::cout << "******************************************************************" << std::endl;
@@ -131,7 +131,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
-SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& config )
+simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
 {
     // Extract principle inertia. 
     ConfigIterator principleInertiaDiagonalIterator     = find( config, "principle_inertia"); 
@@ -288,6 +288,34 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
 		}
 	}
 
+    std::string reactionWheelUuidFile   = find( config, "reaction_wheel_uuids")->value.GetString(); 
+    std::cout << "Reaction wheel uuid file: " << reactionWheelUuidFile << std::endl; 
+    std::ifstream uuidInputFile( reactionWheelUuidFile );
+	std::stringstream jsonDocumentBuffer;
+	std::string uuidInputLine;
+
+	while ( std::getline( uuidInputFile, uuidInputLine ) )
+	{
+	     jsonDocumentBuffer << uuidInputLine << "\n";
+	}
+    std::cout << "All okay 1 " << std::endl; 
+    rapidjson::Document uuidConfig;
+    uuidConfig.Parse( jsonDocumentBuffer.str( ).c_str( ) );
+    std::cout << "All okay 2 " << std::endl; 
+
+    assert(uuidConfig.IsObject()); 
+    std::cout << "All okay 3 " << std::endl; 
+    
+    std::cout << uuidConfig["rw8"].IsString() << std::endl; 
+    actuatorUuid.push_back( "4a3be253-c8f7-565f-bc85-56bd6a2ff152" );
+    actuatorUuid.push_back( "4a3be253-c8f7-565f-bc85-56bd6a2ff152" );
+    actuatorUuid.push_back( "4a3be253-c8f7-565f-bc85-56bd6a2ff152" );
+    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+
+    std::cout << "Actuator Uuids: " << actuatorUuid[0] << std::endl; 
+
     // Check if the control torque is active.
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
     std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
@@ -305,28 +333,28 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
     const std::string stateHistoryFilePath            = find( config, "state_history_file_path" )->value.GetString( ); 
     std::cout << "State history file path  " <<  stateHistoryFilePath << std::endl;  
 
-    return SingleSimulatorInput(  principleInertia,
-                                  initialAttitudeState,
-                                  referenceAttitudeState,
-                                  integrator,
-                                  startEpoch,
-                                  endEpoch,
-                                  timeStep,
-                                  gravitationalParameter,
-                                  radius, 
-                                  semiMajorAxis,
-                                  relativeTolerance,
-                                  absoluteTolerance,
-                                  gravityGradientAccelerationModelFlag,
-                                  attitudeControlMethod,
-                                  actuator, 
-                                  actuatorUuid,
-                                  wheelOrientation,
-                                  controlTorqueActiveModelFlag,
-                                  quaternionControlGain,
-                                  angularVelocityControlGainVector,
-                                  metadataFilePath,
-                                  stateHistoryFilePath);
+    return simulatorInput(  principleInertia,
+                            initialAttitudeState,
+                            referenceAttitudeState,
+                            integrator,
+                            startEpoch,
+                            endEpoch,
+                            timeStep,
+                            gravitationalParameter,
+                            radius, 
+                            semiMajorAxis,
+                            relativeTolerance,
+                            absoluteTolerance,
+                            gravityGradientAccelerationModelFlag,
+                            attitudeControlMethod,
+                            actuator, 
+                            actuatorUuid,
+                            wheelOrientation,
+                            controlTorqueActiveModelFlag,
+                            quaternionControlGain,
+                            angularVelocityControlGainVector,
+                            metadataFilePath,
+                            stateHistoryFilePath);
 };
 
 } // namespace dss_adcs

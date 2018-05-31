@@ -4,8 +4,8 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
  */
 
-#ifndef DSS_ADCS_SINGLE_SIMULATOR_HPP
-#define DSS_ADCS_SINGLE_SIMULATOR_HPP
+#ifndef DSS_ADCS_BULK_SIMULATOR_HPP
+#define DSS_ADCS_BULK_SIMULATOR_HPP
 
 #include <string>
 #include <vector>
@@ -25,7 +25,7 @@ namespace dss_adcs
  *
  * @param[in] config User-defined configuration options (extracted from JSON input file)
  */
-void executeSingleSimulator( const rapidjson::Document& config );
+void executeBulkSimulator( const rapidjson::Document& config );
 
 //! Input for attitude_dynamics_simulator application mode.
 /*!
@@ -34,7 +34,7 @@ void executeSingleSimulator( const rapidjson::Document& config );
  *
  * @sa checkSimulatorInput, executeSimulator
  */
-struct SingleSimulatorInput
+struct simulatorInput
 {
 public:
 
@@ -42,7 +42,7 @@ public:
     /*!
      * Constructs data struct based on verified input parameters.
      *
-     * @sa checkSingleSimulatorInput,                 executeSimulator
+     * @sa checkSimulatorInput,                 executeSimulator
      * @param[in] aPrincipleinertia             Principle axes of inertia of the spacecraft [kg m^2]
      * @param[in] anInitialAttitudeState          Initial attitude state including attitudes and angular velocities [deg] [deg/sec] 
      * @param[in] anIntegrator                Name of selected numerical integrator
@@ -54,7 +54,7 @@ public:
      * @param[in] aMetadataFilePath           Path to output file for metadata
      * @param[in] aStateHistoryFilePath       Path to output file for state history
      */
-    SingleSimulatorInput( const Inertia                   aPrincipleInertia,
+    simulatorInput( const Inertia                   aPrincipleInertia,
                     const State                     anInitialAttitudeState, 
                     const Vector4                   aReferenceAttitudeState,
                     const Integrator                anIntegrator,
@@ -177,12 +177,12 @@ private:
  * is thrown with a short description of the problem. If all inputs are valid, a data struct
  * containing all the inputs is returned.
  *
- * @sa executeSimulator, SingleSimulatorInput
+ * @sa executeSimulator, SimulatorInput
  * @param[in] config User-defined configuration options (extracted from JSON input file)
  * @return           Struct containing all valid input for attitude_dynamics_simulator application
  *                   mode
  */
-SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& config );
+simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config );
 
 } // namespace dss_adcs
 

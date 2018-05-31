@@ -14,7 +14,7 @@
 namespace dss_adcs
 {
    
-    std::vector < ReactionWheel > getReactionWheels(    const std::string actuator, 
+    inline std::vector < ReactionWheel > getReactionWheels(    const std::string actuator, 
                                                         const std::vector< std::string >actuatorUuid    )
     {
         std::vector < ReactionWheel > reactionWheels;

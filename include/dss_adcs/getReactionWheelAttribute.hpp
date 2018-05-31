@@ -26,7 +26,7 @@
 namespace dss_adcs
 {
 
-ReactionWheel getReactionWheelAttributes( const std::string productJson )
+inline ReactionWheel getReactionWheelAttributes( const std::string productJson )
 // void getReactionWheelAttributes(  )
 {
     // std::ifstream inputFile( productJson );

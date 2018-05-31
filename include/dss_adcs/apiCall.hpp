@@ -11,7 +11,7 @@
 
 #include <cpr/cpr.h>
 
-std::string callTheApi( const std::string actuatorUuid )
+inline std::string callTheApi( const std::string actuatorUuid )
 {
     const std::string apiUrl        = "https://api.satsearch.co/v1/products/"; 
     const std::string productUrl    = apiUrl + actuatorUuid;

@@ -13,9 +13,10 @@
 
 #include <rapidjson/document.h>
 
+#include "dss_adcs/bulkSimulator.hpp"
 #include "dss_adcs/simulator.hpp"
-#include "dss_adcs/tools.hpp"
-#include "dss_adcs/typedefs.hpp"
+// #include "dss_adcs/tools.hpp"
+// #include "dss_adcs/typedefs.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {
@@ -82,11 +83,17 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     }
     std::string mode = modeIterator->value.GetString( );
     std::transform( mode.begin( ), mode.end( ), mode.begin( ), ::tolower );
-
+  
     if ( mode.compare( "simulator") == 0 )
     {
         std::cout << "Mode                               " << mode << std::endl;
-        dss_adcs::executeSimulator( config );
+        dss_adcs::executeSingleSimulator( config );
+    }
+    else if ( mode.compare("bulk_simulator") == 0)
+    {
+        std::cout << "Mode                               " << mode << std::endl;
+        // dss_adcs::executeSingleSimulator( config );
+        dss_adcs::executeBulkSimulator( config );
     }
     else
     {

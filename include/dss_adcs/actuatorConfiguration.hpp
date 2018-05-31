@@ -4,8 +4,8 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 */
 
-#ifndef ACTUATOR_CONFIGURATION_HPP
-#define ACTUATOR_CONFIGURATION_HPP
+#ifndef DSS_ADCS_ACTUATOR_CONFIGURATION_HPP
+#define DSS_ADCS_ACTUATOR_CONFIGURATION_HPP
 
 #include <math.h> 
 

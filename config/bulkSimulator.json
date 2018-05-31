@@ -1,0 +1,101 @@
+{
+    "mode": "bulk_simulator",
+    "principle_inertia": [
+        1000.0,
+        1200.0,
+        1100.0
+    ],
+
+    "initial_attitude_state": [
+        10.0,
+        10.0,
+        10.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+
+    "quaternion_reference_state": [
+        0.0, 
+        0.0,
+        0.0
+    ],
+
+    "is_gravity_gradient_active": false,
+
+    "is_control_torque_active": true, 
+
+    // Gravitational Parameter of the central body [m^3 s^-2]. 
+    "gravitational_parameter" : 3.986004418e14, 
+
+    // 3-axis reaction wheel model. 
+    "attitude_control_method" : "3-axis-stabilization", 
+    
+    "actuator": "reaction_wheel",
+
+    // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
+    // Angles given by the user in radians. 
+    
+    "reaction_wheels": [
+        {
+            "wheel_orientation": [
+                0.0, 
+                90.0
+            ] 
+        },
+        {
+            "wheel_orientation": [
+                90.0, 
+                90.0
+            ]
+        },
+        {
+            "wheel_orientation": [
+                90.0, 
+                0.0
+            ]
+        }        
+    ],
+    
+    "reaction_wheel_uuids" : "~/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
+
+    // Attitude representation type. 
+    "attitude_representation" : "quaternions", 
+
+    // Control gains. 
+    "attitude_control_gain" : 7.11, 
+
+    "angular_velocity_control_gains": [
+        18.67, 
+        8.67,
+        10.67 
+    ],
+
+    // Radial vector of the satellite from spacecraft [m]. 
+    "radius": 7371000.0,
+
+    // Semi major axis of the orbit of the satellite [km].
+    "semi_major_axis" : 500.0,
+    
+    ////
+    // Numerical integrator
+    ////
+    // Select numerical integrator.
+    // (rk4|dopri5|rkf78|bs)
+    "integrator": "rk4",
+
+    // Set up integrator time parameters.
+    "start_epoch": 0.0,
+    "end_epoch": 2000.0,
+    "time_step": 1.0,
+
+    // Set up integrator tolerances (only applicable for adaptive step size integrators).
+    "relative_tolerance": 1.0e-10,
+    "absolute_tolerance": 1.0e-12,
+    ////
+    // Output
+    ////
+    // Set up file writer options.
+    "metadata_file_path": "/home/superman/desktop/metadata.csv",
+    "state_history_file_path": "/home/superman/Desktop/state_history.csv"
+}
