@@ -266,30 +266,11 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     std::vector < std::string > actuatorUuid; 
     std::vector< Vector2 > wheelOrientation; 
     
-    const rapidjson::Value& reactionWheelsIterator 	= config["reaction_wheels"];
+    const rapidjson::Value& reactionWheelsIterator 	= config["wheel_orientation"];
 	assert(reactionWheelsIterator.IsArray()); 
     
-    for (rapidjson::Value::ConstValueIterator itr = reactionWheelsIterator.Begin(); itr != reactionWheelsIterator.End(); ++itr) 
-	{
-    	const rapidjson::Value& reactionWheelPropertiesUserDefined = *itr;
-    	assert(reactionWheelPropertiesUserDefined.IsObject()); // each reactionWheelPropertiesUserDefined is an object
-    	for (rapidjson::Value::ConstMemberIterator itr2 = reactionWheelPropertiesUserDefined.MemberBegin(); itr2 != reactionWheelPropertiesUserDefined.MemberEnd(); ++itr2) 
-		{ 
-            std::string nameString = itr2->name.GetString(); 
-            if ( nameString.compare( "uuid" ) == 0 ) // Extract the uuids of the reaction wheels 
-            {
-                actuatorUuid.push_back(  itr2->value.GetString());
-            }
-            else // Extract the orientations of the reaction wheel. 
-            {
-                Vector2 orientation( sml::convertDegreesToRadians( itr2->value[0].GetDouble() ), sml::convertDegreesToRadians( itr2->value[1].GetDouble() ) ); 
-                wheelOrientation.push_back( orientation );
-            }
-		}
-	}
-
     std::string reactionWheelUuidFile   = find( config, "reaction_wheel_uuids")->value.GetString(); 
-    // std::cout << "Reaction wheel uuid file: " << reactionWheelUuidFile << std::endl; 
+
     std::ifstream uuidInputFile( reactionWheelUuidFile );
 	std::stringstream jsonDocumentBuffer;
 	std::string uuidInputLine;
@@ -304,13 +285,21 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
 
     assert(uuidConfig.IsObject()); 
 
-    actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
-    actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
-    actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+    for (rapidjson::Value::ConstValueIterator itr = reactionWheelsIterator.Begin(); itr != reactionWheelsIterator.End(); ++itr) 
+	{
+    	const rapidjson::Value& reactionWheelPropertiesUserDefined = *itr;
+        Vector2 orientation( sml::convertDegreesToRadians( reactionWheelPropertiesUserDefined[0].GetDouble() ), sml::convertDegreesToRadians( reactionWheelPropertiesUserDefined[1].GetDouble() ) ); 
+        wheelOrientation.push_back( orientation );
+        actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+	}
+
+    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
 
     // Check if the control torque is active.
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
     std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
+    
     // Control gains for the controller. 
     const Real quaternionControlGain    = find( config, "attitude_control_gain")->value.GetDouble(); 
     ConfigIterator angularVelocityControlGainIterator   = find( config, "angular_velocity_control_gains");
