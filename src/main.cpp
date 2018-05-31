@@ -15,8 +15,6 @@
 
 #include "dss_adcs/bulkSimulator.hpp"
 #include "dss_adcs/simulator.hpp"
-// #include "dss_adcs/tools.hpp"
-// #include "dss_adcs/typedefs.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
 {

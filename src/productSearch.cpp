@@ -39,7 +39,8 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
 
 int main()
 {
-	std::ifstream inputFile( "/home/superman/trial/curl/rw1.json" );
+	// std::ifstream inputFile( "/home/superman/trial/curl/rw1.json" );
+	std::ifstream inputFile( "/home/superman/workspace/dss_adcs/config/reaction_wheel_uuids.json" );
 	std::stringstream jsonDocumentBuffer;
 	std::string inputLine;
 
@@ -52,16 +53,17 @@ int main()
 
 	assert(config.IsObject()); 
 	
-	const rapidjson::Value& attributes 	= config["attributes"];
-	assert(attributes.IsArray()); 
+	std::cout << config["rw8"].GetString() << std::endl;
+	// const rapidjson::Value& attributes 	= config["attributes"];
+	// assert(attributes.IsArray()); 
 
-	std::vector<std::string> keysToRetrieve = {"maximumValue", "value"};
-	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName(attributes, "name", "mass", keysToRetrieve);	
+	// std::vector<std::string> keysToRetrieve = {"maximumValue", "value"};
+	// std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName(attributes, "name", "mass", keysToRetrieve);	
 	
-	for (auto &mapItem : mapForResult) 
-	{
-    	std::cout << mapItem.first << ":" << mapItem.second << "\n";
-	}
+	// for (auto &mapItem : mapForResult) 
+	// {
+    // 	std::cout << mapItem.first << ":" << mapItem.second << "\n";
+	// }
 	// for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 
 	// {
     // 	const rapidjson::Value& attribute = *itr;

@@ -33,31 +33,28 @@
     
     "actuator": "reaction_wheel",
 
+    // Reaction wheel configuration type. 
+    "reaction_wheel_config_type": "homogenous", 
+
     // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
     // Angles given by the user in radians. 
     
-    "reaction_wheels": [
-        {
-            "wheel_orientation": [
-                0.0, 
-                90.0
-            ] 
-        },
-        {
-            "wheel_orientation": [
-                90.0, 
-                90.0
-            ]
-        },
-        {
-            "wheel_orientation": [
-                90.0, 
-                0.0
-            ]
-        }        
+    "wheel_orientation": [
+        [
+            0.0, 
+            90.0
+        ], 
+        [
+            90.0, 
+            90.0
+        ],
+        [
+            90.0, 
+            0.0
+        ]        
     ],
     
-    "reaction_wheel_uuids" : "~/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
+    "reaction_wheel_uuids" : "/home/superman/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
 
     // Attitude representation type. 
     "attitude_representation" : "quaternions", 

@@ -289,32 +289,24 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
 	}
 
     std::string reactionWheelUuidFile   = find( config, "reaction_wheel_uuids")->value.GetString(); 
-    std::cout << "Reaction wheel uuid file: " << reactionWheelUuidFile << std::endl; 
+    // std::cout << "Reaction wheel uuid file: " << reactionWheelUuidFile << std::endl; 
     std::ifstream uuidInputFile( reactionWheelUuidFile );
 	std::stringstream jsonDocumentBuffer;
 	std::string uuidInputLine;
 
 	while ( std::getline( uuidInputFile, uuidInputLine ) )
 	{
-	     jsonDocumentBuffer << uuidInputLine << "\n";
+	    jsonDocumentBuffer << uuidInputLine << "\n";
 	}
-    std::cout << "All okay 1 " << std::endl; 
+ 
     rapidjson::Document uuidConfig;
     uuidConfig.Parse( jsonDocumentBuffer.str( ).c_str( ) );
-    std::cout << "All okay 2 " << std::endl; 
 
     assert(uuidConfig.IsObject()); 
-    std::cout << "All okay 3 " << std::endl; 
-    
-    std::cout << uuidConfig["rw8"].IsString() << std::endl; 
-    actuatorUuid.push_back( "4a3be253-c8f7-565f-bc85-56bd6a2ff152" );
-    actuatorUuid.push_back( "4a3be253-c8f7-565f-bc85-56bd6a2ff152" );
-    actuatorUuid.push_back( "4a3be253-c8f7-565f-bc85-56bd6a2ff152" );
-    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
-    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
-    // actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
 
-    std::cout << "Actuator Uuids: " << actuatorUuid[0] << std::endl; 
+    actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+    actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
+    actuatorUuid.push_back( uuidConfig["rw8"].GetString() );
 
     // Check if the control torque is active.
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
