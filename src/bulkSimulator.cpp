@@ -18,6 +18,7 @@
 #include "dss_adcs/bulkSimulator.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/getReactionWheel.hpp"
+#include "dss_adcs/reactionWheelConfiguration.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/tools.hpp"
 #include "dss_adcs/outputWriter.hpp"
@@ -41,93 +42,109 @@ void executeBulkSimulator( const rapidjson::Document& config )
     reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
 
     // Define the actuator configuration. 
-    std::cout << "Defining actuator configuration ... \n" << std::endl;
-     
-    // TO DO: Move the wheel orientation as a property of the reaction wheel //
-    ActuatorConfiguration actuatorConfiguration( reactionWheels, input.wheelOrientation ); 
-
-    // Create instance of dynamical system.
-    std::cout << "Setting up dynamical model ..." << std::endl;
+    std::cout << "Defining actuator configuration ... \n" << std::endl; 
+    std::cout << "Reaction wheel size: "<< reactionWheels.size() << std::endl;  
     
-    /*  testInt for the gravity gradient model 
-    *   assumptions: radius is an assumption -> ideally radius should be derived from a ephemeris. 
-    *   direction cosines and conversion from euler angles and quaternions. 
-    *   assumption: random gravitational parameter defined for now -> ideally should be 
-    *   taken from a reliable source. 
-    */
-
-    // Create file stream to write state history to.
-    std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
-
-    //Set up numerical integrator. 
-    std::cout << "Executing numerical integrator ..." << std::endl;
-    State   currentState                = input.initialAttitudeState;
-    Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
-
-    // Set up dynamical model.
-    std::cout << "Dynamical model setting up ..." << std::endl;
-    
-    // Set up dynamical model.
-    std::cout << "Generating angular accelerations ..." << std::endl;
-    std::cout << std::endl;
-
-    for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
+    for ( unsigned int tempNumber = 0; tempNumber < reactionWheels.size(); ++tempNumber )
     {
-        Real integrationEndTime = integrationStartTime + input.timeStep; 
+        std::vector< ReactionWheel > reactionWheelConcept; 
+        reactionWheelConcept =  getReactionWheelConcept( input.reactionWheelConfiguration, 
+                                                         reactionWheels,
+                                                         tempNumber, 
+                                                         input.wheelOrientation  );
 
-        Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
-        Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+        std::cout << "The reaction wheel torque is: " << reactionWheelConcept[0].maxTorque << std::endl;
+        std::cout << "The reaction wheel torque is: " << reactionWheelConcept[1].maxTorque << std::endl;
+        std::cout << "The reaction wheel torque is: " << reactionWheelConcept[2].maxTorque << std::endl;
 
-        const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+        // TO DO: Move the wheel orientation as a property of the reaction wheel //
+        ActuatorConfiguration actuatorConfiguration( reactionWheelConcept, input.wheelOrientation ); 
 
-        Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
-        // Disturbance torques. 
-        if ( input.gravityGradientAccelerationModelFlag != false )
+        // Create instance of dynamical system.
+        std::cout << "Setting up dynamical model ..." << std::endl;
+
+        /*  testInt for the gravity gradient model 
+        *   assumptions: radius is an assumption -> ideally radius should be derived from a ephemeris. 
+        *   direction cosines and conversion from euler angles and quaternions. 
+        *   assumption: random gravitational parameter defined for now -> ideally should be 
+        *   taken from a reliable source. 
+        */
+
+        // Create file stream to write state history to.
+        std::ofstream stateHistoryFile( input.stateHistoryFilePath );
+        stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+
+        //Set up numerical integrator. 
+        std::cout << "Executing numerical integrator ..." << std::endl;
+        State   currentState                = input.initialAttitudeState;
+        Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
+
+        // Set up dynamical model.
+        std::cout << "Dynamical model setting up ..." << std::endl;
+
+        // Set up dynamical model.
+        std::cout << "Generating angular accelerations ..." << std::endl;
+        std::cout << std::endl;
+
+        for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
         {
-            gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
+            Real integrationEndTime = integrationStartTime + input.timeStep; 
+
+            Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
+            Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+
+            const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+
+            Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
+
+            // Disturbance torques. 
+            if ( input.gravityGradientAccelerationModelFlag != false )
+            {
+                gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
+            }
+
+            Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
+
+            disturbanceTorque[0] += gravityGradientTorque[0];
+            disturbanceTorque[1] += gravityGradientTorque[1];
+            disturbanceTorque[2] += gravityGradientTorque[2]; 
+
+            Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
+            if ( input.controlTorqueActiveModelFlag != 0 )
+            {
+                controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                                  referenceAttitudeState,
+                                                                  currentAttitudeRate, 
+                                                                  input.quaternionControlGain, 
+                                                                  input.angularVelocityControlGainVector, 
+                                                                  actuatorConfiguration );
+            }
+
+            StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque, disturbanceTorque );
+
+            // Dynamics of the system 
+            DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
+
+            if ( input.integrator == rk4 )
+            {
+                using namespace boost::numeric::odeint;
+                integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
+                                 dynamics,
+                                 currentState,
+                                 integrationStartTime,
+                                 integrationEndTime,
+                                 input.timeStep,
+                                 writer );
+            }
+            else
+            {
+                std::cout << "Numerical integrator not defined" << std::endl;
+                throw;
+            } 
         }
-        
-        Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
-
-        disturbanceTorque[0] += gravityGradientTorque[0];
-        disturbanceTorque[1] += gravityGradientTorque[1];
-        disturbanceTorque[2] += gravityGradientTorque[2]; 
-        
-        Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
-        if ( input.controlTorqueActiveModelFlag != 0 )
-        {
-            controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                              referenceAttitudeState,
-                                                              currentAttitudeRate, 
-                                                              input.quaternionControlGain, 
-                                                              input.angularVelocityControlGainVector, 
-                                                              actuatorConfiguration );
-        }
-        
-        StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque, disturbanceTorque );
-            
-        // Dynamics of the system 
-        DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
-
-        if ( input.integrator == rk4 )
-        {
-            using namespace boost::numeric::odeint;
-            integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
-                             dynamics,
-                             currentState,
-                             integrationStartTime,
-                             integrationEndTime,
-                             input.timeStep,
-                             writer );
-        }
-        else
-        {
-            std::cout << "Numerical integrator not defined" << std::endl;
-            throw;
-        } 
-    }
     
+    }
+    // const int tempNumber = 1; 
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
@@ -265,15 +282,6 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     // Extract reaction wheel configuration type. 
     const std::string reactionWheelConfiguration    = find( config, "reaction_wheel_config_type" )->value.GetString(); 
     std::cout << "The configuration of reaction wheels                          " << reactionWheelConfiguration << std::endl; 
-    
-    // if ( reactionWheelConfiguration.compare("homogenous") == 0 )
-    // {
-            
-    // }
-    // else 
-    // {
-    //     std::cout << reactionWheelConfiguration << "configuration is not defined in the model yet! " << std::endl; 
-    // }
 
     // Extract reaction wheel attributes.
     std::vector < Vector2 > wheelOrientation; 

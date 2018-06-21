@@ -17,6 +17,7 @@
 #include "dss_adcs/actuatorConfiguration.hpp"
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/getReactionWheel.hpp"
+#include "dss_adcs/objectiveFunction.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/simulator.hpp"
 #include "dss_adcs/tools.hpp"
@@ -72,13 +73,21 @@ void executeSingleSimulator( const rapidjson::Document& config )
     std::cout << "Generating angular accelerations ..." << std::endl;
     std::cout << std::endl;
 
-    for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
+    std::vector< Vector4 > quaternionStateVector; 
+
+    for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime += input.timeStep )
     {
         Real integrationEndTime = integrationStartTime + input.timeStep; 
 
         Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
         Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
 
+        Vector4 attitudeError   = currentAttitude - referenceAttitudeState; 
+
+        if ( attitudeError.array().abs()[0] < input.mininumAttitudeErrorInQuaternion[0]   )
+        {
+            std::cout << "It works? " << integrationStartTime << std::endl; 
+        }
         const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
@@ -110,6 +119,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
         // Dynamics of the system 
         DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
 
+        // To Do: Use different integrator for the simulation. 
         if ( input.integrator == rk4 )
         {
             using namespace boost::numeric::odeint;
@@ -125,9 +135,16 @@ void executeSingleSimulator( const rapidjson::Document& config )
         {
             std::cout << "Numerical integrator not defined" << std::endl;
             throw;
-        } 
+        }
+        quaternionStateVector.push_back( currentAttitude ); 
     }
-    
+    ObjectiveFunction objectiveFunction( reactionWheels, 
+                                         input.mininumAttitudeErrorInQuaternion,
+                                         quaternionStateVector, 
+                                         input.stateHistoryFilePath );   
+    Real functionValue      = objectiveFunction.computeObjectiveFunction(); 
+
+    std::cout << "The objective function is: " << functionValue << std::endl; 
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
@@ -288,6 +305,18 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
 		}
 	}
 
+    // Minimum attitude error for settling time.
+    // <TO DO: Check if the quaternion error be formulated like this! > 
+    Vector3 mininumAttitudeErrorInDeg; 
+    Vector4 mininumAttitudeErrorInQuaternion;
+
+    const ConfigIterator attitudeErrorIterator  = find( config, "attitude_minimum_error");
+    mininumAttitudeErrorInDeg[0]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[0].GetDouble() );
+    mininumAttitudeErrorInDeg[1]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[1].GetDouble() );
+    mininumAttitudeErrorInDeg[2]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[2].GetDouble() );
+    
+    mininumAttitudeErrorInQuaternion            = astro::transformEulerToQuaternion( mininumAttitudeErrorInDeg ); 
+
     // Check if the control torque is active.
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
     std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
@@ -325,6 +354,7 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
                                   controlTorqueActiveModelFlag,
                                   quaternionControlGain,
                                   angularVelocityControlGainVector,
+                                  mininumAttitudeErrorInQuaternion, 
                                   metadataFilePath,
                                   stateHistoryFilePath);
 };

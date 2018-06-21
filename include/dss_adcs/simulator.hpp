@@ -74,6 +74,7 @@ public:
                     const bool                      aControlTorqueActiveModelFlag,
                     const Real                      aQuaternionControlGain, 
                     const Vector3                   anAngularVelocityControlGainVector, 
+                    const Vector4                   aMininumAttitudeErrorInQuaternion,
                     const std::string&              aMetadataFilePath,
                     const std::string&              aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
@@ -96,6 +97,7 @@ public:
           controlTorqueActiveModelFlag( aControlTorqueActiveModelFlag ),
           quaternionControlGain( aQuaternionControlGain ),
           angularVelocityControlGainVector( anAngularVelocityControlGainVector ),
+          mininumAttitudeErrorInQuaternion( aMininumAttitudeErrorInQuaternion ), 
           metadataFilePath( aMetadataFilePath ),
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -109,7 +111,7 @@ public:
     //! Reference attitude state defined by the user. 
     const Vector4 referenceAttitudeState; 
     
-    //! Selected numerical intergrator. 
+    //! Selected numerical integrator. 
     const Integrator integrator; 
 
     //! Start epoch for the simulation. 
@@ -159,6 +161,9 @@ public:
 
     //! Angular Velocity control gain vector. 
     const Vector3 angularVelocityControlGainVector; 
+
+    //! Minimum attitude error in quaternion. 
+    const Vector4 mininumAttitudeErrorInQuaternion; 
 
     //! Metadata file path.
     const std::string metadataFilePath; 

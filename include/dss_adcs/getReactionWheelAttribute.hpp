@@ -97,17 +97,17 @@ inline ReactionWheel getReactionWheelAttributes( const std::string productJson )
 	// Check the measurement unit for the length, height and width. It needs to be 'm'. 
 	if ( mapForResult["length-measurement_unit"].compare("m") != 0 )
 	{
-		if ( mapForResult["length-measurement_unit"].compare("cm") != 0 )
+		if ( mapForResult["length-measurement_unit"].compare("cm") == 0 )
 		{
 			reactionWheellength = sml::convertCentimeterToMeter( std::stod( mapForResult["length-value"], &sz ) ); 
-			reactionWheelWidth = sml::convertGramsToKilograms( std::stod( mapForResult["width-value"], &sz ) ); 
-			reactionWheelHeight = sml::convertGramsToKilograms( std::stod( mapForResult["height-value"], &sz ) ); 
+			reactionWheelWidth = sml::convertCentimeterToMeter( std::stod( mapForResult["width-value"], &sz ) ); 
+			reactionWheelHeight = sml::convertCentimeterToMeter( std::stod( mapForResult["height-value"], &sz ) ); 
 		}
-		else if ( mapForResult["length-measurement_unit"].compare("mm") != 0 )
+		else if ( mapForResult["length-measurement_unit"].compare("mm") == 0 )
 		{
 			reactionWheellength = sml::convertMillimeterToMeter( std::stod( mapForResult["length-value"], &sz ) ); 
-			reactionWheelWidth = sml::convertMilligramsToKilograms( std::stod( mapForResult["width-value"], &sz ) ); 
-			reactionWheelHeight = sml::convertMilligramsToKilograms( std::stod( mapForResult["height-value"], &sz ) ); 
+			reactionWheelWidth = sml::convertMillimeterToMeter( std::stod( mapForResult["width-value"], &sz ) ); 
+			reactionWheelHeight = sml::convertMillimeterToMeter( std::stod( mapForResult["height-value"], &sz ) ); 
 		}
 		else 
 		{
