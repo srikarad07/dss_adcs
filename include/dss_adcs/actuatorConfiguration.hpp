@@ -22,6 +22,7 @@ class ActuatorConfiguration
 {
 public: 
 
+    // VectorXd reactionWheelMotorTorque(reactionWheel.size());
     Vector3 reactionWheelMotorTorque;
 
     ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel, 
@@ -42,9 +43,7 @@ public:
             throw; 
         }
 
-        // TO DO: << This should be dynamicall allocated >>
-        Matrix33 reactionWheelTorqueToControlTorqueMappingMatrix; 
-
+        MatrixXd reactionWheelTorqueToControlTorqueMappingMatrix(3, reactionWheel.size()); 
         // TO DO: Need to test this function for accuracy. And in simulator convert the degree 
         // to radians before it is called here for wheelOrientation. 
 
@@ -58,7 +57,8 @@ public:
             reactionWheelTorqueMax[i]      = reactionWheel[i].maxTorque; 
         }
         // std::cout << "Torques: "<< reactionWheelTorqueMax << std::endl; 
-        Matrix33 inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
+        MatrixXd inverseReactionWheelTorqueToControlTorqueMappingMatrix(reactionWheel.size(), 3); 
+        inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
         
         reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * controlTorque; 
 

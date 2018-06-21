@@ -35,6 +35,9 @@ typedef Eigen::Matrix< double, 4, 1 > Vector4;
 //! Set type for 7-dimensional vector. 
 typedef Eigen::Matrix< double, 7, 1 > Vector7;
 
+//! Set type for dynamically allocated vector. 
+typedef Eigen::Matrix< double, Eigen::Dynamic, 1> VectorXd;
+
 //! Set type for a 3 by 3 matrix.
 typedef Eigen::Matrix< double, 3, 3 > Matrix33; 
 

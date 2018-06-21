@@ -29,10 +29,10 @@ Vector3 computeRealTorqueValue(     const Vector4                   quaternionCu
 {
 
 Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
-                                                                 quaternionCurrent, 
-                                                                 angularVelocity, 
-                                                                 quaternionControlGain, 
-                                                                 angularVelocityControlGainMatrix );                           
+                                                                          quaternionCurrent, 
+                                                                          angularVelocity, 
+                                                                          quaternionControlGain, 
+                                                                          angularVelocityControlGainMatrix );                           
 
 Vector3 feasibleContolTorque = actuatorConfiguration.computePrincipleAxesTorque( commandedControlTorque );  
 return feasibleContolTorque; 
