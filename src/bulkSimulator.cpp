@@ -19,6 +19,7 @@
 #include "dss_adcs/dynamicalSystem.hpp"
 #include "dss_adcs/getReactionWheel.hpp"
 #include "dss_adcs/reactionWheelConfiguration.hpp"
+#include "dss_adcs/reactionWheelMappingMatrices.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/tools.hpp"
 #include "dss_adcs/outputWriter.hpp"
@@ -45,17 +46,20 @@ void executeBulkSimulator( const rapidjson::Document& config )
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
     std::cout << "Reaction wheel size: "<< reactionWheels.size() << std::endl;  
     
-    for ( unsigned int tempNumber = 0; tempNumber < reactionWheels.size(); ++tempNumber )
+    std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts = getReactionWheelConcepts( input.reactionWheelConfiguration, 
+                                                                                                           reactionWheels, 
+                                                                                                           3 ); 
+    // std::vector< ReactionWheel > singleReactionWheelConcept = reactionWheelConcepts["concept1"]; 
+    // std::cout << singleReactionWheelConcept[0].name << std::endl; 
+    // std::cout << singleReactionWheelConcept[1].name << std::endl; 
+    // std::cout << singleReactionWheelConcept[2].name << std::endl; 
+    for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator != reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
     {
-        std::vector< ReactionWheel > reactionWheelConcept; 
-        reactionWheelConcept =  getReactionWheelConcept( input.reactionWheelConfiguration, 
-                                                         reactionWheels,
-                                                         tempNumber, 
-                                                         input.wheelOrientation  );
+        std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
 
-        std::cout << "The reaction wheel torque is: " << reactionWheelConcept[0].maxTorque << std::endl;
-        std::cout << "The reaction wheel torque is: " << reactionWheelConcept[1].maxTorque << std::endl;
-        std::cout << "The reaction wheel torque is: " << reactionWheelConcept[2].maxTorque << std::endl;
+        // std::cout << "The reaction wheel torque is: " << reactionWheelConcept[0].name << std::endl;
+        // std::cout << "The reaction wheel torque is: " << reactionWheelConcept[1].name << std::endl;
+        // std::cout << "The reaction wheel torque is: " << reactionWheelConcept[2].name << std::endl;
 
         // TO DO: Move the wheel orientation as a property of the reaction wheel //
         ActuatorConfiguration actuatorConfiguration( reactionWheelConcept, input.wheelOrientation ); 
