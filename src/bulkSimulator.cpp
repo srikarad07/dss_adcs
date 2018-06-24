@@ -40,7 +40,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
     std::cout << "The API is being called to extract the parameters ... " << std::endl;
     std::vector< ReactionWheel > reactionWheels; 
-    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
+    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid, input.wheelOrientation ); 
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
@@ -62,7 +62,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
         // std::cout << "The reaction wheel torque is: " << reactionWheelConcept[2].name << std::endl;
 
         // TO DO: Move the wheel orientation as a property of the reaction wheel //
-        ActuatorConfiguration actuatorConfiguration( reactionWheelConcept, input.wheelOrientation ); 
+        ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
 
         // Create instance of dynamical system.
         std::cout << "Setting up dynamical model ..." << std::endl;

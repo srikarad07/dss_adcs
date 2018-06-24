@@ -14,8 +14,9 @@
 namespace dss_adcs
 {
    
-    inline std::vector < ReactionWheel > getReactionWheels(    const std::string actuator, 
-                                                        const std::vector< std::string >actuatorUuid    )
+    inline std::vector < ReactionWheel > getReactionWheels( const std::string actuator, 
+                                                            const std::vector< std::string >actuatorUuid, 
+                                                            const std::vector< Vector2 > wheelOrientations )
     {
         std::vector < ReactionWheel > reactionWheels;
 
@@ -23,7 +24,7 @@ namespace dss_adcs
         for ( unsigned int iterator = 0; iterator < actuatorUuid.size(); ++iterator )
         {
             std::string reactionWheelString = callTheApi( actuatorUuid[iterator] );
-            reactionWheels.push_back( getReactionWheelAttributes( reactionWheelString ) ); 
+            reactionWheels.push_back( getReactionWheelAttributes( reactionWheelString, wheelOrientations[iterator] ) ); 
         }
 
         return reactionWheels;

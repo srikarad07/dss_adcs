@@ -34,8 +34,30 @@ Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quater
                                                                           quaternionControlGain, 
                                                                           angularVelocityControlGainMatrix );                           
 
-Vector3 feasibleContolTorque = actuatorConfiguration.computePrincipleAxesTorque( commandedControlTorque );  
-return feasibleContolTorque; 
+// Vector3 feasibleContolTorque = actuatorConfiguration.computePrincipleAxesTorque( commandedControlTorque );  
+// return feasibleContolTorque; 
+
+    VectorXd reactionWheelTorqueMax = actuatorConfiguration.computeMaxReactionWheelTorque(); 
+
+    std::pair< MatrixXd, MatrixXd > mappingMatrices = actuatorConfiguration.computeReactionWheelMappingMatrices( );
+
+    const MatrixXd reactionWheelTorqueToControlTorqueMappingMatrix = mappingMatrices.first; 
+    const MatrixXd inverseReactionWheelTorqueToControlTorqueMappingMatrix = mappingMatrices.second; 
+
+    VectorXd reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * commandedControlTorque;  
+    
+    for ( unsigned int iterator = 0; iterator < reactionWheelMotorTorque.size(); ++iterator )
+    {
+        if ( reactionWheelTorqueMax.array().abs()[iterator] < reactionWheelMotorTorque.array().abs()[iterator] )
+        {
+            Real errorSign        = dss_adcs::signFunction( reactionWheelMotorTorque[ iterator ] ); 
+            reactionWheelMotorTorque[iterator]  = errorSign*reactionWheelTorqueMax[iterator]; 
+        }   
+    }
+
+    Vector3 controlTorque   = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelMotorTorque; 
+
+    return controlTorque; 
 
 }  //template 
 

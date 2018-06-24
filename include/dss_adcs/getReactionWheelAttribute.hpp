@@ -26,7 +26,8 @@
 namespace dss_adcs
 {
 
-inline ReactionWheel getReactionWheelAttributes( const std::string productJson )
+inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson, 
+												 const Vector2  	wheelOrientation )
 {
     // std::ifstream inputFile( productJson );
 
@@ -133,7 +134,7 @@ inline ReactionWheel getReactionWheelAttributes( const std::string productJson )
 	std::cout << "Mass: " << reactionWheelMass << std::endl;	 
 	
 	// ReactionWheel reactionWheel; 
-	ReactionWheel reactionWheel( reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
+	ReactionWheel reactionWheel( wheelOrientation, reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
 
 	return reactionWheel; 
 } 
