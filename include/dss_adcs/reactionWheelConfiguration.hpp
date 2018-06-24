@@ -8,6 +8,7 @@
 #define DSS_ADCS_REACTION_WHEEL_CONFIGURATION_HPP
 
 #include <iostream>
+#include <stdlib.h> 
 #include <string>
 
 #include "dss_adcs/reactionWheelSchema.hpp"
@@ -23,7 +24,7 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
                          
         if ( actuatorConfigurationType.compare("homogenous") == 0 )
         {
-            for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheels.size(); ++ reactionWheelIterator )
+            for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheels.size(); ++reactionWheelIterator )
             {
                 // Save each concept of Reaction wheel to it's respective concept number. 
                 std::ostringstream tempReactionWheelConceptNumber;
@@ -36,10 +37,39 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
             }
         
         }
-        else if ( actuatorConfigurationType.compare("heterogeneous") == 0 )
+        else if ( actuatorConfigurationType.compare("random") == 0 )
+        {
+            // std::cout << actuatorConfigurationType << "Configuration is not defined in the model yet! " << std::endl; 
+            // throw; 
+            for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < 3*reactionWheels.size(); ++ reactionWheelIterator )
+            {
+                // Save each concept of Reaction wheel to it's respective concept number. 
+                std::ostringstream tempReactionWheelConceptNumber;
+                tempReactionWheelConceptNumber << reactionWheelIterator + 1; 
+
+                for ( unsigned int iterator = 0; iterator < numberOfReactionWheels; ++iterator )
+                {
+                    unsigned int reactionWheelNumber = rand () % reactionWheels.size(); 
+                    reactionWheelConcepts["concept" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelNumber] );   
+                }    
+            }
+        }
+        else if ( actuatorConfigurationType.compare("homogenous") == 0 )
         {
             std::cout << actuatorConfigurationType << "Configuration is not defined in the model yet! " << std::endl; 
             throw; 
+            // for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < 3*reactionWheels.size(); ++ reactionWheelIterator )
+            // {
+            //     // Save each concept of Reaction wheel to it's respective concept number. 
+            //     std::ostringstream tempReactionWheelConceptNumber;
+            //     tempReactionWheelConceptNumber << reactionWheelIterator + 1; 
+
+            //     for ( unsigned int iterator = 0; iterator < numberOfReactionWheels; ++iterator )
+            //     {
+            //         unsigned int reactionWheelNumber = numberOfReactionWheels; 
+            //         reactionWheelConcepts["concept" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelNumber] );   
+            //     }    
+            // }
         }
         else 
         {

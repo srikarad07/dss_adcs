@@ -11,8 +11,9 @@
 
 #include <Eigen/Dense>
 
-#include "dss_adcs/actuatorConfiguration.hpp"
 #include "astro/quaternionFeedbackControl.hpp"
+
+#include "dss_adcs/actuatorConfiguration.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 
 namespace dss_adcs
@@ -33,9 +34,6 @@ Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quater
                                                                           angularVelocity, 
                                                                           quaternionControlGain, 
                                                                           angularVelocityControlGainMatrix );                           
-
-// Vector3 feasibleContolTorque = actuatorConfiguration.computePrincipleAxesTorque( commandedControlTorque );  
-// return feasibleContolTorque; 
 
     VectorXd reactionWheelTorqueMax = actuatorConfiguration.computeMaxReactionWheelTorque(); 
 
