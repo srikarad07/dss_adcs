@@ -24,7 +24,7 @@ class ActuatorConfiguration
 public: 
 
     // VectorXd reactionWheelMotorTorque(reactionWheel.size());
-    Vector3 reactionWheelMotorTorque;
+    // Vector3 reactionWheelMotorTorque;
 
     ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel )
                     : reactionWheel( aReactionWheel )
@@ -130,7 +130,7 @@ private:
 
 const std::vector< ReactionWheel > reactionWheel; 
 
-const std::vector< Vector2 > wheelOrientation;  
+// const std::vector< Vector2 > wheelOrientation;  
 
 }; // class 
 

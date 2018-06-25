@@ -111,18 +111,22 @@ void executeBulkSimulator( const rapidjson::Document& config )
             disturbanceTorque[1] += gravityGradientTorque[1];
             disturbanceTorque[2] += gravityGradientTorque[2]; 
 
-            Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
-            if ( input.controlTorqueActiveModelFlag != 0 )
+            // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
+            std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                                                              referenceAttitudeState,
+                                                                                              currentAttitudeRate, 
+                                                                                              input.quaternionControlGain, 
+                                                                                              input.angularVelocityControlGainVector, 
+                                                                                              actuatorConfiguration ); 
+            Vector3 controlTorque( outputTorques.first ); 
+            VectorXd reactionWheelMotorTorque( outputTorques.second );  
+
+            if ( input.controlTorqueActiveModelFlag == false )
             {
-                controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                                  referenceAttitudeState,
-                                                                  currentAttitudeRate, 
-                                                                  input.quaternionControlGain, 
-                                                                  input.angularVelocityControlGainVector, 
-                                                                  actuatorConfiguration );
+                controlTorque = { 0.0, 0.0, 0.0 };
             }
 
-            StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque, disturbanceTorque );
+            StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque );
 
             // Dynamics of the system 
             DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );

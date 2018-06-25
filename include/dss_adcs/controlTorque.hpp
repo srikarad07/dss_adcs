@@ -15,25 +15,25 @@
 
 #include "dss_adcs/actuatorConfiguration.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
+#include "dss_adcs/typedefs.hpp"
 
 namespace dss_adcs
 {
 
 // Compute the value of control torque 
-template < typename Vector3, typename Vector4, typename Real >
-Vector3 computeRealTorqueValue(     const Vector4                   quaternionCurrent, 
-                                    const Vector4                   quaternionReference,
-                                    const Vector3                   angularVelocity, 
-                                    const Real                      quaternionControlGain, 
-                                    const Vector3                   angularVelocityControlGainMatrix,
-                                    ActuatorConfiguration&          actuatorConfiguration    )
+// template < typename Vector3, typename VectorXd, typename Vector4, typename Real>
+std::pair< Vector3, VectorXd > computeRealTorqueValue(  const Vector4                   quaternionCurrent, 
+                                                        const Vector4                   quaternionReference,
+                                                        const Vector3                   angularVelocity, 
+                                                        const Real                      quaternionControlGain, 
+                                                        const Vector3                   angularVelocityControlGainMatrix,
+                                                        ActuatorConfiguration&          actuatorConfiguration    )
 {
-
-Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
-                                                                          quaternionCurrent, 
-                                                                          angularVelocity, 
-                                                                          quaternionControlGain, 
-                                                                          angularVelocityControlGainMatrix );                           
+    Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
+                                                                              quaternionCurrent, 
+                                                                              angularVelocity, 
+                                                                              quaternionControlGain, 
+                                                                              angularVelocityControlGainMatrix );                           
 
     VectorXd reactionWheelTorqueMax = actuatorConfiguration.computeMaxReactionWheelTorque(); 
 
@@ -53,10 +53,11 @@ Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quater
         }   
     }
 
-    Vector3 controlTorque   = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelMotorTorque; 
+    const Vector3 controlTorque   = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelMotorTorque; 
 
-    return controlTorque; 
-
+    std::pair< Vector3, VectorXd > outputTorques( controlTorque, reactionWheelMotorTorque ); 
+    
+    return outputTorques; 
 }  //template 
 
 } // namespace astro 
