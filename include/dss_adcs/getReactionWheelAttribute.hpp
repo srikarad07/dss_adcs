@@ -20,6 +20,7 @@
 
 #include <sml/sml.hpp>
 
+#include "dss_adcs/getReactionWheelAttributesInSIUnits.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/tools.hpp"
 
@@ -57,81 +58,32 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson,
 
 	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value"};
 	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque" };
-	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve);	
+	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve );	
 
-	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
-	/*	Convert this into a separate function to obtain the value of reaction Wheels. 
-	* 	This was the initialisation problem of the attributes can be solved. 
-	*/
-	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+	const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
+												       mapForResult["mass-value"],
+												       reactionWheelName,
+												       supplierName );
 
-	Real reactionWheelMass(0.0);
-	Real reactionWheellength(0.0);
-	Real reactionWheelWidth(0.0);
-	Real reactionWheelHeight(0.0);
-	Real reactionWheelTorque(0.0); 
+	const Real reactionWheellength = convertToMeter( mapForResult["length-measurement_unit"],
+											         mapForResult["length-value"],
+											         reactionWheelName,
+											         supplierName );
 
-	// Attributes defined as strings in the json file. To convert them into double use std::stod function. 
-	std::string::size_type sz; // size type for stod function. 
+	const Real reactionWheelHeight = convertToMeter( mapForResult["height-measurement_unit"],
+											         mapForResult["height-value"],
+											         reactionWheelName,
+											         supplierName );
 
-	// Check the measurement unit for the mass. It needs to be kg. 
-	if ( mapForResult["mass-measurement_unit"].compare("kg") != 0 )
-	{
-		if ( mapForResult["mass-measurement_unit"].compare("g") == 0 )
-		{
-			reactionWheelMass = sml::convertGramsToKilograms( std::stod( mapForResult["mass-value"], &sz ) ); 
-		}
-		else if ( mapForResult["mass-measurement_unit"].compare("mg") == 0 )
-		{
-			reactionWheelMass = sml::convertMilligramsToKilograms( std::stod( mapForResult["mass-value"], &sz ) ); 
-		}
-		else 
-		{
-			std::cout << "The measurement unit " << mapForResult[ "mass-measurement_unit"] << "cannot be converted into kgs. The conversion function hasn't been implemented." << std::endl; 
-		}
-	}
-	else 
-	{
-		reactionWheelMass = std::stod( mapForResult["mass-value"], &sz );
-	}
+	const Real reactionWheelWidth = convertToMeter( mapForResult["width-measurement_unit"],
+											        mapForResult["width-value"],
+											        reactionWheelName,
+											        supplierName );
 
-	// Check the measurement unit for the length, height and width. It needs to be 'm'. 
-	if ( mapForResult["length-measurement_unit"].compare("m") != 0 )
-	{
-		if ( mapForResult["length-measurement_unit"].compare("cm") == 0 )
-		{
-			reactionWheellength = sml::convertCentimeterToMeter( std::stod( mapForResult["length-value"], &sz ) ); 
-			reactionWheelWidth = sml::convertCentimeterToMeter( std::stod( mapForResult["width-value"], &sz ) ); 
-			reactionWheelHeight = sml::convertCentimeterToMeter( std::stod( mapForResult["height-value"], &sz ) ); 
-		}
-		else if ( mapForResult["length-measurement_unit"].compare("mm") == 0 )
-		{
-			reactionWheellength = sml::convertMillimeterToMeter( std::stod( mapForResult["length-value"], &sz ) ); 
-			reactionWheelWidth = sml::convertMillimeterToMeter( std::stod( mapForResult["width-value"], &sz ) ); 
-			reactionWheelHeight = sml::convertMillimeterToMeter( std::stod( mapForResult["height-value"], &sz ) ); 
-		}
-		else 
-		{
-			std::cout << "The measurement unit " << mapForResult[ "length-measurement_unit"] << "cannot be converted into kgs. The conversion function hasn't been implemented." << std::endl; 
-		}
-	}
-	else 
-	{
-		reactionWheellength 	= std::stod( mapForResult["length-value"], &sz );
-		reactionWheelWidth 		= std::stod( mapForResult["width-value"], &sz );
-		reactionWheelHeight 	= std::stod( mapForResult["height-value"], &sz );
-	}
-
-	if ( mapForResult["maximum torque-measurement_unit"].compare("N m") != 0 )
-	{
-		reactionWheelTorque		= sml::convertMilliNewtonMeterToNewtonMeter( std::stod( mapForResult["maximum torque-value"], &sz ) );
-	}
-	else 
-	{
-		reactionWheelTorque		= std::stod( mapForResult["maximum torque-value"], &sz );	
-	}
-	std::cout << "Torque: " << reactionWheelTorque << std::endl;
-	std::cout << "Mass: " << reactionWheelMass << std::endl;	 
+	const Real reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
+											         	   mapForResult["maximum torque-value"],
+											         	   reactionWheelName,
+											               supplierName); 
 	
 	// ReactionWheel reactionWheel; 
 	ReactionWheel reactionWheel( wheelOrientation, reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 

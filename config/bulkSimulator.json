@@ -34,7 +34,7 @@
     "actuator": "reaction_wheel",
 
     // Reaction wheel configuration type. 
-    "reaction_wheel_config_type": "random", 
+    "reaction_wheel_config_type": "homogenous", 
 
     // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
     // Angles given by the user in radians. 
