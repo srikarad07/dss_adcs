@@ -32,7 +32,7 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
 
                 for ( unsigned int iterator = 0; iterator < numberOfReactionWheels; ++iterator )
                 {
-                    reactionWheelConcepts["concept" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelIterator] );   
+                    reactionWheelConcepts["concept_" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelIterator] );   
                 }    
             }
         
@@ -50,7 +50,7 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
                 for ( unsigned int iterator = 0; iterator < numberOfReactionWheels; ++iterator )
                 {
                     unsigned int reactionWheelNumber = rand () % reactionWheels.size(); 
-                    reactionWheelConcepts["concept" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelNumber] );   
+                    reactionWheelConcepts["concept_" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelNumber] );   
                 }    
             }
         }

@@ -27,7 +27,19 @@ inline std::string callTheApi( const std::string actuatorUuid )
     auto r = session.Get();
 
     // std::cout << r.url << std::endl; 
-    std::cout << r.status_code << std::endl; // 200
+    if ( r.status_code == 200 )
+    {
+        // std::cout << "The API was called succesfully! The attributes for the actuator will be extracted... \n" << std::endl; 
+    }
+    else 
+    {
+        // std::ostringstream error;
+        // error << "ERROR: \"" << actuatorUuid << "\" missing from config file!";
+        std::cout << "Oops!  404 Error! \n 1) Check your internet connection! \n 2) Check the actuator id: " << actuatorUuid << std::endl; 
+        // throw std::runtime_error( error.str( ) );
+        throw; 
+    }
+    // std::cout << r.status_code << std::endl; // 200
     // std::cout << r.text << std::endl;
 
     return r.text; 

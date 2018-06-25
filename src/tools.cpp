@@ -27,7 +27,7 @@ ConfigIterator find( const rapidjson::Document& config, const std::string& param
     return iterator;
 }
 
-
+//! Check the sign of a double. 
 double signFunction( double x )
 {
         if ( x > 0 )
@@ -40,6 +40,7 @@ double signFunction( double x )
         }
 } 
 
+//! Extract attributes from the json file. 
 std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjson::Value& attributes, const std::string& findMemberName, const std::vector< std::string >findMemberValue, const std::vector<std::string>& keysToRetrieve) 
 {   
     std::map<std::string, std::string> result;
@@ -55,10 +56,15 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
                 {
                     // std::cout << "Keys! " << keysToRetrieve[0] << std::endl; 
                     const rapidjson::Value::ConstMemberIterator currentAttributeToReturn = itr->FindMember(keyToRetrieve.c_str());
-                    if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString()) 
+                    if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString() && currentAttributeToReturn->value.IsNull() != true ) 
                     {
                         // std::cout << "Map element test: " << attributeName + "-" + keyToRetrieve << std::endl;
                         result[attributeName + "-" + keyToRetrieve] = currentAttributeToReturn->value.GetString();
+                        // std::cout << currentAttributeToReturn->value.GetString() << std::endl; 
+                    }
+                    else if ( currentAttributeToReturn->value.IsNull() == true )
+                    {
+                        result[attributeName + "-" + keyToRetrieve] = ""; 
                     }
                 }
             }

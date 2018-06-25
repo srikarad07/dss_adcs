@@ -73,7 +73,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
         */
 
         // Create file stream to write state history to.
-        std::ofstream stateHistoryFile( input.stateHistoryFilePath );
+        std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + ".csv");
         stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
         //Set up numerical integrator. 
