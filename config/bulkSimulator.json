@@ -58,7 +58,8 @@
         ]        
     ],
     
-    "reaction_wheel_uuids" : "/home/superman/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
+    // "reaction_wheel_uuids" : "/home/superman/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
+    "reaction_wheel_uuids" : "/home/superman/workspace/trial/productsSlugs.json", 
 
     // Attitude representation type. 
     "attitude_representation" : "quaternions", 
