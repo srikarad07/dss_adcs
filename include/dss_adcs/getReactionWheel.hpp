@@ -7,6 +7,8 @@
 #ifndef GET_REACTION_WHEEL_HPP
 #define GET_REACTION_WHEEL_HPP
 
+#include <math.h> 
+
 #include "dss_adcs/apiCall.hpp"
 #include "dss_adcs/getReactionWheelAttribute.hpp"
 #include "dss_adcs/reactionWheelSchema.hpp"
@@ -24,9 +26,18 @@ namespace dss_adcs
         for ( unsigned int iterator = 0; iterator < actuatorUuid.size(); ++iterator )
         {
             std::string reactionWheelString = callTheApi( actuatorUuid[iterator] );
-            reactionWheels.push_back( getReactionWheelAttributes( reactionWheelString, wheelOrientations[iterator] ) ); 
-        }
+            ReactionWheel tempReactionWheel = getReactionWheelAttributes( reactionWheelString, wheelOrientations[iterator] ); 
 
+            if ( !isnan( tempReactionWheel.maxTorque ) )
+            {
+                reactionWheels.push_back( tempReactionWheel ); 
+            }
+            else 
+            {
+                std::cout << "The reaction wheel " << tempReactionWheel.name << " from " << tempReactionWheel.supplierName << "doesn't have the torque value given and hence, will not be considered for the simulations! " << std::endl;  
+            }
+        }
+        
         return reactionWheels;
     }
     

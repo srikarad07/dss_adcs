@@ -99,8 +99,7 @@ namespace dss_adcs
 	    	reactionWheelTorque		= sml::convertMilliNewtonMeterToNewtonMeter( std::stod( torque_value, &sz ) );
 	    }
 		else if( torque_value.empty() )
-		{
-			std::cout << "The reaction wheel " << reactionWheelName << " from " << supplierName << " doesn't have the torque value given. " << std::endl;   
+		{  
 			reactionWheelTorque = std::nan("Torque"); 
 		}
 	    else 
@@ -115,9 +114,7 @@ namespace dss_adcs
 													   std::string 							reactionWheelName, 
 													   std::string 							supplierName, 
 													   Vector2 								wheelOrientation )
-	{
-		// double reactionWheelMass, reactionWheelLength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque; 
-		
+	{	
 		const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
 												       mapForResult["mass-value"],
 												       reactionWheelName,
@@ -140,7 +137,7 @@ namespace dss_adcs
 		
 		double reactionWheelTorque; 
 
-		if ( mapForResult.find("maximum torque-measurement_unit") == mapForResult.end() )
+		if ( mapForResult.find("maximum torque-measurement_unit") != mapForResult.end() )
 		{
 			reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
 											         	   mapForResult["maximum torque-value"],
