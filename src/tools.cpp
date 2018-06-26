@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <locale> 
 #include <iostream>
+#include <string>
 
 #include "dss_adcs/tools.hpp"
 
@@ -48,24 +49,31 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
     {
         const rapidjson::Value& attributeClass = (*itr)["class"]; 
         for (rapidjson::Value::ConstMemberIterator itr2 = attributeClass.MemberBegin(); itr2 != attributeClass.MemberEnd(); ++itr2 )
-        {
-            std::string attributeName = itr2->value.GetString(); 
-            if ( findMemberName== itr2->name.GetString() && std::any_of( findMemberValue.cbegin(), findMemberValue.cend(), [&attributeName]( std::string attributeString ){ return attributeString == attributeName; } ) ) 
+        {  
+            if ( findMemberName == itr2->name.GetString() && std::any_of( findMemberValue.cbegin(), findMemberValue.cend(), [&itr2]( std::string attributeString ){ return attributeString == itr2->value.GetString(); } ) ) 
             {   
+                std::string attributeName = itr2->value.GetString(); 
+                std::cout << attributeName << std::endl; 
                 for (auto &keyToRetrieve : keysToRetrieve) 
                 {
                     // std::cout << "Keys! " << keysToRetrieve[0] << std::endl; 
                     const rapidjson::Value::ConstMemberIterator currentAttributeToReturn = itr->FindMember(keyToRetrieve.c_str());
-                    if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString() && currentAttributeToReturn->value.IsNull() != true ) 
+                    // std::cout << currentAttributeToReturn->value.IsNull() << std::endl; 
+                    
+                    const std::string currentAttributeValue = currentAttributeToReturn->value.GetString();
+
+                    if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString() && currentAttributeValue.compare("") != 0 ) 
                     {
+                        // std::cout << currentAttributeToReturn->value.IsNull() << std::endl; 
                         // std::cout << "Map element test: " << attributeName + "-" + keyToRetrieve << std::endl;
                         result[attributeName + "-" + keyToRetrieve] = currentAttributeToReturn->value.GetString();
                         // std::cout << currentAttributeToReturn->value.GetString() << std::endl; 
                     }
-                    else if ( currentAttributeToReturn->value.IsNull() == true )
-                    {
-                        result[attributeName + "-" + keyToRetrieve] = ""; 
-                    }
+                    // else if ( currentAttributeValue.compare("") == 0 && )
+                    // {
+                    //     std::cout << attributeName + "-" + keyToRetrieve << std::endl;  
+                    //     result[attributeName + "-" + keyToRetrieve] = ""; 
+                    // }
                 }
             }
         }

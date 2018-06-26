@@ -56,8 +56,8 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson,
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
-	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value"};
-	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque" };
+	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value", "minimum_value", "minimum_value"};
+	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque", "torque" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve );	
 
 	const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
