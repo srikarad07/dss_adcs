@@ -56,7 +56,7 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson,
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
-	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value", "minimum_value", "minimum_value"};
+	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value", "maximum_value", "minimum_value"};
 	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque", "torque" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve );	
 
@@ -84,6 +84,34 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson,
 											         	   mapForResult["maximum torque-value"],
 											         	   reactionWheelName,
 											               supplierName); 
+	std::cout << reactionWheelTorque << std::endl; 
+	// std::cout << mapForResult["maximum torque-value"] << std::endl; 
+
+	// if ( mapForResult["maximum torque-value"].compare("") != 0 )
+	// {
+	// 	reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
+	// 											         	   mapForResult["maximum torque-value"],
+	// 											         	   reactionWheelName,
+	// 											               supplierName); 
+	
+	// }
+	// else if( mapForResult["maximum torque-value"].compare("") == 0 )
+	// {
+	// 	if ( mapForResult["maximum torque-maximum_value"].compare("") == 0 )
+	// 	{
+	// 		reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
+	// 											        mapForResult["maximum torque-value"],
+	// 											        reactionWheelName,
+	// 											        supplierName);
+	// 	}
+	// 	else 
+	// 	{
+	// 	reactionWheelTorque = convertToNewtonMeter( mapForResult["torque-measurement_unit"],
+	// 											         	   mapForResult["torque-maximum_value"],
+	// 											         	   reactionWheelName,
+	// 											               supplierName); 
+	// 	}
+	// }
 	
 	// ReactionWheel reactionWheel; 
 	ReactionWheel reactionWheel( wheelOrientation, reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 

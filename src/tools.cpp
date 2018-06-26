@@ -53,27 +53,27 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
             if ( findMemberName == itr2->name.GetString() && std::any_of( findMemberValue.cbegin(), findMemberValue.cend(), [&itr2]( std::string attributeString ){ return attributeString == itr2->value.GetString(); } ) ) 
             {   
                 std::string attributeName = itr2->value.GetString(); 
-                std::cout << attributeName << std::endl; 
+                // std::cout << attributeName << std::endl; 
                 for (auto &keyToRetrieve : keysToRetrieve) 
                 {
-                    // std::cout << "Keys! " << keysToRetrieve[0] << std::endl; 
                     const rapidjson::Value::ConstMemberIterator currentAttributeToReturn = itr->FindMember(keyToRetrieve.c_str());
-                    // std::cout << currentAttributeToReturn->value.IsNull() << std::endl; 
                     
                     const std::string currentAttributeValue = currentAttributeToReturn->value.GetString();
 
                     if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString() && currentAttributeValue.compare("") != 0 ) 
                     {
-                        // std::cout << currentAttributeToReturn->value.IsNull() << std::endl; 
                         // std::cout << "Map element test: " << attributeName + "-" + keyToRetrieve << std::endl;
                         result[attributeName + "-" + keyToRetrieve] = currentAttributeToReturn->value.GetString();
                         // std::cout << currentAttributeToReturn->value.GetString() << std::endl; 
                     }
-                    // else if ( currentAttributeValue.compare("") == 0 && )
-                    // {
-                    //     std::cout << attributeName + "-" + keyToRetrieve << std::endl;  
-                    //     result[attributeName + "-" + keyToRetrieve] = ""; 
-                    // }
+                    else if ( currentAttributeValue.compare("") == 0 )
+                    {
+                        // std::cout << attributeName + "-" + keyToRetrieve << std::endl;  
+                        std::string tempValue = "maximum_value"; 
+                        const rapidjson::Value::ConstMemberIterator currentAttributeValueTemp = itr->FindMember(tempValue.c_str()); 
+                        result[attributeName + "-" + keyToRetrieve] = currentAttributeValueTemp->value.GetString();
+                        // std::cout << result[attributeName + "-" + keyToRetrieve] << std::endl; 
+                    }
                 }
             }
         }

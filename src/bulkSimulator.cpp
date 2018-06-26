@@ -38,8 +38,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
     std::cout << std::endl;
 
     std::cout << "The API is being called to extract the parameters ... " << std::endl;
-    std::vector< ReactionWheel > reactionWheels; 
-    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid, input.wheelOrientation ); 
+    const std::vector< ReactionWheel > reactionWheels = getReactionWheels( input.actuator, input.actuatorUuid, input.wheelOrientation ); 
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
@@ -52,15 +51,15 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
     for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator != reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
     {
-        std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
+        const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
 
-        std::cout << "Reaction wheel name: " << reactionWheelConcept[0].name << std::endl; 
-        std::cout << "Reaction wheel name: " << reactionWheelConcept[1].name << std::endl; 
-        std::cout << "Reaction wheel name: " << reactionWheelConcept[2].name << std::endl; 
-        std::cout << "Reaction wheel name: " << reactionWheelConcept[3].name << std::endl; 
+        // std::cout << "Reaction wheel name: " << reactionWheelConcept[0].name << std::endl; 
+        // std::cout << "Reaction wheel name: " << reactionWheelConcept[1].name << std::endl; 
+        // std::cout << "Reaction wheel name: " << reactionWheelConcept[2].name << std::endl; 
+        // std::cout << "Reaction wheel name: " << reactionWheelConcept[3].name << std::endl; 
 
         // TO DO: Move the wheel orientation as a property of the reaction wheel //
-        ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
+        const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
 
         // Create instance of dynamical system.
         std::cout << "Setting up dynamical model ..." << std::endl;
@@ -90,10 +89,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
         for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
         {
-            Real integrationEndTime = integrationStartTime + input.timeStep; 
+            const Real integrationEndTime = integrationStartTime + input.timeStep; 
 
-            Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
-            Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+            const Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
+            const Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
 
             const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
 

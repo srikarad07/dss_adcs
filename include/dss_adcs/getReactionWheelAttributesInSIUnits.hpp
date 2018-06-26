@@ -7,6 +7,9 @@
 #ifndef DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTES_IN_SI_UNITS_HPP
 #define DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTES_IN_SI_UNITS_HPP
 
+#include "dss_adcs/reactionWheelSchema.hpp"
+#include "dss_adcs/typedefs.hpp"
+
 namespace dss_adcs 
 {
     double convertToKilograms( 	std::string mass_measurement_unit, 
@@ -104,10 +107,58 @@ namespace dss_adcs
 	    {
 	    	reactionWheelTorque		= std::stod( torque_value, &sz );	
 	    }
-	    // std::cout << "Torque: " << reactionWheelTorque << std::endl;
-	    // std::cout << "Mass: " << reactionWheelMass << std::endl;	
+
 		return reactionWheelTorque; 
 	};
+
+	ReactionWheel getReactionWheelAttributesInSiUnits( std::map< std::string, std::string > mapForResult, 
+													   std::string 							reactionWheelName, 
+													   std::string 							supplierName, 
+													   Vector2 								wheelOrientation )
+	{
+		// double reactionWheelMass, reactionWheelLength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque; 
+		
+		const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
+												       mapForResult["mass-value"],
+												       reactionWheelName,
+												       supplierName );
+		
+		const Real reactionWheelLength = convertToMeter( mapForResult["length-measurement_unit"],
+											         mapForResult["length-value"],
+											         reactionWheelName,
+											         supplierName );
+
+		const Real reactionWheelHeight = convertToMeter( mapForResult["height-measurement_unit"],
+											         mapForResult["height-value"],
+											         reactionWheelName,
+											         supplierName );
+
+		const Real reactionWheelWidth = convertToMeter( mapForResult["width-measurement_unit"],
+											        mapForResult["width-value"],
+											        reactionWheelName,
+											        supplierName );
+		
+		double reactionWheelTorque; 
+
+		if ( mapForResult.find("maximum torque-measurement_unit") == mapForResult.end() )
+		{
+			reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
+											         	   mapForResult["maximum torque-value"],
+											         	   reactionWheelName,
+											               supplierName); 
+		}
+		else 
+		{
+			reactionWheelTorque = convertToNewtonMeter( mapForResult["torque-measurement_unit"],
+											         	   mapForResult["torque-value"],
+											         	   reactionWheelName,
+											               supplierName); 
+		}
+
+		const ReactionWheel reactionWheel( wheelOrientation, reactionWheelMass, reactionWheelLength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
+		
+		return reactionWheel; 
+	} 
 
 }      
     
