@@ -27,10 +27,10 @@ public:
     // Vector3 reactionWheelMotorTorque;
 
     ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel )
-                    : reactionWheel( aReactionWheel )
-    { }
+                    : reactionWheel( aReactionWheel ) 
+    { } 
     
-    const std::pair< MatrixXd, MatrixXd > computeReactionWheelMappingMatrices( )
+    const std::pair< MatrixXd, MatrixXd > computeReactionWheelMappingMatrices( ) const
     {
         MatrixXd reactionWheelTorqueToControlTorqueMappingMatrix(3, reactionWheel.size()); 
         // TO DO: Need to test this function for accuracy. And in simulator convert the degree 
@@ -50,7 +50,7 @@ public:
         return mappingMatrices;  
     }
 
-    const Real calculateMassBudget()
+    const Real calculateMassBudget() const
     {
         Real massBudget; 
 
@@ -62,7 +62,7 @@ public:
         return massBudget; 
     }
 
-    const Real calculateVolumeBudget( )
+    const Real calculateVolumeBudget( ) const
     {
         Real volumeBudget; 
 
@@ -73,7 +73,7 @@ public:
         return volumeBudget; 
     }
 
-    const VectorXd computeMaxReactionWheelTorque()
+    const VectorXd computeMaxReactionWheelTorque() const
     {
         VectorXd reactionWheelTorqueMax( reactionWheel.size() ); 
         
