@@ -22,7 +22,7 @@ namespace dss_adcs
 
 // Compute the value of control torque 
 // template < typename Vector3, typename VectorXd, typename Vector4, typename Real>
-const std::pair< Vector3, VectorXd > computeRealTorqueValue(  const Vector4                   quaternionCurrent, 
+inline const std::pair< Vector3, VectorXd > computeRealTorqueValue(  const Vector4                   quaternionCurrent, 
                                                         const Vector4                   quaternionReference,
                                                         const Vector3                   angularVelocity, 
                                                         const Real                      quaternionControlGain, 

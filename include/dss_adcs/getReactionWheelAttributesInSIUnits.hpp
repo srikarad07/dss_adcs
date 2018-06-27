@@ -12,7 +12,7 @@
 
 namespace dss_adcs 
 {
-    double convertToKilograms( 	std::string mass_measurement_unit, 
+    inline double convertToKilograms( 	std::string mass_measurement_unit, 
 								std::string mass_value, 
 								std::string reactionWheelName, 
 								std::string supplierName )
@@ -50,7 +50,7 @@ namespace dss_adcs
 		return reactionWheelMass; 
 	};
 
-	double convertToMeter( std::string dimension_measurement_unit,  
+	inline double convertToMeter( std::string dimension_measurement_unit,  
 						   std::string dimension_value, 
 						   std::string reactionWheelName, 
 						   std::string supplierName )
@@ -86,7 +86,7 @@ namespace dss_adcs
 		return dimension; 
  	}
 
-	double convertToNewtonMeter( std::string torque_measurement_unit,  
+	inline double convertToNewtonMeter( std::string torque_measurement_unit,  
 						   		 std::string torque_value, 
 						   		 std::string reactionWheelName, 
 						   		 std::string supplierName )
@@ -110,7 +110,7 @@ namespace dss_adcs
 		return reactionWheelTorque; 
 	};
 
-	ReactionWheel getReactionWheelAttributesInSiUnits( std::map< std::string, std::string > mapForResult, 
+	inline ReactionWheel getReactionWheelAttributesInSiUnits( std::map< std::string, std::string > mapForResult, 
 													   std::string 							reactionWheelName, 
 													   std::string 							supplierName, 
 													   Vector2 								wheelOrientation )

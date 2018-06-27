@@ -39,13 +39,18 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
     std::cout << "The API is being called to extract the parameters ... " << std::endl;
     std::vector< ReactionWheel > reactionWheels; 
-    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
+    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid, input.wheelOrientation ); 
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl;
      
-    // TO DO: Move the wheel orientation as a property of the reaction wheel //
-    ActuatorConfiguration actuatorConfiguration( reactionWheels, input.wheelOrientation ); 
+    std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts; 
+    for ( unsigned int reactionWheelsIterator = 0; reactionWheelsIterator < reactionWheels.size(); ++reactionWheelsIterator )
+    {
+        reactionWheelConcepts["Concept"].push_back( reactionWheels[reactionWheelsIterator] );   
+    }
+    
+    const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"] ); 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
@@ -81,7 +86,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
         Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
         Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
-
+        
         Vector4 attitudeError   = currentAttitude - referenceAttitudeState; 
 
         if ( attitudeError.array().abs()[0] < input.mininumAttitudeErrorInQuaternion[0]   )
@@ -102,19 +107,25 @@ void executeSingleSimulator( const rapidjson::Document& config )
         disturbanceTorque[0] += gravityGradientTorque[0];
         disturbanceTorque[1] += gravityGradientTorque[1];
         disturbanceTorque[2] += gravityGradientTorque[2]; 
+
+        // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
+        std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                                                          referenceAttitudeState,
+                                                                                          currentAttitudeRate, 
+                                                                                          input.quaternionControlGain, 
+                                                                                          input.angularVelocityControlGainVector, 
+                                                                                          actuatorConfiguration ); 
+        Vector3 controlTorque( outputTorques.first ); 
+        VectorXd reactionWheelMotorTorque( outputTorques.second );  
         
-        Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
-        if ( input.controlTorqueActiveModelFlag != 0 )
+        std::cout << "okay 3! " << std::endl; 
+        
+        if ( input.controlTorqueActiveModelFlag == false )
         {
-            controlTorque = dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                              referenceAttitudeState,
-                                                              currentAttitudeRate, 
-                                                              input.quaternionControlGain, 
-                                                              input.angularVelocityControlGainVector, 
-                                                              actuatorConfiguration );
+            controlTorque = { 0.0, 0.0, 0.0 };
         }
         
-        StateHistoryWriter writer( stateHistoryFile, controlTorque, actuatorConfiguration.reactionWheelMotorTorque, disturbanceTorque );
+        StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque );
             
         // Dynamics of the system 
         DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
@@ -300,6 +311,7 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
             else // Extract the orientations of the reaction wheel. 
             {
                 Vector2 orientation( sml::convertDegreesToRadians( itr2->value[0].GetDouble() ), sml::convertDegreesToRadians( itr2->value[1].GetDouble() ) ); 
+
                 wheelOrientation.push_back( orientation );
             }
 		}
