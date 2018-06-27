@@ -54,7 +54,7 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
                 }    
             }
         }
-        else if ( actuatorConfigurationType.compare("homogenous") == 0 )
+        else if ( actuatorConfigurationType.compare("heterogenous") == 0 )
         {
             std::cout << actuatorConfigurationType << "Configuration is not defined in the model yet! " << std::endl; 
             throw; 

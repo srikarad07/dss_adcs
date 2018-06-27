@@ -156,7 +156,7 @@ private:
     //! Motor torque 
     const Vector3 motorTorque; 
 
-    //! Distubance Torque
+    //! Disturbance Torque
     const Vector3 disturbanceTorque; 
 };
 

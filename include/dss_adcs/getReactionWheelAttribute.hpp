@@ -29,18 +29,7 @@ namespace dss_adcs
 
 inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson, 
 												 const Vector2  	wheelOrientation )
-{
-    // std::ifstream inputFile( productJson );
-
-	// std::stringstream jsonDocumentBuffer;
-	// std::string inputLine;
-
-	// while ( std::getline( productJson, inputLine ) )
-	// {
-	//      jsonDocumentBuffer << inputLine << "\n";
-	// }
-	// config.Parse( jsonDocumentBuffer.str( ).c_str( ) );
-	
+{	
 	rapidjson::Document config;
 
 	config.Parse<0>(productJson.c_str()).HasParseError();
@@ -60,61 +49,6 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson,
 	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque", "torque" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve );	
 
-	// const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
-	// 											       mapForResult["mass-value"],
-	// 											       reactionWheelName,
-	// 											       supplierName );
-
-	// const Real reactionWheellength = convertToMeter( mapForResult["length-measurement_unit"],
-	// 										         mapForResult["length-value"],
-	// 										         reactionWheelName,
-	// 										         supplierName );
-
-	// const Real reactionWheelHeight = convertToMeter( mapForResult["height-measurement_unit"],
-	// 										         mapForResult["height-value"],
-	// 										         reactionWheelName,
-	// 										         supplierName );
-
-	// const Real reactionWheelWidth = convertToMeter( mapForResult["width-measurement_unit"],
-	// 										        mapForResult["width-value"],
-	// 										        reactionWheelName,
-	// 										        supplierName );
-
-	// const Real reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
-	// 										         	   mapForResult["maximum torque-value"],
-	// 										         	   reactionWheelName,
-	// 										               supplierName); 
-	// std::cout << reactionWheelTorque << std::endl; 
-	// std::cout << mapForResult["maximum torque-value"] << std::endl; 
-
-	// if ( mapForResult["maximum torque-value"].compare("") != 0 )
-	// {
-	// 	reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
-	// 											         	   mapForResult["maximum torque-value"],
-	// 											         	   reactionWheelName,
-	// 											               supplierName); 
-	
-	// }
-	// else if( mapForResult["maximum torque-value"].compare("") == 0 )
-	// {
-	// 	if ( mapForResult["maximum torque-maximum_value"].compare("") == 0 )
-	// 	{
-	// 		reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
-	// 											        mapForResult["maximum torque-value"],
-	// 											        reactionWheelName,
-	// 											        supplierName);
-	// 	}
-	// 	else 
-	// 	{
-	// 	reactionWheelTorque = convertToNewtonMeter( mapForResult["torque-measurement_unit"],
-	// 											         	   mapForResult["torque-maximum_value"],
-	// 											         	   reactionWheelName,
-	// 											               supplierName); 
-	// 	}
-	// }
-	
-	// ReactionWheel reactionWheel; 
-	// const ReactionWheel reactionWheel( wheelOrientation, reactionWheelMass, reactionWheellength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
 	const ReactionWheel reactionWheel = getReactionWheelAttributesInSiUnits( mapForResult, 
 																			 reactionWheelName,
 												       						 supplierName, 

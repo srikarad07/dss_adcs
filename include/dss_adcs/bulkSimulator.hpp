@@ -38,22 +38,23 @@ struct simulatorInput
 {
 public:
 
-    //! Construct data struct.
-    /*!
-     * Constructs data struct based on verified input parameters.
-     *
-     * @sa checkSimulatorInput,                 executeSimulator
-     * @param[in] aPrincipleinertia             Principle axes of inertia of the spacecraft [kg m^2]
-     * @param[in] anInitialAttitudeState          Initial attitude state including attitudes and angular velocities [deg] [deg/sec] 
-     * @param[in] anIntegrator                Name of selected numerical integrator
-     * @param[in] aStartEpoch                 Start epoch for integration                        [s]
-     * @param[in] anEndEpoch                  End epoch for integration                          [s]
-     * @param[in] aTimeStep                   Time step for integration                          [s]
-     * @param[in] aRelativeTolerance          Relative tolerance for integrator                  [-]
-     * @param[in] anAbsoluteTolerance         Absolute tolerance for integrator                  [-]
-     * @param[in] aMetadataFilePath           Path to output file for metadata
-     * @param[in] aStateHistoryFilePath       Path to output file for state history
-     */
+//! Construct data struct.
+/*!
+ * Constructs data struct based on verified input parameters.
+ *
+ * @sa checkSimulatorInput,                 executeSimulator
+ * @param[in] aPrincipleinertia             Principle axes of inertia of the spacecraft [kg m^2]
+ * @param[in] anInitialAttitudeState          Initial attitude state including attitudes and angular velocities[deg] [deg/sec] 
+ * @param[in] anIntegrator                Name of selected numerical integrator
+ * @param[in] aStartEpoch                 Start epoch for integration                        [s]
+ * @param[in] anEndEpoch                  End epoch for integration                          [s]
+ * @param[in] aTimeStep                   Time step for integration                          [s]
+ * @param[in] aRelativeTolerance          Relative tolerance for integrator                  [-]
+ * @param[in] anAbsoluteTolerance         Absolute tolerance for integrator                  [-]
+ * @param[in] aMetadataFilePath           Path to output file for metadata
+ * @param[in] aStateHistoryFilePath       Path to output file for state history
+ */
+
     simulatorInput( const Inertia                   aPrincipleInertia,
                     const State                     anInitialAttitudeState, 
                     const Vector4                   aReferenceAttitudeState,

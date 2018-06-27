@@ -2,8 +2,8 @@
     "mode": "simulator",
     "principle_inertia": [
         1000.0,
-        1200.0,
-        1100.0
+        1100.0,
+        1200.0
     ],
 
     "initial_attitude_state": [
@@ -54,7 +54,7 @@
         2.0
     ],  
 
-    "is_gravity_gradient_active": true,
+    "is_gravity_gradient_active": false,
 
     "is_control_torque_active": true, 
 
@@ -121,7 +121,7 @@
     // Set up integrator time parameters.
     "start_epoch": 0.0,
     "end_epoch": 2000.0,
-    "time_step": 10.0,
+    "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,

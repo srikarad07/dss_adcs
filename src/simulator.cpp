@@ -89,10 +89,10 @@ void executeSingleSimulator( const rapidjson::Document& config )
         
         Vector4 attitudeError   = currentAttitude - referenceAttitudeState; 
 
-        if ( attitudeError.array().abs()[0] < input.mininumAttitudeErrorInQuaternion[0]   )
-        {
-            std::cout << "It works? " << integrationStartTime << std::endl; 
-        }
+        // if ( attitudeError.array().abs()[0] < input.mininumAttitudeErrorInQuaternion[0]   )
+        // {
+        //     std::cout << "It works? " << integrationStartTime << std::endl; 
+        // }
         const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
@@ -117,8 +117,6 @@ void executeSingleSimulator( const rapidjson::Document& config )
                                                                                           actuatorConfiguration ); 
         Vector3 controlTorque( outputTorques.first ); 
         VectorXd reactionWheelMotorTorque( outputTorques.second );  
-        
-        std::cout << "okay 3! " << std::endl; 
         
         if ( input.controlTorqueActiveModelFlag == false )
         {

@@ -20,20 +20,18 @@
 namespace dss_adcs
 {
 
-// Compute the value of control torque 
-// template < typename Vector3, typename VectorXd, typename Vector4, typename Real>
-inline const std::pair< Vector3, VectorXd > computeRealTorqueValue(  const Vector4                   quaternionCurrent, 
-                                                        const Vector4                   quaternionReference,
-                                                        const Vector3                   angularVelocity, 
-                                                        const Real                      quaternionControlGain, 
-                                                        const Vector3                   angularVelocityControlGainMatrix,
-                                                        const ActuatorConfiguration&          actuatorConfiguration    ) 
+inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector4                   quaternionCurrent, 
+                                                                    const Vector4                   quaternionReference,
+                                                                    const Vector3                   angularVelocity, 
+                                                                    const Real                      quaternionControlGain, 
+                                                                    const Vector3                   angularVelocityControlGainMatrix,
+                                                                    const ActuatorConfiguration&    actuatorConfiguration ) 
 {
     const Vector3 commandedControlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
-                                                                              quaternionCurrent, 
-                                                                              angularVelocity, 
-                                                                              quaternionControlGain, 
-                                                                              angularVelocityControlGainMatrix );                           
+                                                                                    quaternionCurrent, 
+                                                                                    angularVelocity, 
+                                                                                    quaternionControlGain, 
+                                                                                    angularVelocityControlGainMatrix );                           
 
     const VectorXd reactionWheelTorqueMax = actuatorConfiguration.computeMaxReactionWheelTorque(); 
 
