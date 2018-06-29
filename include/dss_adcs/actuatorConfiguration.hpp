@@ -48,7 +48,7 @@ public:
 
     const Real calculateMassBudget() const
     {
-        Real massBudget; 
+        Real massBudget(0.0); 
 
         for ( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheel.size(); ++reactionWheelIterator )
         {
@@ -60,7 +60,7 @@ public:
 
     const Real calculateVolumeBudget( ) const
     {
-        Real volumeBudget; 
+        Real volumeBudget(0.0); 
 
         for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheel.size(); ++reactionWheelIterator )
         {

@@ -42,6 +42,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
+ 
+    // Print metadata to the file provide in metadatafile path. 
+    std::ofstream metadatafile( input.metadataFilePath);
+    metadatafile << "Concepts,Mass,Volume" << std::endl;
     
     const int numberOfReactionWheels = 4;
 
@@ -52,13 +56,8 @@ void executeBulkSimulator( const rapidjson::Document& config )
     for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator != reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
     {
         const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
-
-        // std::cout << "Reaction wheel name: " << reactionWheelConcept[0].name << std::endl; 
-        // std::cout << "Reaction wheel name: " << reactionWheelConcept[1].name << std::endl; 
-        // std::cout << "Reaction wheel name: " << reactionWheelConcept[2].name << std::endl; 
-        // std::cout << "Reaction wheel name: " << reactionWheelConcept[3].name << std::endl; 
-
-        // TO DO: Move the wheel orientation as a property of the reaction wheel //
+        // std::cout << reactionWheelConceptIterator->first << std::endl; 
+    
         const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
 
         // Create instance of dynamical system.
@@ -147,6 +146,9 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 throw;
             } 
         }
+
+        //! Write metadata to the metadata file path. 
+        metadatafile << reactionWheelConceptIterator->first << "," << actuatorConfiguration.calculateMassBudget() << "," <<  actuatorConfiguration.calculateVolumeBudget() << std::endl; 
     }
 };
 

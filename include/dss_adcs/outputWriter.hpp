@@ -53,21 +53,42 @@ inline void print( std::ostream& stream,
  *                           (default = 25)
  * @param[in]  filler        Character used to fill fixed-width (default = ' ')
  */
-template< typename DataType >
-inline void print( std::ostream& stream,
-                   const std::string& parameterName,
-                   const DataType value,
-                   const std::string& units,
-                   const char delimiter = ',',
-                   const int width = 25,
-                   const char filler = ' ' )
-{
-    print( stream, parameterName, width, filler );
-    stream << delimiter;
-    print( stream, value, width, filler );
-    stream << delimiter;
-    print( stream, units, width, filler );
-}
+// template< typename DataType >
+// inline void print( std::ostream& stream,
+//                    const std::string& parameterName,
+//                    const DataType value,
+//                    const std::string& units,
+//                    const char delimiter = ',',
+//                    const int width = 25,
+//                    const char filler = ' ' )
+// {
+//     print( stream, parameterName, width, filler );
+//     stream << delimiter;
+//     print( stream, value, width, filler );
+//     stream << delimiter;
+//     print( stream, units, width, filler );
+// }
+
+// template< typename DataType >
+// inline void print( std::ostream& stream,
+//                    const std::string& parameterName,
+//                    const std::string& units,
+//                    const std::string& parameterName2,
+//                    const std::string& units2,
+//                    const std::string& parameterName3,
+//                    const std::string& units3,
+//                    const std::string& parameterName4,
+//                    const std::string& units4, 
+//                    const char delimiter = ',',
+//                    const int width = 25,
+//                    const char filler = ' ' )
+// {
+//     print( stream, parameterName, width, filler );
+//     stream << delimiter;
+//     print( stream, value, width, filler );
+//     stream << delimiter;
+//     print( stream, units, width, filler );
+// }
 
 //! Class to write state history to an output stream.
 /*!
