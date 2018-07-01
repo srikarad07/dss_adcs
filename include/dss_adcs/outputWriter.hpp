@@ -29,13 +29,21 @@ namespace dss_adcs
  *                       (default = 25)
  * @param[in]  filler    Character used to fill fixed-width (default = ' ')
  */
-template< typename DataType >
-inline void print( std::ostream& stream,
-                   const DataType value,
-                   const int width = 25,
-                   const char filler = ' ' )
+// template< typename DataType >
+// inline void print( std::ostream& stream,
+//                    const DataType value,
+//                    const int width = 25,
+//                    const char filler = ' ' )
+// {
+//     stream << std::left << std::setw( width ) << std::setfill( filler ) << value;
+// }
+
+template <typename Arg, typename... Args>
+void doPrint(std::ostream& out, Arg&& arg, Args&&... args)
 {
-    stream << std::left << std::setw( width ) << std::setfill( filler ) << value;
+    out << std::forward<Arg>(arg);
+    using expander = int[];
+    (void)expander{0, (void(out << ',' << std::forward<Args>(args)),0)...};
 }
 
 //! Print metadata parameter to stream.

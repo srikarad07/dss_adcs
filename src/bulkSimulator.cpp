@@ -10,6 +10,8 @@
 #include <vector>
 
 #include <boost/numeric/odeint.hpp>
+// #include "boost/numeric/odeint/external/eigen/eigen.hpp"
+#include <Eigen/Core>
 
 #include <astro/astro.hpp>
 #include <sml/sml.hpp>
@@ -44,111 +46,165 @@ void executeBulkSimulator( const rapidjson::Document& config )
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
  
     // Print metadata to the file provide in metadatafile path. 
-    std::ofstream metadatafile( input.metadataFilePath);
-    metadatafile << "Concepts,Mass,Volume" << std::endl;
+    std::ofstream metadatafile( input.metadataFilePath );
     
-    const int numberOfReactionWheels = 4;
-
-    std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts = getReactionWheelConcepts( input.reactionWheelConfiguration, 
-                                                                                                           reactionWheels, 
-                                                                                                           numberOfReactionWheels ); 
-
-    for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator != reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
+    for ( unsigned int reactionWheelNumberIterator = 2; reactionWheelNumberIterator < 7; ++reactionWheelNumberIterator )
     {
-        const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
-        // std::cout << reactionWheelConceptIterator->first << std::endl; 
-    
-        const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
+        const int numberOfReactionWheels = reactionWheelNumberIterator;
 
-        // Create instance of dynamical system.
-        std::cout << "Setting up dynamical model ..." << std::endl;
+        std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts = getReactionWheelConcepts( input.reactionWheelConfiguration, 
+                                                                                                               reactionWheels, 
+                                                                                                               numberOfReactionWheels ); 
 
-        /*  testInt for the gravity gradient model 
-        *   assumptions: radius is an assumption -> ideally radius should be derived from a ephemeris. 
-        *   direction cosines and conversion from euler angles and quaternions. 
-        *   assumption: random gravitational parameter defined for now -> ideally should be 
-        *   taken from a reliable source. 
-        */
-
-        // Create file stream to write state history to.
-        std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + ".csv");
-        stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
-
-        //Set up numerical integrator. 
-        std::cout << "Executing numerical integrator ..." << std::endl;
-        State   currentState                = input.initialAttitudeState;
-        Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
-
-        // Set up dynamical model.
-        std::cout << "Dynamical model setting up ..." << std::endl;
-
-        // Set up dynamical model.
-        std::cout << "Generating angular accelerations ..." << std::endl;
-        std::cout << std::endl;
-
-        for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
+        for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator !=   reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
         {
-            const Real integrationEndTime = integrationStartTime + input.timeStep; 
+            const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
 
-            const Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
-            const Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+            const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
 
-            const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+            // Create instance of dynamical system.
+            std::cout << "Setting up dynamical model ..." << std::endl;
 
-            Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
+            /*  testInt for the gravity gradient model 
+            *   assumptions: radius is an assumption -> ideally radius should be derived from a ephemeris. 
+            *   direction cosines and conversion from euler angles and quaternions. 
+            *   assumption: random gravitational parameter defined for now -> ideally should be 
+            *   taken from a reliable source. 
+            */
 
-            // Disturbance torques. 
-            if ( input.gravityGradientAccelerationModelFlag != false )
+            // Create file stream to write state history to.
+            std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + "_" + std::to_string(numberOfReactionWheels) + ".csv");
+            stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,   disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+
+            //Set up numerical integrator. 
+            std::cout << "Executing numerical integrator ..." << std::endl;
+            State   currentState                = input.initialAttitudeState;
+            Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
+
+            // Set up dynamical model.
+            std::cout << "Dynamical model setting up ..." << std::endl;
+
+            // Set up dynamical model.
+            std::cout << "Generating angular accelerations ..." << std::endl;
+            std::cout << std::endl;
+
+            for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
             {
-                gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
+                const Real integrationEndTime = integrationStartTime + input.timeStep; 
+
+                const Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
+                const Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+
+                const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+
+                Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
+
+                // Disturbance torques. 
+                if ( input.gravityGradientAccelerationModelFlag != false )
+                {
+                    gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
+                }
+
+                Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
+
+                disturbanceTorque[0] += gravityGradientTorque[0];
+                disturbanceTorque[1] += gravityGradientTorque[1];
+                disturbanceTorque[2] += gravityGradientTorque[2]; 
+
+                // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
+                std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                                                                  referenceAttitudeState,
+                                                                                                  currentAttitudeRate, 
+                                                                                                  input.quaternionControlGain, 
+                                                                                                  input.angularVelocityControlGainVector, 
+                                                                                                  actuatorConfiguration ); 
+                Vector3 controlTorque( outputTorques.first ); 
+                VectorXd reactionWheelMotorTorque( outputTorques.second );  
+
+                if ( input.controlTorqueActiveModelFlag == false )
+                {
+                    controlTorque = { 0.0, 0.0, 0.0 };
+                }
+
+                StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque );
+
+                // Dynamics of the system 
+                DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
+
+                if ( input.integrator == rk4 )
+                {
+                    using namespace boost::numeric::odeint;
+                    integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
+                                     dynamics,
+                                     currentState,
+                                     integrationStartTime,
+                                     integrationEndTime,
+                                     input.timeStep,
+                                     writer );
+                }
+                // else if ( input.integrator == dopri5 )
+                // {
+                //     using namespace boost::numeric::odeint;
+                //     // make_dense_output< Vector7, double, Vector7, double, vector_space_algebra > stepper( input.relativeTolerance,
+                //     //                                                             input.absoluteTolerance );
+                //     typedef runge_kutta_dopri5<Vector7, double, Vector7, double, vector_space_algebra > stepper; 
+
+                //     integrate_const( make_dense_output< stepper >( input.relativeTolerance, input.absoluteTolerance ),
+                //                      dynamics,
+                //                      currentState,
+                //                      integrationStartTime,
+                //                      integrationEndTime,
+                //                      input.timeStep,
+                //                      writer );
+                // }
+                // else if ( input.integrator == bs )
+                // {
+                //     using namespace boost::numeric::odeint;
+                //     bulirsch_stoer_dense_out<  Vector7, vector_space_algebra > stepper( input.absoluteTolerance,
+                //                                                input.relativeTolerance );
+                //     integrate_const( stepper,
+                //                      dynamics,
+                //                      currentState,
+                //                      integrationStartTime,
+                //                      integrationEndTime,
+                //                      input.timeStep,
+                //                      writer );
+                // }
+                else
+                {
+                    std::cout << "Numerical integrator not defined" << std::endl;
+                    throw;
+                } 
             }
 
-            Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
-
-            disturbanceTorque[0] += gravityGradientTorque[0];
-            disturbanceTorque[1] += gravityGradientTorque[1];
-            disturbanceTorque[2] += gravityGradientTorque[2]; 
-
-            // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
-            std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                                                              referenceAttitudeState,
-                                                                                              currentAttitudeRate, 
-                                                                                              input.quaternionControlGain, 
-                                                                                              input.angularVelocityControlGainVector, 
-                                                                                              actuatorConfiguration ); 
-            Vector3 controlTorque( outputTorques.first ); 
-            VectorXd reactionWheelMotorTorque( outputTorques.second );  
-
-            if ( input.controlTorqueActiveModelFlag == false )
+            //! Write metadata to the metadata file path. 
+            if (reactionWheelConcept.size() == 3)
             {
-                controlTorque = { 0.0, 0.0, 0.0 };
+                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() );
             }
-
-            StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque );
-
-            // Dynamics of the system 
-            DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
-
-            if ( input.integrator == rk4 )
+            else if ( reactionWheelConcept.size() == 4 )
             {
-                using namespace boost::numeric::odeint;
-                integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
-                                 dynamics,
-                                 currentState,
-                                 integrationStartTime,
-                                 integrationEndTime,
-                                 input.timeStep,
-                                 writer );
+                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   reactionWheelConcept[3].name,actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
             }
-            else
+            else if ( reactionWheelConcept.size() == 2 )
             {
-                std::cout << "Numerical integrator not defined" << std::endl;
-                throw;
+                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,actuatorConfiguration.calculateMassBudget(),     actuatorConfiguration.calculateVolumeBudget() ); 
             } 
-        }
+            else if ( reactionWheelConcept.size() == 5 )
+            {
+                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   reactionWheelConcept[3].name,reactionWheelConcept[4].name,actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
+            }
+            else if ( reactionWheelConcept.size() == 6 )
+            {
+                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   reactionWheelConcept[3].name,reactionWheelConcept[4].name,reactionWheelConcept[5].name,actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
+            } 
+            else 
+            {
+                std::cout << "Cannot print the metadata the for ther number of reaction wheels!" << std::endl; 
+            }
+            metadatafile << std::endl;
 
-        //! Write metadata to the metadata file path. 
-        metadatafile << reactionWheelConceptIterator->first << "," << actuatorConfiguration.calculateMassBudget() << "," <<  actuatorConfiguration.calculateVolumeBudget() << std::endl; 
+        }
     }
 };
 
@@ -206,6 +262,7 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     const Vector4 referenceAttitudeState           = astro::transformEulerToQuaternion( referenceAttitudeStateEuler );      
 
     std::cout << "Reference state in quaternion:                                " << referenceAttitudeState[0]<< "," << referenceAttitudeState[1]<< "," << referenceAttitudeState[2]<< "," << referenceAttitudeState[3] << std::endl;  
+    
     // Extract integrator type. 
     const std::string integratorString                  = find( config, "integrator" )->value.GetString( );
     Integrator integrator = rk4;
