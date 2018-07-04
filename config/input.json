@@ -1,9 +1,9 @@
 {
     "mode": "simulator",
     "principle_inertia": [
-        1000.0,
-        1100.0,
-        1200.0
+        6292.0,
+        5477.0,
+        2687.0
     ],
 
     "initial_attitude_state": [
@@ -73,22 +73,29 @@
         {
             "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
             "wheel_orientation": [
-                0.0, 
+                45.0, 
                 90.0
             ] 
         },
         {
             "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
             "wheel_orientation": [
-                90.0, 
-                90.0
+                0.0, 
+                225.0
             ]
         },
         {
             "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
             "wheel_orientation": [
-                90.0, 
-                0.0
+                315.0, 
+                90.0
+            ]
+        }, 
+        {
+            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
+            "wheel_orientation": [
+                0.0, 
+                315.0
             ]
         }        
     ],
@@ -120,7 +127,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 2000.0,
+    "end_epoch": 1000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).

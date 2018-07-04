@@ -80,6 +80,30 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
     std::vector< Vector4 > quaternionStateVector; 
 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TEMPORARY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+    const Real          naturalFrequency    = 0.1; 
+    const Real          dampingRatio        = 0.707; 
+    const Real          slewSaturationRate  = sml::convertDegreesToRadians( 0.2 ); 
+    const std::string   controllerType      = "cascade_saturation";
+    // const std::string   controllerType      = "linear"; 
+    // const Vector3 principleInertiaVector( 6292, 5477, 2687 );
+
+    // const Vector4 tempQuaternionVector( 0.2652, 0.2652, -0.6930, 0.6157);
+
+    // const std::tuple< Matrix33, Matrix33, Matrix33 > controlGainMatrices = astro::computeControlGainsCascadeSaturationLogic( naturalFrequency, dampingRatio, slewSaturationRate, principleInertiaVector, tempQuaternionVector );  
+     
+    // const Vector3 trialVector( 10.0, 11.0, -12.0 ); 
+    // const double upperBound(11.0);
+    // std::cout << "Saturated vector is: " << astro::saturationFunction( trialVector, upperBound ) << std::endl;
+
+    // const Vector3 trialVector2( 5.0, 25.0, -30.0 );
+    // const Vector3 maxVector( 10.0, 20.0, 30.0 );
+
+    // astro::normalizedSaturationFunction( trialVector2, maxVector );     
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<            >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+    
+    const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
+
     for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime += input.timeStep )
     {
         Real integrationEndTime = integrationStartTime + input.timeStep; 
@@ -87,14 +111,14 @@ void executeSingleSimulator( const rapidjson::Document& config )
         Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
         Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
         
-        Vector4 attitudeError   = currentAttitude - referenceAttitudeState; 
+        // Vector4 attitudeError   = currentAttitude - referenceAttitudeState; 
 
         // if ( attitudeError.array().abs()[0] < input.mininumAttitudeErrorInQuaternion[0]   )
         // {
         //     std::cout << "It works? " << integrationStartTime << std::endl; 
         // }
-        const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
-
+        // const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+        const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
         // Disturbance torques. 
         if ( input.gravityGradientAccelerationModelFlag != false )
@@ -107,14 +131,21 @@ void executeSingleSimulator( const rapidjson::Document& config )
         disturbanceTorque[0] += gravityGradientTorque[0];
         disturbanceTorque[1] += gravityGradientTorque[1];
         disturbanceTorque[2] += gravityGradientTorque[2]; 
-
+        
         // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
         std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                                           referenceAttitudeState,
                                                                                           currentAttitudeRate, 
                                                                                           input.quaternionControlGain, 
                                                                                           input.angularVelocityControlGainVector, 
-                                                                                          actuatorConfiguration ); 
+                                                                                          actuatorConfiguration, 
+                                                                                          controllerType, 
+                                                                                          naturalFrequency, 
+                                                                                          dampingRatio, 
+                                                                                          slewSaturationRate,
+                                                                                          input.principleInertia, 
+                                                                                          initialQuaternion, 
+                                                                                          integrationStartTime ); 
         Vector3 controlTorque( outputTorques.first ); 
         VectorXd reactionWheelMotorTorque( outputTorques.second );  
         
@@ -189,13 +220,18 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
     initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
     
     Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
-    initialAttitudeState[0]                        = quaternionInitialState[0];
-    initialAttitudeState[1]                        = quaternionInitialState[1];
-    initialAttitudeState[2]                        = quaternionInitialState[2];
-    initialAttitudeState[3]                        = quaternionInitialState[3];   
+    // initialAttitudeState[0]                        = quaternionInitialState[0];
+    // initialAttitudeState[1]                        = quaternionInitialState[1];
+    // initialAttitudeState[2]                        = quaternionInitialState[2];
+    // initialAttitudeState[3]                        = quaternionInitialState[3];   
     initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[3].GetDouble() ); 
     initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
     initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
+    
+    initialAttitudeState[0]  = 0.2652; 
+    initialAttitudeState[1]  = 0.2652; 
+    initialAttitudeState[2]  = -0.6930;
+    initialAttitudeState[3]  = 0.6157;
 
     std::cout << "Initial state in quaternion:                                  " << quaternionInitialState[0] << "," <<  quaternionInitialState[1] << "," << quaternionInitialState[2] << "," << quaternionInitialState[3] << std::endl;    
 
