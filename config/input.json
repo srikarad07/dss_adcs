@@ -15,33 +15,6 @@
         0.0
     ],
 
-    // "initial_attitude_state": [
-    //     -0.532035,
-    //     0.740302,
-    //     0.410964,
-    //     0.0,
-    //     0.0,
-    //     0.0,
-    //     0.0
-    // ],
-
-    // "initial_attitude_state": [
-    //     0.0,
-    //     0.0,
-    //     0.0,
-    //     1.0,
-    //     0.0,
-    //     0.0,
-    //     0.0
-    // ],
-
-    // "quaternion_reference_state": [
-    //     0.0, 
-    //     0.0, 
-    //     0.0,
-    //     1.0
-    // ],
-
     "quaternion_reference_state": [
         0.0, 
         0.0,
@@ -103,14 +76,20 @@
     // Attitude representation type. 
     "attitude_representation" : "quaternions", 
 
-    // Control gains. 
-    "attitude_control_gain" : 7.11, 
+    // Controller properties 
+    "natural_frequency" : 0.1,
+    "damping_ratio" : 0.707,
+    "slew_saturation_rate" : 0.2, 
+    "controller_type" : "linear",   
 
-    "angular_velocity_control_gains": [
-        18.67, 
-        8.67,
-        10.67 
-    ],
+    // Control gains. 
+    // "attitude_control_gain" : 7.11, 
+
+    // "angular_velocity_control_gains": [
+    //     18.67, 
+    //     8.67,
+    //     10.67 
+    // ],
 
     // Radial vector of the satellite from spacecraft [m]. 
     "radius": 7371000.0,

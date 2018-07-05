@@ -64,8 +64,15 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
-    stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+    if ( reactionWheels.size() == 3 )
+    {
+        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+    }
+    else if ( reactionWheels.size() == 4 )
+    {
+        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
+    }
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
     State   currentState                = input.initialAttitudeState;
@@ -81,10 +88,10 @@ void executeSingleSimulator( const rapidjson::Document& config )
     std::vector< Vector4 > quaternionStateVector; 
 
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TEMPORARY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-    const Real          naturalFrequency    = 0.1; 
-    const Real          dampingRatio        = 0.707; 
-    const Real          slewSaturationRate  = sml::convertDegreesToRadians( 0.2 ); 
-    const std::string   controllerType      = "cascade_saturation";
+    // const Real          naturalFrequency    = 0.1; 
+    // const Real          dampingRatio        = 0.707; 
+    // const Real          slewSaturationRate  = 0.2; 
+    // const std::string   controllerType      = "cascade_saturation";
     // const std::string   controllerType      = "linear"; 
     // const Vector3 principleInertiaVector( 6292, 5477, 2687 );
 
@@ -136,13 +143,11 @@ void executeSingleSimulator( const rapidjson::Document& config )
         std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                                           referenceAttitudeState,
                                                                                           currentAttitudeRate, 
-                                                                                          input.quaternionControlGain, 
-                                                                                          input.angularVelocityControlGainVector, 
                                                                                           actuatorConfiguration, 
-                                                                                          controllerType, 
-                                                                                          naturalFrequency, 
-                                                                                          dampingRatio, 
-                                                                                          slewSaturationRate,
+                                                                                          input.controllerType, 
+                                                                                          input.naturalFrequency, 
+                                                                                          input.dampingRatio, 
+                                                                                          input.slewSaturationRate,
                                                                                           input.principleInertia, 
                                                                                           initialQuaternion, 
                                                                                           integrationStartTime ); 
@@ -179,7 +184,6 @@ void executeSingleSimulator( const rapidjson::Document& config )
         quaternionStateVector.push_back( currentAttitude ); 
     }
     ObjectiveFunction objectiveFunction( reactionWheels, 
-                                         input.mininumAttitudeErrorInQuaternion,
                                          quaternionStateVector, 
                                          input.stateHistoryFilePath );   
     Real functionValue      = objectiveFunction.computeObjectiveFunction(); 
@@ -228,11 +232,16 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
     initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
     initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
     
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TEMPROARY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
     initialAttitudeState[0]  = 0.2652; 
     initialAttitudeState[1]  = 0.2652; 
     initialAttitudeState[2]  = -0.6930;
     initialAttitudeState[3]  = 0.6157;
-
+    // initialAttitudeState[0]  = 0.57; 
+    // initialAttitudeState[1]  = 0.57; 
+    // initialAttitudeState[2]  = 0.57;
+    // initialAttitudeState[3]  = 0.159;
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<        >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
     std::cout << "Initial state in quaternion:                                  " << quaternionInitialState[0] << "," <<  quaternionInitialState[1] << "," << quaternionInitialState[2] << "," << quaternionInitialState[3] << std::endl;    
 
     // Extract the reference state for the quaternion. 
@@ -353,26 +362,33 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
 
     // Minimum attitude error for settling time.
     // <TO DO: Check if the quaternion error be formulated like this! > 
-    Vector3 mininumAttitudeErrorInDeg; 
-    Vector4 mininumAttitudeErrorInQuaternion;
+    // Vector3 mininumAttitudeErrorInDeg; 
+    // Vector4 mininumAttitudeErrorInQuaternion;
 
-    const ConfigIterator attitudeErrorIterator  = find( config, "attitude_minimum_error");
-    mininumAttitudeErrorInDeg[0]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[0].GetDouble() );
-    mininumAttitudeErrorInDeg[1]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[1].GetDouble() );
-    mininumAttitudeErrorInDeg[2]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[2].GetDouble() );
+    // const ConfigIterator attitudeErrorIterator  = find( config, "attitude_minimum_error");
+    // mininumAttitudeErrorInDeg[0]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[0].GetDouble() );
+    // mininumAttitudeErrorInDeg[1]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[1].GetDouble() );
+    // mininumAttitudeErrorInDeg[2]                = sml::convertDegreesToRadians( attitudeErrorIterator->value[2].GetDouble() );
     
-    mininumAttitudeErrorInQuaternion            = astro::transformEulerToQuaternion( mininumAttitudeErrorInDeg ); 
+    // mininumAttitudeErrorInQuaternion            = astro::transformEulerToQuaternion( mininumAttitudeErrorInDeg ); 
 
     // Check if the control torque is active.
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
     std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
+    
+    // Controller properties as defined by the user. 
+    const Real naturalFrequency                 = find( config, "natural_frequency")->value.GetDouble(); 
+    const Real dampingRatio                     = find( config, "damping_ratio")->value.GetDouble();
+    const Real slewSaturationRate               = find( config, "slew_saturation_rate")->value.GetDouble(); 
+    const std::string controllerType            = find( config, "controller_type")->value.GetString(); 
+
     // Control gains for the controller. 
-    const Real quaternionControlGain    = find( config, "attitude_control_gain")->value.GetDouble(); 
-    ConfigIterator angularVelocityControlGainIterator   = find( config, "angular_velocity_control_gains");
-    Vector3 angularVelocityControlGainVector; 
-    angularVelocityControlGainVector[0]     =  angularVelocityControlGainIterator->value[0].GetDouble(); 
-    angularVelocityControlGainVector[1]     =  angularVelocityControlGainIterator->value[1].GetDouble();
-    angularVelocityControlGainVector[2]     =  angularVelocityControlGainIterator->value[2].GetDouble();
+    // const Real quaternionControlGain    = find( config, "attitude_control_gain")->value.GetDouble(); 
+    // ConfigIterator angularVelocityControlGainIterator   = find( config, "angular_velocity_control_gains");
+    // Vector3 angularVelocityControlGainVector; 
+    // angularVelocityControlGainVector[0]     =  angularVelocityControlGainIterator->value[0].GetDouble(); 
+    // angularVelocityControlGainVector[1]     =  angularVelocityControlGainIterator->value[1].GetDouble();
+    // angularVelocityControlGainVector[2]     =  angularVelocityControlGainIterator->value[2].GetDouble();
 
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
@@ -398,9 +414,13 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
                                   actuatorUuid,
                                   wheelOrientation,
                                   controlTorqueActiveModelFlag,
-                                  quaternionControlGain,
-                                  angularVelocityControlGainVector,
-                                  mininumAttitudeErrorInQuaternion, 
+                                  naturalFrequency, 
+                                  dampingRatio, 
+                                  slewSaturationRate, 
+                                  controllerType,
+                                //   quaternionControlGain,
+                                //   angularVelocityControlGainVector,
+                                //   mininumAttitudeErrorInQuaternion, 
                                   metadataFilePath,
                                   stateHistoryFilePath);
 };

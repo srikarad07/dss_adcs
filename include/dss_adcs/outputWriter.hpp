@@ -120,7 +120,7 @@ public:
 
     StateHistoryWriter( std::ostream& aStateHistoryStream, 
                         const Vector3 aControlTorque, 
-                        const Vector3 aMotorTorque, 
+                        const VectorXd aMotorTorque, 
                         const Vector3 aDisturbanceTorque )
         : stateHistoryStream( aStateHistoryStream ),
           controlTorque( aControlTorque ),
@@ -142,8 +142,8 @@ public:
     void operator( )( const State& state, const double time )
     {
         const Vector4 quaternion( state[0], state[1], state[2], state[3] ); 
-        const Vector3 eulerAngles   = astro::transformQuaternionToEulerAngles( quaternion ); 
-
+        const Vector3 eulerAngles       = astro::transformQuaternionToEulerAngles( quaternion ); 
+        const Real eulerRotationAngle   = 2 * acos( state[3] ); 
         // std::cout << "Quaternion :  " << tempQuaternion.coeffs() << std::endl; 
         // double pi( 3.14159265 );
         // std::cout << "Sin of the angle" << sin( acos(quaternion[3]) ) << std::endl;  
@@ -155,6 +155,7 @@ public:
                             << state[ 1 ]                                               << ','
                             << state[ 2 ]                                               << ','
                             << state[ 3 ]                                               << ','
+                            << sml::convertRadiansToDegrees( eulerRotationAngle )       << ','
                             << sml::convertRadiansToDegrees( eulerAngles[0] )           << ','
                             << sml::convertRadiansToDegrees( eulerAngles[1] )           << ','
                             << sml::convertRadiansToDegrees( eulerAngles[2] )           << ','
@@ -163,11 +164,12 @@ public:
                             << state[ 6 ]                                               << ','
                             << controlTorque[0]                                         << ','
                             << controlTorque[1]                                         << ',' 
-                            << controlTorque[2]                                         << ','
-                            << motorTorque[0]                                           << ','
-                            << motorTorque[1]                                           << ','
-                            << motorTorque[2]                                           << ','
-                            << disturbanceTorque[0]                                     << ','
+                            << controlTorque[2]                                         << ',' ;
+    for ( unsigned int iterator = 0; iterator < motorTorque.size(); ++iterator )
+    {
+        stateHistoryStream    << motorTorque[iterator]                                  << ',';
+    };
+        stateHistoryStream  << disturbanceTorque[0]                                     << ','
                             << disturbanceTorque[1]                                     << ',' 
                             << disturbanceTorque[2]                                     << std::endl;                      
     }
@@ -183,7 +185,7 @@ private:
     const Vector3 controlTorque; 
 
     //! Motor torque 
-    const Vector3 motorTorque; 
+    const VectorXd motorTorque; 
 
     //! Disturbance Torque
     const Vector3 disturbanceTorque; 

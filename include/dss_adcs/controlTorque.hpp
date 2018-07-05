@@ -22,9 +22,7 @@ namespace dss_adcs
 
 inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector4                   quaternionCurrent, 
                                                                     const Vector4                   quaternionReference,
-                                                                    const Vector3                   angularVelocity, 
-                                                                    const Real                      quaternionControlGain, 
-                                                                    const Vector3                   angularVelocityControlGainMatrix,
+                                                                    const Vector3                   angularVelocity,
                                                                     const ActuatorConfiguration&    actuatorConfiguration, 
                                                                     const std::string               controllerType, 
                                                                     const Real                      naturalFrequency, 
@@ -41,6 +39,14 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
     // const VectorXd reactionWheelTorqueMax = actuatorConfiguration.computeMaxReactionWheelTorque();
     const Vector4 tempvector( 0.3, 0.3, 0.3, 0.3 );  
     const VectorXd reactionWheelTorqueMax = tempvector; 
+
+    const Matrix33 principleInertiaMatrix           = principleInertiaVector.asDiagonal(); 
+    const Real angularVelocityControlGain           = 2 * naturalFrequency * dampingRatio;
+    const Real k = 2 * naturalFrequency * naturalFrequency;
+
+    const Matrix33 angularVelocityControlGainMatrix = angularVelocityControlGain * principleInertiaMatrix;
+    const Matrix33 attitudeControlGainMatrix        =  k * principleInertiaMatrix; 
+
     //! Compute the reaction wheel mapping matrices. 
     const std::pair< MatrixXd, MatrixXd > mappingMatrices = actuatorConfiguration.computeReactionWheelMappingMatrices( );
     const MatrixXd reactionWheelTorqueToControlTorqueMappingMatrix = mappingMatrices.first; 
@@ -60,10 +66,10 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
     if ( controllerType.compare("linear") == 0)
     {
         commandedControlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
-                                                                                        quaternionCurrent, 
-                                                                                        angularVelocity, 
-                                                                                        quaternionControlGain, 
-                                                                                        angularVelocityControlGainMatrix );     
+                                                                          quaternionCurrent, 
+                                                                          angularVelocity, 
+                                                                          attitudeControlGainMatrix, 
+                                                                          angularVelocityControlGainMatrix  );     
     }
 
     else if ( controllerType.compare("cascade_saturation") == 0 )
@@ -96,7 +102,7 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
     // const Vector3 controlTorque = astro::normalizedSaturationFunction( commandedControlTorque, maxControlTorque ); 
     // const VectorXd reactionWheelMotorTorque = inverseReactionWheelTorqueToControlTorqueMappingMatrix * controlTorque; 
     VectorXd reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * commandedControlTorque;  
-    std::cout << "reaction wheel motor torque: " << reactionWheelMotorTorque << std::endl;
+    // std::cout << "reaction wheel motor torque: " << reactionWheelMotorTorque << std::endl;
     for ( unsigned int iterator = 0; iterator < reactionWheelMotorTorque.size(); ++iterator )
     {
         if ( reactionWheelTorqueMax.array().abs()[iterator] < reactionWheelMotorTorque.array().abs()[iterator] )

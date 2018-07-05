@@ -27,11 +27,9 @@ public:
     Real saturationRate; 
 
     ObjectiveFunction(  const std::vector< ReactionWheel >  aReactionWheelConcepts,
-                        const Vector4                       aMinimumAttitudeError,  
                         const std::vector< Vector4 >        aQuaternionStateVector, 
                         const std::string                   aStateHistoryFilePath )
                 : reactionWheelConcept( aReactionWheelConcepts ), 
-                  minimumAttitudeError( aMinimumAttitudeError ), 
                   quaternionStateVector( aQuaternionStateVector ),
                   stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -76,9 +74,6 @@ private:
 
     //! Reaction wheel concepts 
     const std::vector< ReactionWheel > reactionWheelConcept; 
-
-    //! Minimum attitude error to determine the settling time. 
-    const Vector4 minimumAttitudeError; 
 
     //! Quaternion state vector values for all times. 
     const std::vector< Vector4 > quaternionStateVector; 

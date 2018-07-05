@@ -72,9 +72,13 @@ public:
                     const std::vector <std::string> aActuatorUuid,
                     const std::vector< Vector2 >    aWheelOrientation,
                     const bool                      aControlTorqueActiveModelFlag,
-                    const Real                      aQuaternionControlGain, 
-                    const Vector3                   anAngularVelocityControlGainVector, 
-                    const Vector4                   aMininumAttitudeErrorInQuaternion,
+                    const Real                      aNaturalFrequency, 
+                    const Real                      aDampingRatio, 
+                    const Real                      aSlewSaturationRate, 
+                    const std::string&              aControllerType,
+                    // const Real                      aQuaternionControlGain, 
+                    // const Vector3                   anAngularVelocityControlGainVector, 
+                    // const Vector4                   aMininumAttitudeErrorInQuaternion,
                     const std::string&              aMetadataFilePath,
                     const std::string&              aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
@@ -95,9 +99,13 @@ public:
           actuatorUuid( aActuatorUuid ),
           wheelOrientation( aWheelOrientation ),
           controlTorqueActiveModelFlag( aControlTorqueActiveModelFlag ),
-          quaternionControlGain( aQuaternionControlGain ),
-          angularVelocityControlGainVector( anAngularVelocityControlGainVector ),
-          mininumAttitudeErrorInQuaternion( aMininumAttitudeErrorInQuaternion ), 
+          naturalFrequency( aNaturalFrequency ),
+          dampingRatio( aDampingRatio ), 
+          slewSaturationRate( aSlewSaturationRate ),
+          controllerType( aControllerType ),  
+        //   quaternionControlGain( aQuaternionControlGain ),
+        //   angularVelocityControlGainVector( anAngularVelocityControlGainVector ),
+        //   mininumAttitudeErrorInQuaternion( aMininumAttitudeErrorInQuaternion ), 
           metadataFilePath( aMetadataFilePath ),
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -156,14 +164,26 @@ public:
     //! Check if the control torque is active or not. 
     const bool controlTorqueActiveModelFlag; 
 
+    //! Natural frequency of the system. 
+    const Real naturalFrequency; 
+
+    //! Damping ratio of the system. 
+    const Real dampingRatio; 
+
+    //! Slew saturation rate constraint. 
+    const Real slewSaturationRate; 
+    
+    //! Type of controller to be used. 
+    const std::string controllerType; 
+
     //! Quaternion control gain values. 
-    const Real quaternionControlGain; 
+    // const Real quaternionControlGain; 
 
-    //! Angular Velocity control gain vector. 
-    const Vector3 angularVelocityControlGainVector; 
+    // //! Angular Velocity control gain vector. 
+    // const Vector3 angularVelocityControlGainVector; 
 
-    //! Minimum attitude error in quaternion. 
-    const Vector4 mininumAttitudeErrorInQuaternion; 
+    // //! Minimum attitude error in quaternion. 
+    // const Vector4 mininumAttitudeErrorInQuaternion; 
 
     //! Metadata file path.
     const std::string metadataFilePath; 
