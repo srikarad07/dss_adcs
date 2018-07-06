@@ -9,6 +9,7 @@
 
 #include <astro/quaternionToEulerAngleTransformation.hpp>
 #include <sml/sml.hpp>
+#include <Eigen/Dense>
 
 #include "dss_adcs/typedefs.hpp"
 
@@ -144,6 +145,8 @@ public:
         const Vector4 quaternion( state[0], state[1], state[2], state[3] ); 
         const Vector3 eulerAngles       = astro::transformQuaternionToEulerAngles( quaternion ); 
         const Real eulerRotationAngle   = 2 * acos( state[3] ); 
+        const Vector3 attitudeRate( state[4], state[5], state[6] ); 
+        const Real slewRate             = attitudeRate.norm(); 
         // std::cout << "Quaternion :  " << tempQuaternion.coeffs() << std::endl; 
         // double pi( 3.14159265 );
         // std::cout << "Sin of the angle" << sin( acos(quaternion[3]) ) << std::endl;  
@@ -159,9 +162,10 @@ public:
                             << sml::convertRadiansToDegrees( eulerAngles[0] )           << ','
                             << sml::convertRadiansToDegrees( eulerAngles[1] )           << ','
                             << sml::convertRadiansToDegrees( eulerAngles[2] )           << ','
-                            << state[ 4 ]                                               << ','
-                            << state[ 5 ]                                               << ','
-                            << state[ 6 ]                                               << ','
+                            << sml::convertRadiansToDegrees( state[ 4 ] )               << ','
+                            << sml::convertRadiansToDegrees( state[ 5 ] )               << ','
+                            << sml::convertRadiansToDegrees( state[ 6 ] )               << ','
+                            << sml::convertRadiansToDegrees( slewRate  )                << ','
                             << controlTorque[0]                                         << ','
                             << controlTorque[1]                                         << ',' 
                             << controlTorque[2]                                         << ',' ;

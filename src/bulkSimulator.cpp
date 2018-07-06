@@ -408,7 +408,7 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     // Control gains for the controller.  
     const Real naturalFrequency                 = find( config, "natural_frequency")->value.GetDouble(); 
     const Real dampingRatio                     = find( config, "damping_ratio")->value.GetDouble();
-    const Real slewSaturationRate               = find( config, "slew_saturation_rate")->value.GetDouble(); 
+    const Real slewSaturationRate               = sml::convertDegreesToRadians ( find( config, "slew_saturation_rate")->value.GetDouble() );
     const std::string controllerType            = find( config, "controller_type")->value.GetString(); 
 
     // Extract file writer settings.

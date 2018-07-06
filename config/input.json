@@ -1,9 +1,9 @@
 {
     "mode": "simulator",
     "principle_inertia": [
-        1000.0,
-        1200.0,
-        1100.0
+        6292.0,
+        5477.0,
+        2687.0
     ],
 
     "initial_attitude_state": [
@@ -80,7 +80,7 @@
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
     "slew_saturation_rate" : 0.2, 
-    "controller_type" : "linear",   
+    "controller_type" : "cascade_saturation",   
 
     // Control gains. 
     // "attitude_control_gain" : 7.11, 

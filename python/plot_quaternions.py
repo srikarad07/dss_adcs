@@ -186,9 +186,10 @@ plt.grid()
 #Generate control torque plots.
 #Generate figure with 2D plots. 
 fig = plt.figure()
-ax1 = fig.add_subplot(3,1,1)
-ax2 = fig.add_subplot(3,1,2)
-ax3 = fig.add_subplot(3,1,3)
+ax1 = fig.add_subplot(4,1,1)
+ax2 = fig.add_subplot(4,1,2)
+ax3 = fig.add_subplot(4,1,3)
+ax4 = fig.add_subplot(4,1,4)
 
 #Plot angular velocity with respect to time. 
 ax1.plot(state_history['t'], state_history['w1'], color='k')
@@ -208,6 +209,12 @@ ax3.set_xlabel('time[sec]')
 ax3.set_ylabel('V_z [rad/sec]')
 ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
 ax3.grid()
+
+ax4.plot(state_history['t'], state_history['slewRate'], color='k')
+ax4.set_xlabel('time[sec]')
+ax4.set_ylabel('Slew Rate [rad/sec]')
+ax4.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+ax4.grid()
 
 plt.tight_layout()
 plt.grid()

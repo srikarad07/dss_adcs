@@ -70,11 +70,11 @@ void executeSingleSimulator( const rapidjson::Document& config )
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
     if ( reactionWheels.size() == 3 )
     {
-        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
     }
     else if ( reactionWheels.size() == 4 )
     {
-        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
     }
     //Set up numerical integrator. 
@@ -383,7 +383,7 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
     // Controller properties as defined by the user. 
     const Real naturalFrequency                 = find( config, "natural_frequency")->value.GetDouble(); 
     const Real dampingRatio                     = find( config, "damping_ratio")->value.GetDouble();
-    const Real slewSaturationRate               = find( config, "slew_saturation_rate")->value.GetDouble(); 
+    const Real slewSaturationRate               = sml::convertDegreesToRadians ( find( config, "slew_saturation_rate")->value.GetDouble() ); 
     const std::string controllerType            = find( config, "controller_type")->value.GetString(); 
 
     // Control gains for the controller. 
