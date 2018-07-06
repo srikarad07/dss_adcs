@@ -18,7 +18,8 @@ namespace dss_adcs
 {
 std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( const std::string                   actuatorConfigurationType, 
                                                                                 const std::vector < ReactionWheel > reactionWheels, 
-                                                                                unsigned int                        numberOfReactionWheels )
+                                                                                unsigned int                        numberOfReactionWheels, 
+                                                                                const std::vector < Vector2 >       wheelOrientation  )
     {
         std::map< std::string, std::vector< ReactionWheel > > reactionWheelConcepts; 
                          
@@ -29,18 +30,20 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
                 // Save each concept of Reaction wheel to it's respective concept number. 
                 std::ostringstream tempReactionWheelConceptNumber;
                 tempReactionWheelConceptNumber << reactionWheelIterator + 1; 
-
                 for ( unsigned int iterator = 0; iterator < numberOfReactionWheels; ++iterator )
                 {
-                    reactionWheelConcepts["concept_" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelIterator] );   
+                    ReactionWheel tempReactionWheel     = reactionWheels[reactionWheelIterator];
+
+                    tempReactionWheel.wheelOrientation[0]  = wheelOrientation[iterator][0]; 
+                    tempReactionWheel.wheelOrientation[1]  = wheelOrientation[iterator][1]; 
+
+                    reactionWheelConcepts["concept_" + tempReactionWheelConceptNumber.str()].push_back( tempReactionWheel );   
                 }    
             }
         
         }
         else if ( actuatorConfigurationType.compare("random") == 0 )
         {
-            // std::cout << actuatorConfigurationType << "Configuration is not defined in the model yet! " << std::endl; 
-            // throw; 
             for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < 3*reactionWheels.size(); ++ reactionWheelIterator )
             {
                 // Save each concept of Reaction wheel to it's respective concept number. 

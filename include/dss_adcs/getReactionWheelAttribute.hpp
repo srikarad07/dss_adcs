@@ -27,8 +27,7 @@
 namespace dss_adcs
 {
 
-inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson, 
-												 const Vector2  	wheelOrientation )
+inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson )
 {	
 	rapidjson::Document config;
 
@@ -51,8 +50,7 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson,
 
 	const ReactionWheel reactionWheel = getReactionWheelAttributesInSiUnits( mapForResult, 
 																			 reactionWheelName,
-												       						 supplierName, 
-																			 wheelOrientation ); 
+												       						 supplierName ); 
 
 	return reactionWheel; 
 } 

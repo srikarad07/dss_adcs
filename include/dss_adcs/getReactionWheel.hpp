@@ -17,8 +17,7 @@ namespace dss_adcs
 {
    
     inline std::vector < ReactionWheel > getReactionWheels( const std::string actuator, 
-                                                            const std::vector< std::string >actuatorUuid, 
-                                                            const std::vector< Vector2 > wheelOrientations )
+                                                            const std::vector< std::string >actuatorUuid )
     {
         std::vector < ReactionWheel > reactionWheels;
 
@@ -26,7 +25,7 @@ namespace dss_adcs
         for ( unsigned int iterator = 0; iterator < actuatorUuid.size(); ++iterator )
         {
             std::string reactionWheelString = callTheApi( actuatorUuid[iterator] );
-            ReactionWheel tempReactionWheel = getReactionWheelAttributes( reactionWheelString, wheelOrientations[iterator] ); 
+            ReactionWheel tempReactionWheel = getReactionWheelAttributes( reactionWheelString ); 
 
             if ( !isnan( tempReactionWheel.maxTorque ) )
             {

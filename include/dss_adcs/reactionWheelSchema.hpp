@@ -16,16 +16,16 @@ struct ReactionWheel
 {
 public: 
 
-    ReactionWheel(  const Vector2       aWheelOrientation,
-                    const Real          aMass, 
+    Vector2 wheelOrientation; 
+
+    ReactionWheel(  const Real          aMass, 
                     const Real          aLength, 
                     const Real          aHeight, 
                     const Real          aWidth, 
                     const Real          aMaxTorque, 
                     const std::string   aName, 
                     const std::string   aSupplierName   )
-                :   wheelOrientation( aWheelOrientation ),
-                    mass( aMass ),
+                :   mass( aMass ),
                     length( aLength ),
                     height( aHeight ),
                     width( aWidth ),
@@ -33,8 +33,6 @@ public:
                     name( aName ), 
                     supplierName( aSupplierName )
     { }
-
-    const Vector2 wheelOrientation; 
 
     const Real mass; 
 

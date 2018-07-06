@@ -74,8 +74,10 @@ public:
                     const std::vector <std::string> aActuatorUuid,
                     const std::vector< Vector2 >    aWheelOrientation,
                     const bool                      aControlTorqueActiveModelFlag,
-                    const Real                      aQuaternionControlGain, 
-                    const Vector3                   anAngularVelocityControlGainVector, 
+                    const Real                      aNaturalFrequency, 
+                    const Real                      aDampingRatio, 
+                    const Real                      aSlewSaturationRate, 
+                    const std::string&              aControllerType,
                     const std::string&              aMetadataFilePath,
                     const std::string&              aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
@@ -97,8 +99,10 @@ public:
           actuatorUuid( aActuatorUuid ),
           wheelOrientation( aWheelOrientation ),
           controlTorqueActiveModelFlag( aControlTorqueActiveModelFlag ),
-          quaternionControlGain( aQuaternionControlGain ),
-          angularVelocityControlGainVector( anAngularVelocityControlGainVector ),
+          naturalFrequency( aNaturalFrequency ),
+          dampingRatio( aDampingRatio ), 
+          slewSaturationRate( aSlewSaturationRate ),
+          controllerType( aControllerType ),  
           metadataFilePath( aMetadataFilePath ),
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
@@ -160,11 +164,17 @@ public:
     //! Check if the control torque is active or not. 
     const bool controlTorqueActiveModelFlag; 
 
-    //! Quaternion control gain values. 
-    const Real quaternionControlGain; 
+    //! Natural frequency of the system. 
+    const Real naturalFrequency; 
 
-    //! Angular Velocity control gain vector. 
-    const Vector3 angularVelocityControlGainVector; 
+    //! Damping ratio of the system. 
+    const Real dampingRatio; 
+
+    //! Slew saturation rate constraint. 
+    const Real slewSaturationRate; 
+    
+    //! Type of controller to be used. 
+    const std::string controllerType; 
 
     //! Metadata file path.
     const std::string metadataFilePath; 

@@ -87,12 +87,12 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
         std::cout << "Mode                               " << mode << std::endl;
         dss_adcs::executeSingleSimulator( config );
     }
-    // else if ( mode.compare("bulk_simulator") == 0)
-    // {
-    //     std::cout << "Mode                               " << mode << std::endl;
-    //     // dss_adcs::executeSingleSimulator( config );
-    //     dss_adcs::executeBulkSimulator( config );
-    // }
+    else if ( mode.compare("bulk_simulator") == 0)
+    {
+        std::cout << "Mode                               " << mode << std::endl;
+        // dss_adcs::executeSingleSimulator( config );
+        dss_adcs::executeBulkSimulator( config );
+    }
     else
     {
         std::cout << std::endl;

@@ -49,8 +49,8 @@ print "******************************************************************"
 print ""
 
 # Update this part to use the json input for plotting. 
-
 path            =  "/home/superman/Desktop/state_history.csv"
+# path            =  "/home/superman/Desktop/state_history_concept_1_4.csv"
 state_history   = pd.read_csv( path )
  
 print "Input data files successfully read!"
@@ -99,33 +99,33 @@ ax4.grid()
 plt.tight_layout()
 plt.grid()
 
-#Generate figure with 2D plots. 
-fig = plt.figure()
-ax1 = fig.add_subplot(3,1,1)
-ax2 = fig.add_subplot(3,1,2)
-ax3 = fig.add_subplot(3,1,3)
+# #Generate figure with 2D plots. 
+# fig = plt.figure()
+# ax1 = fig.add_subplot(3,1,1)
+# ax2 = fig.add_subplot(3,1,2)
+# ax3 = fig.add_subplot(3,1,3)
 
-#Plot angular velocity with respect to time. 
-ax1.plot(state_history['t'], state_history['theta1'], color='k')
-ax1.set_xlabel('time[sec]')
-ax1.set_ylabel('theta_1 [deg]')
-ax1.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-ax1.grid()
+# #Plot angular velocity with respect to time. 
+# ax1.plot(state_history['t'], state_history['theta1'], color='k')
+# ax1.set_xlabel('time[sec]')
+# ax1.set_ylabel('theta_1 [deg]')
+# ax1.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+# ax1.grid()
 
-ax2.plot(state_history['t'], state_history['theta2'], color='k')
-ax2.set_xlabel('time[sec]')
-ax2.set_ylabel('theta_2 [deg]')
-ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-ax2.grid()
+# ax2.plot(state_history['t'], state_history['theta2'], color='k')
+# ax2.set_xlabel('time[sec]')
+# ax2.set_ylabel('theta_2 [deg]')
+# ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+# ax2.grid()
 
-ax3.plot(state_history['t'], state_history['theta3'], color='k')
-ax3.set_xlabel('time[sec]')
-ax3.set_ylabel('theta_3 [deg]')
-# ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-ax3.grid()
+# ax3.plot(state_history['t'], state_history['theta3'], color='k')
+# ax3.set_xlabel('time[sec]')
+# ax3.set_ylabel('theta_3 [deg]')
+# # ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+# ax3.grid()
 
-plt.tight_layout()
-plt.grid()
+# plt.tight_layout()
+# plt.grid()
 
 #Generate figure with 2D plots. 
 fig = plt.figure()
@@ -155,7 +155,7 @@ ax3.grid()
 plt.tight_layout()
 plt.grid()
 
-#Generate figure with 2D plots. 
+# Generate figure with 2D plots. 
 fig = plt.figure()
 ax1 = fig.add_subplot(3,1,1)
 ax2 = fig.add_subplot(3,1,2)

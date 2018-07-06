@@ -1,9 +1,9 @@
 {
     "mode": "simulator",
     "principle_inertia": [
-        6292.0,
-        5477.0,
-        2687.0
+        1000.0,
+        1200.0,
+        1100.0
     ],
 
     "initial_attitude_state": [
@@ -39,36 +39,36 @@
     
     "actuator": "reaction_wheel",
 
-    // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
+    // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from Z) 
     // Angles given by the user in radians. 
     
     "reaction_wheels": [
         {
-            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
+            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
             "wheel_orientation": [
-                45.0, 
-                90.0
+                90.0, 
+                0.0
             ] 
         },
         {
-            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
+            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
             "wheel_orientation": [
-                0.0, 
-                225.0
+                90.0, 
+                90.0
             ]
         },
         {
-            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
+            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
             "wheel_orientation": [
-                315.0, 
+                0.0, 
                 90.0
             ]
         }, 
         {
-            "uuid": "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
+            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
             "wheel_orientation": [
-                0.0, 
-                315.0
+                45.0, 
+                45.0
             ]
         }        
     ],

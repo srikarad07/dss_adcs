@@ -39,7 +39,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
     std::cout << "The API is being called to extract the parameters ... " << std::endl;
     std::vector< ReactionWheel > reactionWheels; 
-    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid, input.wheelOrientation ); 
+    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl;
@@ -47,7 +47,11 @@ void executeSingleSimulator( const rapidjson::Document& config )
     std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts; 
     for ( unsigned int reactionWheelsIterator = 0; reactionWheelsIterator < reactionWheels.size(); ++reactionWheelsIterator )
     {
-        reactionWheelConcepts["Concept"].push_back( reactionWheels[reactionWheelsIterator] );   
+        ReactionWheel tempReactionWheel       = reactionWheels[reactionWheelsIterator];
+        tempReactionWheel.wheelOrientation[0] = input.wheelOrientation[reactionWheelsIterator][0]; 
+        tempReactionWheel.wheelOrientation[1] = input.wheelOrientation[reactionWheelsIterator][1];
+
+        reactionWheelConcepts["Concept"].push_back( tempReactionWheel );   
     }
     
     const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"] ); 
@@ -124,8 +128,8 @@ void executeSingleSimulator( const rapidjson::Document& config )
         // {
         //     std::cout << "It works? " << integrationStartTime << std::endl; 
         // }
-        // const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
-        const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
+        const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+        // const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
         // Disturbance torques. 
         if ( input.gravityGradientAccelerationModelFlag != false )
@@ -418,9 +422,6 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
                                   dampingRatio, 
                                   slewSaturationRate, 
                                   controllerType,
-                                //   quaternionControlGain,
-                                //   angularVelocityControlGainVector,
-                                //   mininumAttitudeErrorInQuaternion, 
                                   metadataFilePath,
                                   stateHistoryFilePath);
 };

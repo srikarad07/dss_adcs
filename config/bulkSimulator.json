@@ -41,29 +41,21 @@
     
     "wheel_orientation": [
         [
-            0.0, 
-            90.0
-        ], 
-        [
-            90.0, 
-            90.0
-        ],
-        [
             90.0, 
             0.0
         ], 
         [
-            45.0, 
-            45.0
-        ], 
-        [
-            65.0, 
-            35.0
+            90.0, 
+            90.0
         ],
         [
-            55.0, 
-            55.0
-        ]     
+            0.0, 
+            90.0
+        ], 
+        [
+            45.0, 
+            45.0
+        ]
     ],
     
     // "reaction_wheel_uuids" : "/home/superman/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
@@ -72,14 +64,11 @@
     // Attitude representation type. 
     "attitude_representation" : "quaternions", 
 
-    // Control gains. 
-    "attitude_control_gain" : 7.11, 
-
-    "angular_velocity_control_gains": [
-        18.67, 
-        8.67,
-        10.67 
-    ],
+    // Controller properties 
+    "natural_frequency" : 0.1,
+    "damping_ratio" : 0.707,
+    "slew_saturation_rate" : 0.2, 
+    "controller_type" : "linear",   
 
     // Radial vector of the satellite from spacecraft [m]. 
     "radius": 7371000.0,
@@ -94,7 +83,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 6000.0,
+    "end_epoch": 1000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).

@@ -37,7 +37,8 @@ public:
             reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[0] = sin( reactionWheel[i].wheelOrientation[1] ) * cos( reactionWheel[i].wheelOrientation[0] );
             reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[1] = sin( reactionWheel[i].wheelOrientation[1] ) * sin( reactionWheel[i].wheelOrientation[0] );
             reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[2] = cos( reactionWheel[i].wheelOrientation[1] ); 
-        }
+            // std::cout << "reaction Wheel wheel orientations: " << reactionWheel[i].wheelOrientation[0] << "," << reactionWheel[i].wheelOrientation[1] << std::endl; 
+         }
 
         const MatrixXd inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
 

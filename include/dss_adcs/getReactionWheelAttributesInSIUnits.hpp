@@ -111,9 +111,8 @@ namespace dss_adcs
 	};
 
 	inline ReactionWheel getReactionWheelAttributesInSiUnits( std::map< std::string, std::string > mapForResult, 
-													   std::string 							reactionWheelName, 
-													   std::string 							supplierName, 
-													   Vector2 								wheelOrientation )
+													   		  std::string 							reactionWheelName, 
+													   		  std::string 							supplierName )
 	{	
 		const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
 												       mapForResult["mass-value"],
@@ -152,7 +151,7 @@ namespace dss_adcs
 											               supplierName); 
 		}
 
-		const ReactionWheel reactionWheel( wheelOrientation, reactionWheelMass, reactionWheelLength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
+		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
 		
 		return reactionWheel; 
 	} 

@@ -40,7 +40,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
     std::cout << std::endl;
 
     std::cout << "The API is being called to extract the parameters ... " << std::endl;
-    const std::vector< ReactionWheel > reactionWheels = getReactionWheels( input.actuator, input.actuatorUuid, input.wheelOrientation ); 
+    const std::vector< ReactionWheel > reactionWheels = getReactionWheels( input.actuator, input.actuatorUuid); 
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
@@ -48,20 +48,21 @@ void executeBulkSimulator( const rapidjson::Document& config )
     // Print metadata to the file provide in metadatafile path. 
     std::ofstream metadatafile( input.metadataFilePath );
     
-    for ( unsigned int reactionWheelNumberIterator = 2; reactionWheelNumberIterator < 7; ++reactionWheelNumberIterator )
+    for ( unsigned int reactionWheelNumberIterator = 4; reactionWheelNumberIterator < 5; ++reactionWheelNumberIterator )
     {
         const int numberOfReactionWheels = reactionWheelNumberIterator;
-
+        std::cout << "Number of reaction wheels: " << numberOfReactionWheels << std::endl; 
         std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts = getReactionWheelConcepts( input.reactionWheelConfiguration, 
                                                                                                                reactionWheels, 
-                                                                                                               numberOfReactionWheels ); 
+                                                                                                               numberOfReactionWheels, 
+                                                                                                               input.wheelOrientation  ); 
 
         for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator !=   reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
         {
             const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
 
             const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
-
+            
             // Create instance of dynamical system.
             std::cout << "Setting up dynamical model ..." << std::endl;
 
@@ -74,7 +75,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
             // Create file stream to write state history to.
             std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + "_" + std::to_string(numberOfReactionWheels) + ".csv");
-            stateHistoryFile << "t,q1,q2,q3,q4,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,   disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
             //Set up numerical integrator. 
             std::cout << "Executing numerical integrator ..." << std::endl;
@@ -87,6 +88,8 @@ void executeBulkSimulator( const rapidjson::Document& config )
             // Set up dynamical model.
             std::cout << "Generating angular accelerations ..." << std::endl;
             std::cout << std::endl;
+
+            const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
 
             for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
             {
@@ -115,9 +118,14 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                                                   referenceAttitudeState,
                                                                                                   currentAttitudeRate, 
-                                                                                                  input.quaternionControlGain, 
-                                                                                                  input.angularVelocityControlGainVector, 
-                                                                                                  actuatorConfiguration ); 
+                                                                                                  actuatorConfiguration, 
+                                                                                                  input.controllerType, 
+                                                                                                  input.naturalFrequency, 
+                                                                                                  input.dampingRatio, 
+                                                                                                  input.slewSaturationRate,
+                                                                                                  input.principleInertia, 
+                                                                                                  initialQuaternion, 
+                                                                                                  integrationStartTime ); 
                 Vector3 controlTorque( outputTorques.first ); 
                 VectorXd reactionWheelMotorTorque( outputTorques.second );  
 
@@ -130,7 +138,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
                 // Dynamics of the system 
                 DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
-
+                // std::cout << "Integration start time: " << integrationStartTime << std::endl; 
                 if ( input.integrator == rk4 )
                 {
                     using namespace boost::numeric::odeint;
@@ -236,18 +244,30 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
 
     Vector3 initialAttitudeStateEuler; 
 
+
     initialAttitudeStateEuler[0]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[0].GetDouble() );
     initialAttitudeStateEuler[1]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[1].GetDouble() );
     initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
     
     Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
-    initialAttitudeState[0]                        = quaternionInitialState[0];
-    initialAttitudeState[1]                        = quaternionInitialState[1];
-    initialAttitudeState[2]                        = quaternionInitialState[2];
-    initialAttitudeState[3]                        = quaternionInitialState[3];   
+    // initialAttitudeState[0]                        = quaternionInitialState[0];
+    // initialAttitudeState[1]                        = quaternionInitialState[1];
+    // initialAttitudeState[2]                        = quaternionInitialState[2];
+    // initialAttitudeState[3]                        = quaternionInitialState[3];   
     initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[3].GetDouble() ); 
     initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
     initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
+    
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TEMPROARY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+    initialAttitudeState[0]  = 0.2652; 
+    initialAttitudeState[1]  = 0.2652; 
+    initialAttitudeState[2]  = -0.6930;
+    initialAttitudeState[3]  = 0.6157;
+    // initialAttitudeState[0]  = 0.57; 
+    // initialAttitudeState[1]  = 0.57; 
+    // initialAttitudeState[2]  = 0.57;
+    // initialAttitudeState[3]  = 0.159;
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<        >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
 
     std::cout << "Initial state in quaternion:                                  " << quaternionInitialState[0] << "," <<  quaternionInitialState[1] << "," << quaternionInitialState[2] << "," << quaternionInitialState[3] << std::endl;    
 
@@ -385,13 +405,11 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
     std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
     
-    // Control gains for the controller. 
-    const Real quaternionControlGain                    = find( config, "attitude_control_gain")->value.GetDouble(); 
-    ConfigIterator angularVelocityControlGainIterator   = find( config, "angular_velocity_control_gains");
-    Vector3 angularVelocityControlGainVector; 
-    angularVelocityControlGainVector[0]                 =  angularVelocityControlGainIterator->value[0].GetDouble(); 
-    angularVelocityControlGainVector[1]                 =  angularVelocityControlGainIterator->value[1].GetDouble();
-    angularVelocityControlGainVector[2]                 =  angularVelocityControlGainIterator->value[2].GetDouble();
+    // Control gains for the controller.  
+    const Real naturalFrequency                 = find( config, "natural_frequency")->value.GetDouble(); 
+    const Real dampingRatio                     = find( config, "damping_ratio")->value.GetDouble();
+    const Real slewSaturationRate               = find( config, "slew_saturation_rate")->value.GetDouble(); 
+    const std::string controllerType            = find( config, "controller_type")->value.GetString(); 
 
     // Extract file writer settings.
     const std::string metadataFilePath                  = find( config, "metadata_file_path" )->value.GetString( ); 
@@ -418,8 +436,10 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
                             actuatorUuid,
                             wheelOrientation,
                             controlTorqueActiveModelFlag,
-                            quaternionControlGain,
-                            angularVelocityControlGainVector,
+                            naturalFrequency, 
+                            dampingRatio, 
+                            slewSaturationRate, 
+                            controllerType,
                             metadataFilePath,
                             stateHistoryFilePath    );
 };
