@@ -68,7 +68,7 @@
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
     "slew_saturation_rate" : 0.2, 
-    "controller_type" : "linear",   
+    "controller_type" : "cascade_saturation",   
 
     // Radial vector of the satellite from spacecraft [m]. 
     "radius": 7371000.0,

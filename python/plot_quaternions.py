@@ -49,8 +49,8 @@ print "******************************************************************"
 print ""
 
 # Update this part to use the json input for plotting. 
-path            =  "/home/superman/Desktop/state_history.csv"
-# path            =  "/home/superman/Desktop/state_history_concept_1_4.csv"
+# path            =  "/home/superman/Desktop/state_history.csv"
+path            =  "/home/superman/Desktop/state_history_concept_1_4.csv"
 state_history   = pd.read_csv( path )
  
 print "Input data files successfully read!"

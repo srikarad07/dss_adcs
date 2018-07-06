@@ -33,7 +33,6 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
                 for ( unsigned int iterator = 0; iterator < numberOfReactionWheels; ++iterator )
                 {
                     ReactionWheel tempReactionWheel     = reactionWheels[reactionWheelIterator];
-
                     tempReactionWheel.wheelOrientation[0]  = wheelOrientation[iterator][0]; 
                     tempReactionWheel.wheelOrientation[1]  = wheelOrientation[iterator][1]; 
 
@@ -49,9 +48,14 @@ std::map< std::string, std::vector< ReactionWheel > > getReactionWheelConcepts( 
                 // Save each concept of Reaction wheel to it's respective concept number. 
                 std::ostringstream tempReactionWheelConceptNumber;
                 tempReactionWheelConceptNumber << reactionWheelIterator + 1; 
-
+                // <<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+                // Check if this is the right way to put the reaction wheels together // 
+                // <<<<<<<<<<<<<<<<<<<<<<<        >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
                 for ( unsigned int iterator = 0; iterator < numberOfReactionWheels; ++iterator )
                 {
+                    ReactionWheel tempReactionWheel     = reactionWheels[reactionWheelIterator];
+                    tempReactionWheel.wheelOrientation[0]  = wheelOrientation[iterator][0]; 
+                    tempReactionWheel.wheelOrientation[1]  = wheelOrientation[iterator][1]; 
                     unsigned int reactionWheelNumber = rand () % reactionWheels.size(); 
                     reactionWheelConcepts["concept_" + tempReactionWheelConceptNumber.str()].push_back( reactionWheels[reactionWheelNumber] );   
                 }    

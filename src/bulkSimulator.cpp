@@ -48,7 +48,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
     // Print metadata to the file provide in metadatafile path. 
     std::ofstream metadatafile( input.metadataFilePath );
     
-    for ( unsigned int reactionWheelNumberIterator = 4; reactionWheelNumberIterator < 5; ++reactionWheelNumberIterator )
+    for ( unsigned int reactionWheelNumberIterator = 2; reactionWheelNumberIterator < 7 ; ++reactionWheelNumberIterator )
     {
         const int numberOfReactionWheels = reactionWheelNumberIterator;
         std::cout << "Number of reaction wheels: " << numberOfReactionWheels << std::endl; 
@@ -75,7 +75,32 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
             // Create file stream to write state history to.
             std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + "_" + std::to_string(numberOfReactionWheels) + ".csv");
-            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+            if ( numberOfReactionWheels == 3 )
+            {
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+            }
+            else if ( numberOfReactionWheels == 2 )
+            {
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+            }
+            else if ( numberOfReactionWheels == 4 )
+            {
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
+
+            }
+            else if ( numberOfReactionWheels == 5 )
+            {
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
+            }
+            else if ( numberOfReactionWheels == 6 )
+            {
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
+            }
+            else
+            {
+                std::cout << "The state history file not set up for " << numberOfReactionWheels << " reaction wheels!" << std::endl; 
+                throw; 
+            }
 
             //Set up numerical integrator. 
             std::cout << "Executing numerical integrator ..." << std::endl;
@@ -250,19 +275,19 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
     
     Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
-    // initialAttitudeState[0]                        = quaternionInitialState[0];
-    // initialAttitudeState[1]                        = quaternionInitialState[1];
-    // initialAttitudeState[2]                        = quaternionInitialState[2];
-    // initialAttitudeState[3]                        = quaternionInitialState[3];   
+    initialAttitudeState[0]                        = quaternionInitialState[0];
+    initialAttitudeState[1]                        = quaternionInitialState[1];
+    initialAttitudeState[2]                        = quaternionInitialState[2];
+    initialAttitudeState[3]                        = quaternionInitialState[3];   
     initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[3].GetDouble() ); 
     initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
     initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
     
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TEMPROARY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-    initialAttitudeState[0]  = 0.2652; 
-    initialAttitudeState[1]  = 0.2652; 
-    initialAttitudeState[2]  = -0.6930;
-    initialAttitudeState[3]  = 0.6157;
+    // initialAttitudeState[0]  = 0.2652; 
+    // initialAttitudeState[1]  = 0.2652; 
+    // initialAttitudeState[2]  = -0.6930;
+    // initialAttitudeState[3]  = 0.6157;
     // initialAttitudeState[0]  = 0.57; 
     // initialAttitudeState[1]  = 0.57; 
     // initialAttitudeState[2]  = 0.57;

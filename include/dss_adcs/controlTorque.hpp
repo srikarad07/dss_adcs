@@ -34,8 +34,7 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
 {
     //! Maximum reaction wheel torque. 
     const VectorXd reactionWheelTorqueMax = actuatorConfiguration.computeMaxReactionWheelTorque();
-    // const Vector4 tempvector( 0.3, 0.3, 0.3, 0.3 );  
-    // const VectorXd reactionWheelTorqueMax = tempvector; 
+
     const Matrix33 principleInertiaMatrix           = principleInertiaVector.asDiagonal(); 
     const Real angularVelocityControlGain           = 2 * naturalFrequency * dampingRatio;
     const Real k = 2 * naturalFrequency * naturalFrequency;
@@ -47,9 +46,6 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
     const std::pair< MatrixXd, MatrixXd > mappingMatrices = actuatorConfiguration.computeReactionWheelMappingMatrices( );
     const MatrixXd reactionWheelTorqueToControlTorqueMappingMatrix = mappingMatrices.first; 
     const MatrixXd inverseReactionWheelTorqueToControlTorqueMappingMatrix = mappingMatrices.second; 
-    
-    // std::cout << "Mappping matrice reation wheel to control torques: " << reactionWheelTorqueToControlTorqueMappingMatrix << std::endl;
-    // std::cout << "Mappping matrice inverse: " << inverseReactionWheelTorqueToControlTorqueMappingMatrix << std::endl;
 
     Vector3 commandedControlTorque;
 
@@ -81,10 +77,8 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
         throw; 
     }
 
-    // std::cout << "Commanded control torque: " << commandedControlTorque << std::endl; 
-
     VectorXd reactionWheelMotorTorque     = inverseReactionWheelTorqueToControlTorqueMappingMatrix * commandedControlTorque;  
-    // std::cout << "reaction wheel motor torque: " << reactionWheelMotorTorque << std::endl;
+
     for ( unsigned int iterator = 0; iterator < reactionWheelMotorTorque.size(); ++iterator )
     {
         if ( reactionWheelTorqueMax.array().abs()[iterator] < reactionWheelMotorTorque.array().abs()[iterator] )
@@ -94,12 +88,8 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
         }   
     }
 
-    // const Vector3 maxControlTorque = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelTorqueMax; 
-    // std::cout<< "reaction Wheel torques maximum values: " << reactionWheelTorqueMax << std::endl;  
-    // std::cout << "Maximum control input on all three axes: " << maxControlTorque << std::endl; 
-    // std::cout << "Reaction wheel motor torque after saturation: " << reactionWheelMotorTorque << std::endl; 
     const Vector3 controlTorque   = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelMotorTorque;
-    // std::cout << "Control torque on the system: " << controlTorque << std::endl;  
+ 
     const std::pair< Vector3, VectorXd > outputTorques( controlTorque, reactionWheelMotorTorque ); 
     
     return outputTorques; 
