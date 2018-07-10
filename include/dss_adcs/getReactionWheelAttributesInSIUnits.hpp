@@ -60,13 +60,15 @@ namespace dss_adcs
 	    // Check the measurement unit for the length, height and width. It needs to be 'm'. 
 	    if ( dimension_measurement_unit.compare("m") != 0 && !dimension_value.empty() )
 	    {
-	    	if ( dimension_measurement_unit.compare("cm") != 0 )
+	    	if ( dimension_measurement_unit.compare("cm") == 0 )
 	    	{
 	    		dimension = sml::convertCentimeterToMeter( std::stod( dimension_value, &sz ) ); 
+				// std::cout << "Enters this loop" << std::endl; 
 	    	}
-	    	else if ( dimension_measurement_unit.compare("mm") != 0 )
+	    	else if ( dimension_measurement_unit.compare("mm") == 0 )
 	    	{
 	    		dimension = sml::convertMillimeterToMeter( std::stod( dimension_value, &sz ) ); 
+				// std::cout << "Enters this loop" << std::endl; 
 	    	}
 	    	else 
 	    	{
@@ -75,7 +77,7 @@ namespace dss_adcs
 	    }
 		else if ( dimension_measurement_unit.empty() )
 		{
-			std::cout << "The reaction wheel " << reactionWheelName << " from " << supplierName << " doesn't have the dimension value given. " << std::endl;   
+			// std::cout << "The reaction wheel " << reactionWheelName << " from " << supplierName << " doesn't have the dimension value given. " << std::endl;   
 			dimension = std::nan("dimension"); 
 		}
 	    else 
@@ -151,7 +153,12 @@ namespace dss_adcs
 											               supplierName); 
 		}
 
-		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelWidth, reactionWheelHeight, reactionWheelTorque, reactionWheelName, supplierName ); 
+		const Real reactionWheelRadius = ( 1.0/2.0 ) * convertToMeter( mapForResult["diameter-measurement_unit"],
+											         	   mapForResult["diameter-value"],
+											         	   reactionWheelName,
+											               supplierName) ; 
+
+		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelHeight, reactionWheelWidth,reactionWheelRadius, reactionWheelTorque, reactionWheelName, supplierName ); 
 		
 		return reactionWheel; 
 	} 

@@ -21,4 +21,5 @@ set(MAIN_SRC
 set(TEST_SRC
   "${TEST_SRC_PATH}/testDssAdcs.cpp"
   "${TEST_SRC_PATH}/testFactorial.cpp"
+  "${TEST_SRC_PATH}/testMomentOfInertia.cpp"
 )

@@ -41,6 +41,13 @@ void executeSingleSimulator( const rapidjson::Document& config )
     std::vector< ReactionWheel > reactionWheels; 
     reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
 
+    std::cout << "reaction wheel length: " << reactionWheels[0].length<< std::endl; 
+    std::cout << "reaction wheel height: " << reactionWheels[0].height << std::endl; 
+    std::cout << "reaction wheel width: " << reactionWheels[0].width << std::endl; 
+    std::cout << "reaction wheel mass: " << reactionWheels[0].mass << std::endl; 
+    std::cout << "reaction wheel radius: " << reactionWheels[0].radius << std::endl; 
+
+
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl;
      
@@ -55,6 +62,8 @@ void executeSingleSimulator( const rapidjson::Document& config )
     }
     
     const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"] ); 
+
+    std::cout << "Reaction Wheel moment of inertia: " << actuatorConfiguration.calculateMomentOfInertia() << std::endl; 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;

@@ -45,7 +45,7 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson 
 	assert(attributes.IsArray()); 
 
 	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value"};
-	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque", "torque" };
+	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque", "torque", "diameter" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve );	
 
 	const ReactionWheel reactionWheel = getReactionWheelAttributesInSiUnits( mapForResult, 

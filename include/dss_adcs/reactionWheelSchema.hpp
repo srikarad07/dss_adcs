@@ -22,6 +22,7 @@ public:
                     const Real          aLength, 
                     const Real          aHeight, 
                     const Real          aWidth, 
+                    const Real          aRadius, 
                     const Real          aMaxTorque, 
                     const std::string   aName, 
                     const std::string   aSupplierName   )
@@ -29,6 +30,7 @@ public:
                     length( aLength ),
                     height( aHeight ),
                     width( aWidth ),
+                    radius( aRadius ), 
                     maxTorque( aMaxTorque ), 
                     name( aName ), 
                     supplierName( aSupplierName )
@@ -41,6 +43,8 @@ public:
     const Real height; 
 
     const Real width;
+
+    const Real radius; 
 
     const Real maxTorque;
     

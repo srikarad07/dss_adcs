@@ -80,6 +80,26 @@ public:
 
         return reactionWheelTorqueMax; 
     }
+
+    const VectorXd calculateMomentOfInertia( ) const 
+    {
+        VectorXd reactionWheelMomentsOfInertia( reactionWheel.size() );
+
+        for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheel.size(); ++reactionWheelIterator )
+        {
+            if ( !isnan( reactionWheel[reactionWheelIterator].radius ) ) 
+            {
+                reactionWheelMomentsOfInertia[reactionWheelIterator] = reactionWheel[reactionWheelIterator].mass * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].radius / 2.0; 
+            }
+            else if ( !isnan( reactionWheel[reactionWheelIterator].length) && !isnan( reactionWheel[reactionWheelIterator].width) )
+            {
+                reactionWheelMomentsOfInertia[reactionWheelIterator] = reactionWheel[reactionWheelIterator].mass * ( ( reactionWheel[reactionWheelIterator].length * reactionWheel[reactionWheelIterator].length ) + ( reactionWheel[reactionWheelIterator].width * reactionWheel[reactionWheelIterator].width ) ) / 12.0; 
+                // std::cout << "Enters this loop" << std::endl; 
+                // reactionWheelMomentsOfInertia[reactionWheelIterator] = reactionWheel[reactionWheelIterator].mass * reactionWheel[reactionWheelIterator].length * reactionWheel[reactionWheelIterator].length / 8.0; 
+            }
+        } 
+        return reactionWheelMomentsOfInertia; 
+    }
     
 protected: 
 

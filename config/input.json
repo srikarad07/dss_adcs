@@ -44,28 +44,28 @@
     
     "reaction_wheels": [
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 90.0, 
                 0.0
             ] 
         },
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "0624bb6f-363b-5669-a111-4138a841cd01",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "07e0ee8d-2dc0-59b2-91e2-5e99a0bc65b7",
             "wheel_orientation": [
                 0.0, 
                 90.0
             ]
         }, 
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "e35b9c57-d5a2-58b5-858a-a5bf6c15604d",
             "wheel_orientation": [
                 45.0, 
                 45.0
