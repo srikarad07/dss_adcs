@@ -72,11 +72,11 @@ void executeSingleSimulator( const rapidjson::Document& config )
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
     if ( reactionWheels.size() == 3 )
     {
-        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularvelocity1,reactionWheelAngularvelocity2,reactionWheelAngularvelocity3,powerConsumption1,powerConsumption2,powerConsumption3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
     }
     else if ( reactionWheels.size() == 4 )
     {
-        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,reactionWheelAngularvelocity1,reactionWheelAngularvelocity2,reactionWheelAngularvelocity3,reactionWheelAngularVelocity4,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
     }
     //Set up numerical integrator. 
@@ -117,7 +117,16 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
         Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
         Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+        VectorXd reactionWheelAngularMomentums( reactionWheelConcepts["Concept"].size() ); 
 
+        for ( unsigned int angularMomentumIterator = 0; angularMomentumIterator < reactionWheelAngularMomentums.size(); ++angularMomentumIterator)
+        {
+            reactionWheelAngularMomentums[angularMomentumIterator] = currentState[input.initialAttitudeState.size() + angularMomentumIterator ]; 
+        }
+        
+        VectorXd reactionWheelAngularVelocities = actuatorConfiguration.computeReactionWheelVelocities(reactionWheelAngularMomentums);
+        // std::cout << "Reaction wheel angular velocities" << reactionWheelAngularVelocities * 60 << std::endl; 
+        
         const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
         // const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
 
@@ -154,7 +163,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
             controlTorque = { 0.0, 0.0, 0.0 };
         }
         
-        StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque );
+        StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities );
    
         // Dynamics of the system 
         DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );

@@ -89,6 +89,7 @@ public:
         {
             if ( !isnan( reactionWheel[reactionWheelIterator].radius ) ) 
             {
+                // std::cout << "Enters the first loop! " << std::endl; 
                 reactionWheelMomentsOfInertia[reactionWheelIterator] = reactionWheel[reactionWheelIterator].mass * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].radius / 2.0; 
             }
             else if ( !isnan( reactionWheel[reactionWheelIterator].length) && !isnan( reactionWheel[reactionWheelIterator].width) )
@@ -99,6 +100,20 @@ public:
             }
         } 
         return reactionWheelMomentsOfInertia; 
+    }
+
+    const VectorXd computeReactionWheelVelocities( const VectorXd reactionWheelAngularMomentum ) const 
+    {
+        VectorXd reactionWheelAngularVelocities( reactionWheelAngularMomentum.size() );
+        VectorXd momentsOfInertiaVector = calculateMomentOfInertia(); 
+        // std::cout << "The moment of inertia: " << momentsOfInertiaVector << std::endl;
+        // std::cout << "Angular momentum: " << reactionWheelAngularMomentum << std::endl; 
+        for ( unsigned int iterator = 0; iterator < reactionWheelAngularMomentum.size(); ++iterator )
+        {
+            reactionWheelAngularVelocities[iterator] = reactionWheelAngularMomentum[iterator] / momentsOfInertiaVector[iterator]; 
+        }  
+
+        return reactionWheelAngularVelocities; 
     }
     
 protected: 

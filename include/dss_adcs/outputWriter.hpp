@@ -119,14 +119,16 @@ public:
      * @param[in] aGravitationalParameter   Gravitation parameter of central body        [km^3 s^-2]
      */
 
-    StateHistoryWriter( std::ostream& aStateHistoryStream, 
-                        const Vector3 aControlTorque, 
-                        const VectorXd aMotorTorque, 
-                        const Vector3 aDisturbanceTorque )
+    StateHistoryWriter( std::ostream&   aStateHistoryStream, 
+                        const Vector3   aControlTorque, 
+                        const VectorXd  aMotorTorque, 
+                        const Vector3   aDisturbanceTorque, 
+                        const VectorXd  aReactionWheelAngularVelocities )
         : stateHistoryStream( aStateHistoryStream ),
           controlTorque( aControlTorque ),
           motorTorque( aMotorTorque ), 
-          disturbanceTorque( aDisturbanceTorque )  
+          disturbanceTorque( aDisturbanceTorque ), 
+          reactionWheelAngularVelocities( aReactionWheelAngularVelocities )   
     { }
 
     //! Overload ()-operator to write state to output stream.
@@ -147,6 +149,7 @@ public:
         const Real eulerRotationAngle   = 2 * acos( state[3] ); 
         const Vector3 attitudeRate( state[4], state[5], state[6] ); 
         const Real slewRate             = attitudeRate.norm(); 
+        const VectorXd powerConsumption = motorTorque * reactionWheelAngularVelocities; 
 
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
                             << time                                                     << ','
@@ -173,6 +176,15 @@ public:
     {
         stateHistoryStream  << state[stateIterator]                                     << ',';
     }
+    for ( unsigned int velocityIterator = 0; velocityIterator < motorTorque.size(); ++velocityIterator )
+    {
+        //! Angular velocities obtained in sec-1, converted into rpm by multiplying with 60! 
+        stateHistoryStream  << 60.0 * reactionWheelAngularVelocities[velocityIterator]  << ',';
+    }
+    for ( unsigned int powerIterator = 0; powerIterator < motorTorque.size(); ++powerIterator )
+    {
+        stateHistoryStream  << powerConsumption[powerIterator]                          << ',';
+    }
         stateHistoryStream  << disturbanceTorque[0]                                     << ','
                             << disturbanceTorque[1]                                     << ',' 
                             << disturbanceTorque[2]                                     << std::endl;                      
@@ -193,6 +205,9 @@ private:
 
     //! Disturbance Torque
     const Vector3 disturbanceTorque; 
+
+    //! Reaction Wheel angular velocities. 
+    const VectorXd reactionWheelAngularVelocities; 
 };
 
 }
