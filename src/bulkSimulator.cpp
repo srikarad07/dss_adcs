@@ -104,7 +104,22 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
             //Set up numerical integrator. 
             std::cout << "Executing numerical integrator ..." << std::endl;
-            State   currentState                = input.initialAttitudeState;
+            VectorXd currentState( ( input.initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ) );                 
+            for ( unsigned int stateIterator = 0; stateIterator < (input.initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ); ++stateIterator )
+            {
+                if ( stateIterator < input.initialAttitudeState.size() )
+                {
+                    currentState[stateIterator] = input.initialAttitudeState[stateIterator]; 
+                }
+                else if ( stateIterator >= input.initialAttitudeState.size() && stateIterator < (input.initialAttitudeState.size() +        reactionWheelConcepts["Concept"].size() ) )
+                {
+                    currentState[stateIterator] = 0.0; 
+                }
+                else
+                {
+                    std::cout << "Something is going wrong in the initial current state iterator! " << std::endl; 
+                }
+            }; 
             Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
 
             // Set up dynamical model.
@@ -162,12 +177,12 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque );
 
                 // Dynamics of the system 
-                DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
+                DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
                 // std::cout << "Integration start time: " << integrationStartTime << std::endl; 
                 if ( input.integrator == rk4 )
                 {
                     using namespace boost::numeric::odeint;
-                    integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
+                    integrate_const( runge_kutta4< VectorXd, double, VectorXd, double, vector_space_algebra >( ),
                                      dynamics,
                                      currentState,
                                      integrationStartTime,

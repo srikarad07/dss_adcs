@@ -39,14 +39,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
     std::cout << "The API is being called to extract the parameters ... " << std::endl;
     std::vector< ReactionWheel > reactionWheels; 
-    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid ); 
-
-    std::cout << "reaction wheel length: " << reactionWheels[0].length<< std::endl; 
-    std::cout << "reaction wheel height: " << reactionWheels[0].height << std::endl; 
-    std::cout << "reaction wheel width: " << reactionWheels[0].width << std::endl; 
-    std::cout << "reaction wheel mass: " << reactionWheels[0].mass << std::endl; 
-    std::cout << "reaction wheel radius: " << reactionWheels[0].radius << std::endl; 
-
+    reactionWheels  = getReactionWheels( input.actuator, input.actuatorUuid );
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl;
@@ -88,8 +81,24 @@ void executeSingleSimulator( const rapidjson::Document& config )
     }
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
-    State   currentState                = input.initialAttitudeState;
-    Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
+    // std::cout << "State size: " << ( input.initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ) << std::endl; 
+    VectorXd currentState( ( input.initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ) );                 
+    for ( unsigned int stateIterator = 0; stateIterator < (input.initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ); ++stateIterator )
+    {
+        if ( stateIterator < input.initialAttitudeState.size() )
+        {
+            currentState[stateIterator] = input.initialAttitudeState[stateIterator]; 
+        }
+        else if ( stateIterator >= input.initialAttitudeState.size() && stateIterator < (input.initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ) )
+        {
+            currentState[stateIterator] = 0.0; 
+        }
+        else
+        {
+            std::cout << "Something is going wrong in the initial current state iterator! " << std::endl; 
+        }
+    }; 
+    Vector4 referenceAttitudeState       = input.referenceAttitudeState; 
 
     // Set up dynamical model.
     std::cout << "Dynamical model setting up ..." << std::endl;
@@ -111,7 +120,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
         const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
         // const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
-        
+
         // Disturbance torques. 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
         if ( input.gravityGradientAccelerationModelFlag != false )
@@ -139,22 +148,22 @@ void executeSingleSimulator( const rapidjson::Document& config )
                                                                                           integrationStartTime ); 
         Vector3 controlTorque( outputTorques.first ); 
         VectorXd reactionWheelMotorTorque( outputTorques.second );  
-        
+
         if ( input.controlTorqueActiveModelFlag == false )
         {
             controlTorque = { 0.0, 0.0, 0.0 };
         }
         
         StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque );
-            
+   
         // Dynamics of the system 
-        DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, input.principleInertia );
+        DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
 
         // To Do: Use different integrator for the simulation. 
         if ( input.integrator == rk4 )
         {
             using namespace boost::numeric::odeint;
-            integrate_const( runge_kutta4< Vector7, double, Vector7, double, vector_space_algebra >( ),
+            integrate_const( runge_kutta4< VectorXd, double, VectorXd, double, vector_space_algebra >( ),
                              dynamics,
                              currentState,
                              integrationStartTime,
@@ -167,14 +176,15 @@ void executeSingleSimulator( const rapidjson::Document& config )
             std::cout << "Numerical integrator not defined" << std::endl;
             throw;
         }
-        quaternionStateVector.push_back( currentAttitude ); 
+        // quaternionStateVector.push_back( currentAttitude ); 
     }
-    ObjectiveFunction objectiveFunction( reactionWheels, 
-                                         quaternionStateVector, 
-                                         input.stateHistoryFilePath );   
-    Real functionValue      = objectiveFunction.computeObjectiveFunction(); 
 
-    std::cout << "The objective function is: " << functionValue << std::endl; 
+    // ObjectiveFunction objectiveFunction( reactionWheels, 
+    //                                      quaternionStateVector, 
+    //                                      input.stateHistoryFilePath );   
+    // Real functionValue      = objectiveFunction.computeObjectiveFunction(); 
+
+    // std::cout << "The objective function is: " << functionValue << std::endl; 
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
