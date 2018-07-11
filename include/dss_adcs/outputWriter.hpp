@@ -140,18 +140,14 @@ public:
      * @param[in] state Current state
      * @param[in] time  Current epoch
      */
-    void operator( )( const State& state, const double time )
+    void operator( )( const VectorXd& state, const double time )
     {
         const Vector4 quaternion( state[0], state[1], state[2], state[3] ); 
         const Vector3 eulerAngles       = astro::transformQuaternionToEulerAngles( quaternion ); 
         const Real eulerRotationAngle   = 2 * acos( state[3] ); 
         const Vector3 attitudeRate( state[4], state[5], state[6] ); 
         const Real slewRate             = attitudeRate.norm(); 
-        // std::cout << "Quaternion :  " << tempQuaternion.coeffs() << std::endl; 
-        // double pi( 3.14159265 );
-        // std::cout << "Sin of the angle" << sin( acos(quaternion[3]) ) << std::endl;  
-        // std::cout << "The angle is: " << 2 * acos(quaternion[3]) * 180.0 / pi << "for time " << time << std::endl; 
-        
+
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
                             << time                                                     << ','
                             << state[ 0 ]                                               << ','
@@ -171,8 +167,12 @@ public:
                             << controlTorque[2]                                         << ',' ;
     for ( unsigned int iterator = 0; iterator < motorTorque.size(); ++iterator )
     {
-        stateHistoryStream    << motorTorque[iterator]                                  << ',';
-    };
+        stateHistoryStream  << motorTorque[iterator]                                    << ',';
+    }
+    for ( unsigned int stateIterator = 7; stateIterator < state.size(); ++stateIterator )
+    {
+        stateHistoryStream  << state[stateIterator]                                     << ',';
+    }
         stateHistoryStream  << disturbanceTorque[0]                                     << ','
                             << disturbanceTorque[1]                                     << ',' 
                             << disturbanceTorque[2]                                     << std::endl;                      

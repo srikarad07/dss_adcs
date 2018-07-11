@@ -77,24 +77,24 @@ void executeBulkSimulator( const rapidjson::Document& config )
             std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + "_" + std::to_string(numberOfReactionWheels) + ".csv");
             if ( numberOfReactionWheels == 3 )
             {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
             }
             else if ( numberOfReactionWheels == 2 )
             {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,angularMomentum1,angularMomentum2,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
             }
             else if ( numberOfReactionWheels == 4 )
             {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
 
             }
             else if ( numberOfReactionWheels == 5 )
             {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
             }
             else if ( numberOfReactionWheels == 6 )
             {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
+                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5,angularMomentum6,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" <<     std::endl;
             }
             else
             {
