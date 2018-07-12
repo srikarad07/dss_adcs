@@ -27,7 +27,7 @@
         2.0
     ],  
 
-    "is_gravity_gradient_active": false,
+    "is_gravity_gradient_active": true,
 
     "is_control_torque_active": true, 
 
@@ -106,7 +106,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 200.0,
+    "end_epoch": 1000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).

@@ -49,8 +49,8 @@ print "******************************************************************"
 print ""
 
 # Update this part to use the json input for plotting. 
-# path            =  "/home/superman/Desktop/state_history.csv"
-path            =  "/home/superman/Desktop/state_history_concept_1_4.csv"
+path            =  "/home/superman/Desktop/state_history.csv"
+# path            =  "/home/superman/Desktop/state_history_concept_1_4.csv"
 state_history   = pd.read_csv( path )
  
 print "Input data files successfully read!"
@@ -218,19 +218,19 @@ ax2 = fig.add_subplot(3,1,2)
 ax3 = fig.add_subplot(3,1,3)
 
 #Plot angular velocity with respect to time. 
-ax1.plot(state_history['t'], state_history['reactionWheelAngularvelocity1'], color='k')
+ax1.plot(state_history['t'], state_history['reactionWheelAngularVelocity1'], color='k')
 ax1.set_xlabel('time[sec]')
 ax1.set_ylabel('Angular Velocity [rad/sec]')
 ax1.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
 ax1.grid()
 
-ax2.plot(state_history['t'], state_history['reactionWheelAngularvelocity2'], color='k')
+ax2.plot(state_history['t'], state_history['reactionWheelAngularVelocity2'], color='k')
 ax2.set_xlabel('time[sec]')
 ax2.set_ylabel('Angular Velocity [rad/sec]')
 ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
 ax2.grid()
 
-ax3.plot(state_history['t'], state_history['reactionWheelAngularvelocity3'], color='k')
+ax3.plot(state_history['t'], state_history['reactionWheelAngularVelocity3'], color='k')
 ax3.set_xlabel('time[sec]')
 ax3.set_ylabel('Angular Velocity [rad/sec]')
 ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
