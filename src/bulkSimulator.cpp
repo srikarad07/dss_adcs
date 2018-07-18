@@ -48,7 +48,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
     // Print metadata to the file provide in metadatafile path. 
     std::ofstream metadatafile( input.metadataFilePath );
     
-    for ( unsigned int reactionWheelNumberIterator = 4; reactionWheelNumberIterator < 5 ; ++reactionWheelNumberIterator )
+    for ( unsigned int reactionWheelNumberIterator = 6; reactionWheelNumberIterator < 7 ; ++reactionWheelNumberIterator )
     {
         const int numberOfReactionWheels = reactionWheelNumberIterator;
         std::cout << "Number of reaction wheels: " << numberOfReactionWheels << std::endl; 

@@ -127,8 +127,8 @@ void executeSingleSimulator( const rapidjson::Document& config )
         VectorXd reactionWheelAngularVelocities = actuatorConfiguration.computeReactionWheelVelocities(reactionWheelAngularMomentums);
         // std::cout << "Reaction wheel angular velocities" << reactionWheelAngularVelocities * 60 << std::endl; 
         
-        const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
-        // const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
+        // const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+        const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
 
         // Disturbance torques. 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 

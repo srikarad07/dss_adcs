@@ -60,6 +60,9 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
 
     else if ( controllerType.compare("cascade_saturation") == 0 )
     {
+        //! Maximum control input
+        const Vector3 maximumControlInput = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelTorqueMax; 
+
         commandedControlTorque = astro::computeControlTorqueWithSaturationCascadeController( naturalFrequency, 
                                                                                     dampingRatio, 
                                                                                     slewRateSaturation, 
@@ -68,7 +71,7 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
                                                                                     quaternionReference, 
                                                                                     quaternionCurrent, 
                                                                                     angularVelocity, 
-                                                                                    simulationTime );
+                                                                                    maximumControlInput );
     }
 
     else

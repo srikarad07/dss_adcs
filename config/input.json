@@ -7,9 +7,9 @@
     ],
 
     "initial_attitude_state": [
-        10.0,
-        10.0,
-        10.0,
+        30.0,
+        30.0,
+        30.0,
         0.0,
         0.0,
         0.0
@@ -27,7 +27,7 @@
         2.0
     ],  
 
-    "is_gravity_gradient_active": true,
+    "is_gravity_gradient_active": false,
 
     "is_control_torque_active": true, 
 
@@ -44,28 +44,28 @@
     
     "reaction_wheels": [
         {
-            "uuid": "e35b9c57-d5a2-58b5-858a-a5bf6c15604d",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 90.0, 
                 0.0
             ] 
         },
         {
-            "uuid": "e35b9c57-d5a2-58b5-858a-a5bf6c15604d",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "e35b9c57-d5a2-58b5-858a-a5bf6c15604d",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 0.0, 
                 90.0
             ]
         }, 
         {
-            "uuid": "e35b9c57-d5a2-58b5-858a-a5bf6c15604d",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 45.0, 
                 45.0
@@ -106,8 +106,8 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 1000.0,
-    "time_step": 1.0,
+    "end_epoch": 3000.0,
+    "time_step": 0.1,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,
