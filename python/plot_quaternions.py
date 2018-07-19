@@ -55,7 +55,7 @@ state_history   = pd.read_csv( path )
  
 print "Input data files successfully read!"
 
-print "figures being generated ..."
+print "Figures being generated ..."
 
 # Generate figure with 2D views.
 fig = plt.figure()

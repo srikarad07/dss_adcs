@@ -59,56 +59,68 @@ print ""
 # path            =  "/home/superman/Desktop/state_history.csv"
 path                =  "/home/superman/Desktop"
 
-# fig = plt.figure()
-# for filename in os.listdir(path):
+## Plot spacecraft attitudes. ## 
+# fig = plt.figure(figsize=(11,7))
+# fig, ((ax1, ax2), (ax3, ax4) ) = plt.subplots(2, 2, sharex=True, sharey=True )
+fig, ( ax1, ax2, ax3, ax4 ) = plt.subplots(4, sharex=True, figsize=(11,7) )
+for filename in os.listdir(path):
 
-#     state_history   = pd.read_csv( path + '/' + filename )
+    state_history   = pd.read_csv( path + '/' + filename )
     
-#     # Generate figure with 2D views.
-#     ax1 = fig.add_subplot(2, 2, 1)
-#     ax2 = fig.add_subplot(2, 2, 2)
-#     ax3 = fig.add_subplot(2, 2, 3)
-#     ax4 = fig.add_subplot(2, 2, 4, frameon=False)
+    # Generate figure with 2D views.
+    # ax1 = fig.add_subplot(411)
+    # ax2 = fig.add_subplot(412)
+    # ax3 = fig.add_subplot(413)
+    # ax4 = fig.add_subplot(414, frameon=True)
+    # ax1  = fig.add_axes([0.1, 0.5, 0.8, 0.4])
+    # ax2  = fig.add_axes([0.1, 0.1, 0.8, 0.4])
+    # ax3 = fig.add_axes(xticklabels=[])
 
-#     # Plot quaternion 1 with time.
-#     ax1.plot(state_history['t'],state_history['q1'])
-#     # ax1.scatter(0.0,0.0,s=100,marker='o',color='b')
-#     ax1.set_xlabel('time [sec]')
-#     ax1.set_ylabel('q_1')
-#     ax1.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-#     ax1.grid()
+    # Plot quaternion 1 with time.
+    ax1.plot(state_history['t']/60.0,state_history['q1'])
+    # ax1.scatter(0.0,0.0,s=100,marker='o',color='b')
+    # ax1.set_xlabel('time [sec]')
+    ax1.set_ylabel('q_1')
+    ax1.ticklabel_format(style='plain', axis='both', scilimits=(0,0))
+    ax1.grid()
+    
+    # axarr[0].plot(state_history['t']/60.0,state_history['q1'])
+    # axarr[1].plot(state_history['t']/60.0,state_history['q2'])    
+    # axarr[2].plot(state_history['t']/60.0,state_history['q3'])
+    # axarr[3].plot(state_history['t']/60.0,state_history['q4'])
+    
+    # Plot quaternion 1 with time.
+    ax2.plot(state_history['t']/60.0,state_history['q2'])
+    # ax1.scatter(0.0,0.0,s=100,marker='o',color='b')
+    # ax2.set_xlabel('time [sec]')
+    ax2.set_ylabel('q_2')
+    ax2.ticklabel_format(style='plain', axis='both', scilimits=(0,0))
+    ax2.grid()
 
-#     # Plot quaternion 1 with time.
-#     ax2.plot(state_history['t'],state_history['q2'])
-#     # ax1.scatter(0.0,0.0,s=100,marker='o',color='b')
-#     ax2.set_xlabel('time [sec]')
-#     ax2.set_ylabel('q_2')
-#     ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-#     ax2.grid()
+    # # Plot quaternion 1 with time.
+    ax3.plot(state_history['t']/60.0,state_history['q3'])
+    # ax3.scatter(0.0,0.0,s=100,marker='o',color='b')
+    # ax3.set_xlabel('time [min]')
+    ax3.set_ylabel('q_3')
+    ax3.ticklabel_format(style='plain', axis='both', scilimits=(0,0))
+    ax3.grid()
 
-#     # Plot quaternion 1 with time.
-#     ax3.plot(state_history['t'],state_history['q3'])
-#     # ax3.scatter(0.0,0.0,s=100,marker='o',color='b')
-#     ax3.set_xlabel('time [sec]')
-#     ax3.set_ylabel('q_3')
-#     ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-#     ax3.grid()
+    # # Plot quaternion 1 with time.
+    ax4.plot(state_history['t'] / 60.0,state_history['q4'])
+    # ax4.scatter(0.0,0.0,s=100,marker='o',color='b')
+    ax4.set_xlabel('Time [min]')
+    ax4.set_ylabel('q_4')
+    ax4.ticklabel_format(style='plain', axis='both', scilimits=(0,0))
+    ax4.grid()
 
-#     # Plot quaternion 1 with time.
-#     ax4.plot(state_history['t'],state_history['q4'])
-#     # ax4.scatter(0.0,0.0,s=100,marker='o',color='b')
-#     ax4.set_xlabel('time [sec]')
-#     ax4.set_ylabel('q_4')
-#     ax4.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-#     ax4.grid()
+    # plt.legend('Concept1', 'Concept2', 'Concept3', 'Concept4')
+    # plt.tight_layout()
+    plt.grid()
 
-#     # plt.legend('Concept1', 'Concept2', 'Concept3', 'Concept4')
-#     plt.tight_layout()
-#     plt.grid()
-
-#     pass
-
-
+    pass
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/attitudes.svg')
+plt.show()
+## PLot spacecraft control torques ##
 fig = plt.figure()
 for filename in os.listdir(path): 
 
@@ -141,7 +153,9 @@ for filename in os.listdir(path):
     # plt.grid()
 
     pass
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/controlTorques.svg')
 
+## Plot motor torques of the reaction wheels ##
 fig = plt.figure()
 for filename in os.listdir(path):
 
@@ -150,8 +164,8 @@ for filename in os.listdir(path):
     stringToBeLocated   = 'motorTorque'
     results = stringLocator(testPath, stringToBeLocated )
 
+    jj = np.ceil( len(results)/ 2.0 )
     for i in range(len(results)):
-        jj = np.ceil( len(results)/ 2.0 )
         ax = fig.add_subplot(2,jj,i+1)
         ax.plot( state_history['t'], state_history[results[i]] )
         ax.set_xlabel('time[sec]')
@@ -161,7 +175,9 @@ for filename in os.listdir(path):
     # plt.tight_layout()
     plt.grid()
     pass 
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/motorTorques.svg')
 
+## Plot angular momentum of the reaction wheels. 
 fig = plt.figure()
 for filename in os.listdir(path):
 
@@ -181,6 +197,7 @@ for filename in os.listdir(path):
     # plt.tight_layout()
     plt.grid()
     pass 
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/angularMomentumReactionWheels.svg')
     # Generate figure with 2D plots. 
     # ax1 = fig.add_subplot(2,2,1)
     # ax2 = fig.add_subplot(2,2,2)
@@ -235,6 +252,7 @@ for filename in os.listdir(path):
 
     # pass 
 
+## Plot the reaction wheel angular velocities. 
 fig = plt.figure()
 for filename in os.listdir(path):
 
@@ -254,6 +272,7 @@ for filename in os.listdir(path):
     # plt.tight_layout()
     plt.grid()
     pass 
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/reactionWheelAngularRates.svg')
 # fig = plt.figure()
 # for filename in os.listdir(path):
 
@@ -310,26 +329,28 @@ for filename in os.listdir(path):
 #     plt.grid()
 #     pass  
 
-fig = plt.figure()
+## Plot the power consumption for the reaction wheels. ##  
+fig = plt.figure(figsize=(11,7))
 for filename in os.listdir(path):
 
     state_history   = pd.read_csv( path + '/' + filename )
     testPath   =  path + '/' + filename
     stringToBeLocated   = 'powerConsumption'
     results = stringLocator(testPath, stringToBeLocated )
-
+    jj = np.ceil( len(results)/ 2.0 )
+    
     for i in range(len(results)):
-        jj = np.ceil( len(results)/ 2.0 )
+
         ax = fig.add_subplot(2,jj,i+1)
-        ax.plot( state_history['t'], state_history[results[i]] )
-        ax.set_xlabel('time[sec]')
-        ax.set_ylabel('Power Consumption [W]')
-        ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+        ax.plot( state_history['t']/60.0, state_history[results[i]] )
+        ax.set_title( 'Power' + str(i+1) + ' [W]' )
+        ax.set_xlabel('time[min]')
+        # ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
         pass 
     # plt.tight_layout()
     plt.grid()
     pass 
-
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/power.svg')
 # fig = plt.figure()
 # for filename in os.listdir(path):
 #     state_history   = pd.read_csv( path + '/' + filename )
@@ -386,6 +407,7 @@ for filename in os.listdir(path):
 #     plt.grid()
 #     pass
 
+## Plot the angular rates of the spacecraft ## 
 fig = plt.figure()
 for filename in os.listdir(path):
     state_history   = pd.read_csv( path + '/' + filename )
@@ -395,26 +417,26 @@ for filename in os.listdir(path):
     ax4 = fig.add_subplot(2,2,4)
 
     #Plot angular velocity with respect to time. 
-    ax1.plot(state_history['t'], state_history['w1'])
-    ax1.set_xlabel('time[sec]')
+    ax1.plot(state_history['t'] / 60.0, state_history['w1'])
+    # ax1.set_xlabel('time[sec]')
     ax1.set_ylabel('V_x[deg/sec]')
     ax1.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
     ax1.grid()
 
-    ax2.plot(state_history['t'], state_history['w2'])
-    ax2.set_xlabel('time[sec]')
+    ax2.plot(state_history['t'] / 60.0, state_history['w2'])
+    # ax2.set_xlabel('time[sec]')
     ax2.set_ylabel('V_y [deg/sec]')
     ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
     ax2.grid()
 
-    ax3.plot(state_history['t'], state_history['w3'])
-    ax3.set_xlabel('time[sec]')
+    ax3.plot(state_history['t'] / 60.0, state_history['w3'])
+    ax3.set_xlabel('time[min]')
     ax3.set_ylabel('V_z [deg/sec]')
     ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
     ax3.grid()
 
-    ax4.plot(state_history['t'], state_history['slewRate'])
-    ax4.set_xlabel('time[sec]')
+    ax4.plot(state_history['t'] / 60.0, state_history['slewRate'])
+    ax4.set_xlabel('time[min]')
     ax4.set_ylabel('Slew Rate [deg/sec]')
     ax4.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
     ax4.grid()
@@ -422,7 +444,20 @@ for filename in os.listdir(path):
     plt.tight_layout()
     plt.grid()
     pass 
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/angularRatesSpacecraft.svg')
+
+# print "Figures generated successfully!"
+# print ""
 # # plt.plot() 
 
+print "Figures generated successfully!"
+print ""
 
-plt.show()
+# Stop timer
+end_time = time.time( )
+
+print ""
+print "------------------------------------------------------------------"
+print "                         Exited successfully!                     "
+print "------------------------------------------------------------------"
+print ""
