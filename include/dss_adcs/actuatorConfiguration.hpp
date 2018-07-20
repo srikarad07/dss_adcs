@@ -29,8 +29,7 @@ public:
     const std::pair< MatrixXd, MatrixXd > computeReactionWheelMappingMatrices( ) const
     {
         MatrixXd reactionWheelTorqueToControlTorqueMappingMatrix(3, reactionWheel.size()); 
-        // TO DO: Need to test this function for accuracy. And in simulator convert the degree 
-        // to radians before it is called here for wheelOrientation. 
+        // TO DO: Need to test this function for accuracy.
 
         for ( unsigned int i = 0; i < reactionWheel.size(); ++i )
         {
