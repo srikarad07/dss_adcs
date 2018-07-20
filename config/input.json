@@ -15,9 +15,9 @@
         0.0
     ],
 
-    "quaternion_reference_state": [
+    "attitude_reference_state": [
         0.0, 
-        0.0,
+        0.0, 
         0.0
     ],
 
@@ -82,39 +82,25 @@
     "slew_saturation_rate" : 0.2, 
     "controller_type" : "cascade_saturation",   
 
-    // Control gains. 
-    // "attitude_control_gain" : 7.11, 
-
-    // "angular_velocity_control_gains": [
-    //     18.67, 
-    //     8.67,
-    //     10.67 
-    // ],
-
     // Radial vector of the satellite from spacecraft [m]. 
     "radius": 7371000.0,
 
     // Semi major axis of the orbit of the satellite [km].
     "semi_major_axis" : 500.0,
     
-    ////
-    // Numerical integrator
-    ////
     // Select numerical integrator.
     // (rk4|dopri5|rkf78|bs)
     "integrator": "rk4",
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 3000.0,
+    "end_epoch": 1000.0,
     "time_step": 0.1,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,
     "absolute_tolerance": 1.0e-12,
-    ////
-    // Output
-    ////
+
     // Set up file writer options.
     "metadata_file_path": "/home/superman/desktop/metadata.csv",
     "state_history_file_path": "/home/superman/Desktop/state_history.csv"
