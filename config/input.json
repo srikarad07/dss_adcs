@@ -103,5 +103,5 @@
 
     // Set up file writer options.
     "metadata_file_path": "/home/superman/desktop/metadata.csv",
-    "state_history_file_path": "/home/superman/Desktop/state_history.csv"
+    "state_history_file_path": "/home/superman/Desktop/single_simulation/state_history.csv"
 }

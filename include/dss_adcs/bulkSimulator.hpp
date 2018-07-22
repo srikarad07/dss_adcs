@@ -73,6 +73,7 @@ public:
                     const std::string&              aReactionWheelConfiguration,
                     const std::vector <std::string> aActuatorUuid,
                     const std::vector< Vector2 >    aWheelOrientation,
+                    const Vector2                   aNumberOfReactionWheels, 
                     const bool                      aControlTorqueActiveModelFlag,
                     const Real                      aNaturalFrequency, 
                     const Real                      aDampingRatio, 
@@ -98,6 +99,7 @@ public:
           reactionWheelConfiguration( aReactionWheelConfiguration ), 
           actuatorUuid( aActuatorUuid ),
           wheelOrientation( aWheelOrientation ),
+          numberOfReactionWheels( aNumberOfReactionWheels ),
           controlTorqueActiveModelFlag( aControlTorqueActiveModelFlag ),
           naturalFrequency( aNaturalFrequency ),
           dampingRatio( aDampingRatio ), 
@@ -161,6 +163,9 @@ public:
     //! Wheel offset values for the reaction wheels. 
     const std::vector< Vector2 > wheelOrientation; 
 
+    //! Minimum and maximum number of reaction wheels. 
+    const Vector2 numberOfReactionWheels; 
+    
     //! Check if the control torque is active or not. 
     const bool controlTorqueActiveModelFlag; 
 

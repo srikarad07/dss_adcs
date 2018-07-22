@@ -48,7 +48,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
     // Print metadata to the file provide in metadatafile path. 
     std::ofstream metadatafile( input.metadataFilePath );
     
-    for ( unsigned int reactionWheelNumberIterator = 6; reactionWheelNumberIterator < 7 ; ++reactionWheelNumberIterator )
+    const unsigned int minimumNumberOfReactionWheels    = input.numberOfReactionWheels[0]; 
+    const unsigned int maximumNumberOfReactionWheels    = input.numberOfReactionWheels[1] + 1; 
+
+    for ( unsigned int reactionWheelNumberIterator = minimumNumberOfReactionWheels; reactionWheelNumberIterator < maximumNumberOfReactionWheels ; ++reactionWheelNumberIterator )
     {
         const int numberOfReactionWheels = reactionWheelNumberIterator;
         std::cout << "Number of reaction wheels: " << numberOfReactionWheels << std::endl; 
@@ -448,7 +451,10 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
         wheelOrientation.push_back( orientation );
     }
        
-    
+    // Number of reaction wheels in a concept. 
+    ConfigIterator numberOfReactionWheelIterator    = find( config, "number_of_reaction_wheels"); 
+    const Vector2 numberOfReactionWheels( numberOfReactionWheelIterator->value[0].GetDouble(), numberOfReactionWheelIterator->value[1].GetDouble() ); 
+
     // Check if the control torque is active.
     const bool controlTorqueActiveModelFlag     = find( config, "is_control_torque_active" )->value.GetBool(); 
     std::cout << "Is control torque active?                                     " << controlTorqueActiveModelFlag << std::endl; 
@@ -483,6 +489,7 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
                             reactionWheelConfiguration,
                             actuatorUuid,
                             wheelOrientation,
+                            numberOfReactionWheels,
                             controlTorqueActiveModelFlag,
                             naturalFrequency, 
                             dampingRatio, 

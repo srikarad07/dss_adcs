@@ -69,6 +69,12 @@
     // "reaction_wheel_uuids" : "/home/superman/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
     "reaction_wheel_uuids" : "/home/superman/workspace/trial/productUuids.json", 
 
+    // Number of reaction wheels: 
+    "number_of_reaction_wheels": [
+        2, 
+        6
+    ], 
+
     // Attitude representation type. 
     "attitude_representation" : "quaternions", 
 
@@ -101,5 +107,5 @@
     // Output
     // Set up file writer options.
     "metadata_file_path": "/home/superman/Desktop/metadata.csv",
-    "state_history_file_path": "/home/superman/Desktop/state_history_"
+    "state_history_file_path": "/home/superman/Desktop/bulk_simulation/state_history_"
 }
