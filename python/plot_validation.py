@@ -118,8 +118,8 @@ ax4.ticklabel_format(style='plain', axis='both', scilimits=(0,0))
 ax4.grid()
 
 plt.tight_layout()
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/quaternions_validation.svg')
-plt.close()
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/quaternions_validation.eps')
+#plt.close()
 # plt.grid()
 
 #Generate figure with 2D plots. 
@@ -161,7 +161,7 @@ ax3.grid()
 
 plt.tight_layout()
 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/controlTorque_validation.svg')
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/controlTorque_validation.eps')
 # plt.close()
 
 # Generate figure with 2D plots. 
@@ -214,7 +214,7 @@ ax4.grid()
 
 plt.tight_layout()
 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/motorTorque_validation.svg')
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/motorTorque_validation.eps')
 # plt.close()
 
 #Generate control torque plots.
@@ -269,7 +269,7 @@ ax4.grid()
 plt.tight_layout()
 # plt.grid()
 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/angularVelocity_validation.svg')
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/angularVelocity_validation.eps')
 # plt.close()
 
 plt.show()
