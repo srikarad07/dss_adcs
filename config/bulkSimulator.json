@@ -15,7 +15,7 @@
         0.0
     ],
 
-    "quaternion_reference_state": [
+    "attitude_reference_state": [
         0.0, 
         0.0,
         0.0
@@ -76,7 +76,7 @@
     ], 
 
     // Attitude representation type. 
-    "attitude_representation" : "quaternions", 
+    "attitude_representation" : "euler_angles", 
 
     // Controller properties 
     "natural_frequency" : 0.1,

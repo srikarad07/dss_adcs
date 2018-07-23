@@ -283,54 +283,64 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     std::cout << "Principle inertia around Z axis:                              " << principleInertia[2]
               << "[kg/m^2]" << std::endl; 
     
-    // Extract attitude kinematic type. 
+// Extract attitude kinematic type. 
     const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
     std::cout << "Attitude representation:                                      " << attitudeRepresentationString << std::endl; 
     
     // Extract the initial attitude states and angular velocities. 
-    ConfigIterator initialAttitudeStateEulerIterator         = find( config, "initial_attitude_state");
-
-    // Extract the initial state of the quaternion. 
+    ConfigIterator initialAttitudeStateEulerIterator    = find( config, "initial_attitude_state");
+    ConfigIterator referenceAttitudeStateIterator       = find( config, "attitude_reference_state" );
+ 
     Vector7 initialAttitudeState;
+    Vector4 referenceAttitudeState; 
+    Vector3 initialAttitudeStateEuler;
 
-    Vector3 initialAttitudeStateEuler; 
+    if (attitudeRepresentationString.compare("euler_angles") == 0)
+    {
+        initialAttitudeStateEuler[0]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[0].GetDouble() );
+        initialAttitudeStateEuler[1]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[1].GetDouble() );
+        initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
 
+        Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
+        initialAttitudeState[0]                        = quaternionInitialState[0];
+        initialAttitudeState[1]                        = quaternionInitialState[1];
+        initialAttitudeState[2]                        = quaternionInitialState[2];
+        initialAttitudeState[3]                        = quaternionInitialState[3];   
+        initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[3].GetDouble() ); 
+        initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
+        initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
 
-    initialAttitudeStateEuler[0]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[0].GetDouble() );
-    initialAttitudeStateEuler[1]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[1].GetDouble() );
-    initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
-    
-    Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
-    initialAttitudeState[0]                        = quaternionInitialState[0];
-    initialAttitudeState[1]                        = quaternionInitialState[1];
-    initialAttitudeState[2]                        = quaternionInitialState[2];
-    initialAttitudeState[3]                        = quaternionInitialState[3];   
-    initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[3].GetDouble() ); 
-    initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
-    initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
-    
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TEMPROARY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-    // initialAttitudeState[0]  = 0.2652; 
-    // initialAttitudeState[1]  = 0.2652; 
-    // initialAttitudeState[2]  = -0.6930;
-    // initialAttitudeState[3]  = 0.6157;
-    // initialAttitudeState[0]  = 0.57; 
-    // initialAttitudeState[1]  = 0.57; 
-    // initialAttitudeState[2]  = 0.57;
-    // initialAttitudeState[3]  = 0.159;
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<        >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+        Vector3 referenceAttitudeStateEuler; 
 
-    std::cout << "Initial state in quaternion:                                  " << quaternionInitialState[0] << "," <<  quaternionInitialState[1] << "," << quaternionInitialState[2] << "," << quaternionInitialState[3] << std::endl;    
+        referenceAttitudeStateEuler[0]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[0].GetDouble() );
+        referenceAttitudeStateEuler[1]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[1].GetDouble() );
+        referenceAttitudeStateEuler[2]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[2].GetDouble() ); 
 
-    // Extract the reference state for the quaternion. 
-    ConfigIterator referenceAttitudeStateIterator       = find( config, "quaternion_reference_state" );
-    Vector3 referenceAttitudeStateEuler; 
+        referenceAttitudeState                         = astro::transformEulerToQuaternion( referenceAttitudeStateEuler );    
+    }
+    else if ( attitudeRepresentationString.compare("quaternions") == 0 )
+    {
+        initialAttitudeState[0]                        = initialAttitudeStateEulerIterator->value[0].GetDouble();
+        initialAttitudeState[1]                        = initialAttitudeStateEulerIterator->value[1].GetDouble();
+        initialAttitudeState[2]                        = initialAttitudeStateEulerIterator->value[2].GetDouble();
+        initialAttitudeState[3]                        = initialAttitudeStateEulerIterator->value[3].GetDouble();   
+        initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
+        initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
+        initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[6].GetDouble() ); 
 
-    referenceAttitudeStateEuler[0]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[0].GetDouble() );
-    referenceAttitudeStateEuler[1]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[1].GetDouble() );
-    referenceAttitudeStateEuler[2]                 = sml::convertDegreesToRadians( referenceAttitudeStateIterator->value[2].GetDouble() );  
-    
-    const Vector4 referenceAttitudeState           = astro::transformEulerToQuaternion( referenceAttitudeStateEuler );      
+        referenceAttitudeState[0]                      = referenceAttitudeStateIterator->value[0].GetDouble();
+        referenceAttitudeState[1]                      = referenceAttitudeStateIterator->value[1].GetDouble();
+        referenceAttitudeState[2]                      = referenceAttitudeStateIterator->value[2].GetDouble();  
+        referenceAttitudeState[3]                      = referenceAttitudeStateIterator->value[3].GetDouble();
+    }
+    else 
+    {
+        std::cout << "This attitude representation is not defined! Please enter the initial attitude state in accepted representations! " << std::endl; 
+        throw; 
+    }
+
+    std::cout << "Initial attitude state in quaternion:                         " << initialAttitudeState[0]<< "," << initialAttitudeState[1]<< "," << initialAttitudeState[2]<< "," << initialAttitudeState[3] << std::endl;
+    std::cout << "Initial attitude rates:                                       " << initialAttitudeState[4]<< "," << initialAttitudeState[5]<< "," << initialAttitudeState[6]<< " [rad/sec]" << std::endl;
 
     std::cout << "Reference state in quaternion:                                " << referenceAttitudeState[0]<< "," << referenceAttitudeState[1]<< "," << referenceAttitudeState[2]<< "," << referenceAttitudeState[3] << std::endl;  
     
