@@ -49,7 +49,7 @@ print "******************************************************************"
 print ""
 
 # Update this part to use the json input for plotting. 
-path            =  "/home/superman/Desktop/state_history.csv"
+path            =  "/home/superman/Desktop/single_simulation/state_history.csv"
 state_history   = pd.read_csv( path )
  
 print "Input data files successfully read!"
@@ -209,6 +209,7 @@ ax3.grid()
 
 plt.tight_layout()
 plt.grid()
+plt.close()
 
 # Generate figure with 2D plots. 
 fig = plt.figure()
@@ -237,7 +238,7 @@ ax3.grid()
 
 plt.tight_layout()
 plt.grid()
-
+plt.close()
 # Generate figure with 2D plots. 
 fig = plt.figure()
 ax1 = fig.add_subplot(3,1,1)
@@ -265,7 +266,7 @@ ax3.grid()
 
 plt.tight_layout()
 plt.grid()
-
+plt.close()
 #Generate control torque plots.
 #Generate figure with 2D plots. 
 fig = plt.figure()
@@ -299,7 +300,7 @@ ax4.set_ylabel('Slew Rate [deg/sec]')
 ax4.ticklabel_format(style='plain', axis='both', scilimits=(0,0))
 ax4.grid()
 
-plt.tight_layout()
+# plt.tight_layout()
 plt.grid()
 
 #Generate disturbance torque plots.
@@ -330,7 +331,7 @@ ax3.grid()
 
 plt.tight_layout()
 plt.grid()
-
+plt.close()
 plt.show()
 
 print "Figures generated successfully!"

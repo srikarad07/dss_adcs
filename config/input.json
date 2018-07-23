@@ -1,15 +1,15 @@
 {
     "mode": "simulator",
     "principle_inertia": [
-        1000.0,
-        1200.0,
-        1100.0
+        5000.0,
+        5000.0,
+        5000.0
     ],
 
     "initial_attitude_state": [
-        30.0,
-        30.0,
-        30.0,
+        120.0,
+        120.0,
+        120.0,
         0.0,
         0.0,
         0.0
@@ -27,7 +27,7 @@
         2.0
     ],  
 
-    "is_gravity_gradient_active": false,
+    "is_gravity_gradient_active": true,
 
     "is_control_torque_active": true, 
 
@@ -44,42 +44,35 @@
     
     "reaction_wheels": [
         {
-            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
+            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
             "wheel_orientation": [
                 90.0, 
                 0.0
             ] 
         },
         {
-            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
+            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
+            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
             "wheel_orientation": [
                 0.0, 
                 90.0
             ]
-        }, 
-        {
-            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
-            "wheel_orientation": [
-                45.0, 
-                45.0
-            ]
-        }        
+        }  
     ],
           
     // Attitude representation type. 
-    "attitude_representation" : "quaternions", 
+    "attitude_representation" : "euler_angles", 
 
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.2, 
+    "slew_saturation_rate" : 0.45, 
     "controller_type" : "cascade_saturation",   
 
     // Radial vector of the satellite from spacecraft [m]. 
