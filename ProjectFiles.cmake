@@ -6,6 +6,7 @@
 set(SRC
   "${SRC_PATH}/bulkSimulator.cpp"
   "${SRC_PATH}/factorial.cpp"
+  "${SRC_PATH}/monteCarloSingle.cpp"
   "${SRC_PATH}/simulator.cpp"
   "${SRC_PATH}/tools.cpp"
 )

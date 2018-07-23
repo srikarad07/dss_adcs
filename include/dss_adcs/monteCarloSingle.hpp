@@ -4,8 +4,8 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
  */
 
-#ifndef DSS_ADCS_SINGLE_SIMULATOR_HPP
-#define DSS_ADCS_SINGLE_SIMULATOR_HPP
+#ifndef DSS_ADCS_MONTE_CARLO_SINGLE_HPP
+#define DSS_ADCS_MONTE_CARLO_SINGLE_HPP
 
 #include <string>
 #include <vector>
@@ -25,7 +25,7 @@ namespace dss_adcs
  *
  * @param[in] config User-defined configuration options (extracted from JSON input file)
  */
-void executeSingleSimulator( const rapidjson::Document& config );
+void executeMonteCarloSingleSimulator( const rapidjson::Document& config );
 
 //! Input for attitude_dynamics_simulator application mode.
 /*!
@@ -34,7 +34,7 @@ void executeSingleSimulator( const rapidjson::Document& config );
  *
  * @sa checkSimulatorInput, executeSimulator
  */
-struct SingleSimulatorInput
+struct monteCarloSingleSimulatorInput
 {
 public:
 
@@ -54,33 +54,39 @@ public:
      * @param[in] aMetadataFilePath           Path to output file for metadata
      * @param[in] aStateHistoryFilePath       Path to output file for state history
      */
-    SingleSimulatorInput( Inertia                         aPrincipleInertia,
-                          const State                     anInitialAttitudeState, 
-                          const Vector4                   aReferenceAttitudeState,
-                          const Integrator                anIntegrator,
-                          const Real                      aStartEpoch,
-                          const Real                      anEndEpoch, 
-                          const Real                      aTimeStep,
-                          const Real                      aGravitationalParameter, 
-                          const Real                      aRadius,
-                          const Real                      aSemiMajorAxis,   
-                          const Real                      aRelativeTolerance,   
-                          const Real                      anAbsoluteTolerance, 
-                          const bool                      aGravityGradientAccelerationModelFlag,
-                          const std::string&              aConceptConfiguration,
-                          const std::string&              aActuator, 
-                          const std::vector <std::string> aActuatorUuid,
-                          const std::vector< Vector2 >    aWheelOrientation,
-                          const bool                      aControlTorqueActiveModelFlag,
-                          const Real                      aNaturalFrequency, 
-                          const Real                      aDampingRatio, 
-                          const Real                      aSlewSaturationRate, 
-                          const std::string&              aControllerType,
-                          const std::string&              aMetadataFilePath,
-                          const std::string&              aStateHistoryFilePath )     
-        : principleInertia( aPrincipleInertia ),
-          initialAttitudeState( anInitialAttitudeState ),
+    monteCarloSingleSimulatorInput( const Inertia                   aPrincipleInertiaMin,
+                                    const Inertia                   aPrincipleInertiaMax,    
+                                    const State                     anInitialAttitudeStateMin, 
+                                    const State                     anInitialAttitudeStateMax,
+                                    const Vector4                   aReferenceAttitudeState,
+                                    const int                       aNumberOfSamples,
+                                    const Integrator                anIntegrator,
+                                    const Real                      aStartEpoch,
+                                    const Real                      anEndEpoch, 
+                                    const Real                      aTimeStep,
+                                    const Real                      aGravitationalParameter, 
+                                    const Real                      aRadius,
+                                    const Real                      aSemiMajorAxis,   
+                                    const Real                      aRelativeTolerance,   
+                                    const Real                      anAbsoluteTolerance, 
+                                    const bool                      aGravityGradientAccelerationModelFlag,
+                                    const std::string&              aConceptConfiguration,
+                                    const std::string&              aActuator, 
+                                    const std::vector <std::string> aActuatorUuid,
+                                    const std::vector< Vector2 >    aWheelOrientation,
+                                    const bool                      aControlTorqueActiveModelFlag,
+                                    const Real                      aNaturalFrequency, 
+                                    const Real                      aDampingRatio, 
+                                    const Real                      aSlewSaturationRate, 
+                                    const std::string&              aControllerType,
+                                    const std::string&              aMetadataFilePath,
+                                    const std::string&              aStateHistoryFilePath )     
+        : principleInertiaMin( aPrincipleInertiaMin ),
+          principleInertiaMax( aPrincipleInertiaMax ),
+          initialAttitudeStateMin( anInitialAttitudeStateMin ),
+          initialAttitudeStateMax( anInitialAttitudeStateMax ),
           referenceAttitudeState( aReferenceAttitudeState ),
+          numberOfSamples( aNumberOfSamples ), 
           integrator( anIntegrator ),
           startEpoch( aStartEpoch ),
           endEpoch( anEndEpoch ),
@@ -105,13 +111,18 @@ public:
     { }
 
     //! Principle Inertia of the spacecraft [kg m^2].
-    Inertia principleInertia;
+    const Inertia principleInertiaMin;
+    const Inertia principleInertiaMax;
 
     //! Initial attitude state and angular velocities of the spacecraft [deg], [deg/sec].
-    const State initialAttitudeState; 
+    const State initialAttitudeStateMin;
+    const State initialAttitudeStateMax; 
 
     //! Reference attitude state defined by the user. 
     const Vector4 referenceAttitudeState; 
+    
+    //! Number of samples for monte carlo. 
+    const int numberOfSamples; 
     
     //! Selected numerical integrator. 
     const Integrator integrator; 
@@ -192,7 +203,7 @@ private:
  * @return           Struct containing all valid input for attitude_dynamics_simulator application
  *                   mode
  */
-SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& config );
+monteCarloSingleSimulatorInput checkMonteCarloSingleSimulatorInput( const rapidjson::Document& config );
 
 } // namespace dss_adcs
 

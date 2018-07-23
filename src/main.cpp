@@ -14,6 +14,7 @@
 #include <rapidjson/document.h>
 
 #include "dss_adcs/bulkSimulator.hpp"
+#include "dss_adcs/monteCarloSingle.hpp"
 #include "dss_adcs/simulator.hpp"
 
 int main( const int numberOfInputs, const char* inputArguments[ ] )
@@ -92,6 +93,12 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
         std::cout << "Mode                               " << mode << std::endl;
         // dss_adcs::executeSingleSimulator( config );
         dss_adcs::executeBulkSimulator( config );
+    }
+    else if ( mode.compare("monte_carlo_single_simulation") == 0)
+    {
+        std::cout << "Mode                               " << mode << std::endl;
+        // dss_adcs::executeSingleSimulator( config );
+        dss_adcs::executeMonteCarloSingleSimulator( config );
     }
     else
     {
