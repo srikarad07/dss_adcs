@@ -113,5 +113,5 @@
 
     // Set up file writer options.
     "metadata_file_path": "/home/superman/Desktop/metadata.csv",
-    "state_history_file_path": "/home/superman/Desktop/monte_carlo_single/state_history.csv"
+    "state_history_file_path": "/home/superman/Desktop/monte_carlo_single/state_history"
 }

@@ -93,7 +93,7 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
     
     for ( int i = 0; i < input.numberOfSamples; ++i )
     {
-        std::string stateHistoryFilePath = input.stateHistoryFilePath + '_' + std::to_string(i); 
+        std::string stateHistoryFilePath = input.stateHistoryFilePath + '_' + std::to_string(i) + ".csv"; 
             
         // Create file stream to write state history to.
         std::ofstream stateHistoryFile( stateHistoryFilePath );
