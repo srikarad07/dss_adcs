@@ -27,6 +27,9 @@
 *.out
 *.app
 
+# Python object giles 
+*.pyc
+
 # Build system
 build
 bin
@@ -41,3 +44,4 @@ external
 
 # System files
 .DS_Store
+

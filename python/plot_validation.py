@@ -11,21 +11,8 @@ See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-# from matplotlib import rcParams
-# from matplotlib import cm
-# from matplotlib.font_manager import FontProperties
-# from mpl_toolkits.mplot3d import Axes3D
-# from mpl_toolkits.mplot3d import axes3d
-# import matplotlib.animation as animation
-
-# I/O
-# import commentjson
-# import json
-# from pprint import pprint
-# import sqlite3
 
 # Numerical
-# import math
 import numpy as np
 import pandas as pd
 
@@ -63,7 +50,7 @@ print "Input data files successfully read!"
 print "Figures being generated ..."
 
 # Generate figure with 2D views.
-fig = plt.figure()
+fig = plt.figure( figsize=(5,6))
 ax1 = fig.add_subplot(4, 1, 1)
 ax2 = fig.add_subplot(4, 1, 2)
 ax3 = fig.add_subplot(4, 1, 3)
@@ -123,7 +110,7 @@ fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/quatern
 # plt.grid()
 
 #Generate figure with 2D plots. 
-fig = plt.figure()
+fig = plt.figure( figsize=(5,6) )
 ax1 = fig.add_subplot(3,1,1)
 ax2 = fig.add_subplot(3,1,2)
 ax3 = fig.add_subplot(3,1,3)
@@ -165,7 +152,7 @@ fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/control
 # plt.close()
 
 # Generate figure with 2D plots. 
-fig = plt.figure()
+fig = plt.figure( figsize=(5,6) )
 ax1 = fig.add_subplot(4,1,1)
 ax2 = fig.add_subplot(4,1,2)
 ax3 = fig.add_subplot(4,1,3)
@@ -219,7 +206,7 @@ fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/validation/motorTo
 
 #Generate control torque plots.
 #Generate figure with 2D plots. 
-fig = plt.figure()
+fig = plt.figure( figsize=(5,6) )
 ax1 = fig.add_subplot(4,1,1)
 ax2 = fig.add_subplot(4,1,2)
 ax3 = fig.add_subplot(4,1,3)

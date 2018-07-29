@@ -3,14 +3,6 @@ Copyright (c) 2017,S.D Cherukuri, Delft University of Technology (srikarad007@gm
 Distributed under the MIT License.
 See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 '''
-def requiredFiles( pathToDirectory, stringOfInterestingFiles, *moreKeywords ):
-    
-    if not moreKeywords: 
-        interestingFiles    = [pathToDirectory + '/' + filename for filename in os.listdir(pathToDirectory) if os.path.isfile(pathToDirectory + '/' + filename) and stringOfInterestingFiles in filename]        
-    elif len(moreKeywords) == 1: 
-        interestingFiles    = [pathToDirectory + '/' + filename for filename in os.listdir(pathToDirectory) if os.path.isfile(pathToDirectory + '/' + filename) and stringOfInterestingFiles in filename and moreKeywords[0] in filename]
-        pass 
-    return interestingFiles
 
 # Set up modules and packages.
 # Plotting
@@ -41,7 +33,8 @@ import time
 import os 
 
 # Locate the string 
-from test_csv import stringLocator
+from csv_functions import stringLocator
+from csv_functions import requiredFiles
 
 plt.style.use('seaborn-whitegrid')
 
