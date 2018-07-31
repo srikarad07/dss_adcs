@@ -115,6 +115,7 @@ if(BUILD_MAIN)
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${CPR_LIBRARIES}
+    # ${TEST_NAME}
 #    ${PYKEP_LIBRARY}
 #    ${SQLITECPP_LIBRARY}
 #    ${SQLITE3_LIBRARY}
@@ -150,7 +151,7 @@ if(BUILD_TESTS)
   if(NOT CATCH_FOUND)
     add_dependencies(${TEST_NAME} catch-lib)
   endif(NOT CATCH_FOUND)
-  target_link_libraries(${TEST_NAME} ${LIB_NAME})
+  target_link_libraries(${TEST_NAME} ${LIB_NAME} ${CPR_LIBRARIES})
   add_test(NAME ${TEST_NAME} COMMAND "${TEST_PATH}/${TEST_NAME}")
 
   if(BUILD_COVERAGE_ANALYSIS)

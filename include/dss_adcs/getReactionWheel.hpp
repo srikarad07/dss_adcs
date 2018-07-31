@@ -4,8 +4,8 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 */
     
-#ifndef GET_REACTION_WHEEL_HPP
-#define GET_REACTION_WHEEL_HPP
+#ifndef DSS_ADCS_GET_REACTION_WHEEL_HPP
+#define DSS_ADCS_GET_REACTION_WHEEL_HPP
 
 #include <math.h> 
 

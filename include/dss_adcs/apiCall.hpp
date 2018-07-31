@@ -32,7 +32,7 @@ inline std::string callTheApi( const std::string actuatorUuid )
     }
     else 
     {
-        std::cout << "Oops!  404 Error! \n 1) Check your internet connection! \n 2) Check the actuator id: " << actuatorUuid << std::endl; 
+        std::cout << "Oops!" << r.status_code << " Error! \n 1) Check your internet connection! \n 2) Check the actuator id: " << actuatorUuid << std::endl; 
         throw; 
     }
     // std::cout << r.status_code << std::endl; // 200
