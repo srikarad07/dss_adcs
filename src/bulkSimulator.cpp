@@ -44,9 +44,6 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
     // Define the actuator configuration. 
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
- 
-    // Print metadata to the file provide in metadatafile path. 
-    std::ofstream metadatafile( input.metadataFilePath );
     
     const unsigned int minimumNumberOfReactionWheels    = input.numberOfReactionWheels[0]; 
     const unsigned int maximumNumberOfReactionWheels    = input.numberOfReactionWheels[1] + 1; 
@@ -55,6 +52,34 @@ void executeBulkSimulator( const rapidjson::Document& config )
     {
         const int numberOfReactionWheels = reactionWheelNumberIterator;
         std::cout << "Number of reaction wheels: " << numberOfReactionWheels << std::endl; 
+
+        // Print metadata to the file provide in metadatafile path. 
+        std::ofstream metadatafile( input.metadataFilePath + std::to_string(numberOfReactionWheels) + ".csv" );
+        if ( numberOfReactionWheels == 2 )
+        {
+            metadatafile << "concept,numberOfReactionWheel,mass,volume,rw1,rw2" << std::endl; 
+        }    
+        else if ( numberOfReactionWheels == 3 )
+        {
+            metadatafile << "concept,numberOfReactionWheel,mass,volume,rw1,rw2,rw3" << std::endl; 
+        } 
+        else if ( numberOfReactionWheels == 4 )
+        {
+            metadatafile << "concept,numberOfReactionWheel,mass,volume,rw1,rw2,rw3,rw4" << std::endl; 
+        }
+        else if ( numberOfReactionWheels == 5 )
+        {
+            metadatafile << "concept,numberOfReactionWheel,mass,volume,rw1,rw2,rw3,rw4,rw5" << std::endl; 
+        }
+        else if ( numberOfReactionWheels == 6 )
+        {
+            metadatafile << "concept,numberOfReactionWheel,mass,volume,rw1,rw2,rw3,rw4,rw5,rw6" << std::endl; 
+        }
+        else
+        {
+            std::cout << "Metadatafile incorrect for the number of reaction wheels = " << numberOfReactionWheels << std::endl; 
+        }
+        
         std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts = getReactionWheelConcepts( input.reactionWheelConfiguration, 
                                                                                                                reactionWheels, 
                                                                                                                numberOfReactionWheels, 
@@ -77,7 +102,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
             */
 
             // Create file stream to write state history to.
-            std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + "_" + std::to_string(numberOfReactionWheels) + ".csv");
+            std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels) + ".csv");
             if ( numberOfReactionWheels == 3 )
             {
                 stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,powerConsumption1,powerConsumption2,powerConsumption3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl; 
@@ -239,23 +264,23 @@ void executeBulkSimulator( const rapidjson::Document& config )
             //! Write metadata to the metadata file path. 
             if (reactionWheelConcept.size() == 3)
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() );
+                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels, actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget(), reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name );
             }
             else if ( reactionWheelConcept.size() == 4 )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   reactionWheelConcept[3].name,actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
+                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name ); 
             }
             else if ( reactionWheelConcept.size() == 2 )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,actuatorConfiguration.calculateMassBudget(),     actuatorConfiguration.calculateVolumeBudget() ); 
+                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name ); 
             } 
             else if ( reactionWheelConcept.size() == 5 )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   reactionWheelConcept[3].name,reactionWheelConcept[4].name,actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
+                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name,reactionWheelConcept[4].name ); 
             }
             else if ( reactionWheelConcept.size() == 6 )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first,reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,   reactionWheelConcept[3].name,reactionWheelConcept[4].name,reactionWheelConcept[5].name,actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
+                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name,reactionWheelConcept[4].name,reactionWheelConcept[5].name ); 
             } 
             else 
             {

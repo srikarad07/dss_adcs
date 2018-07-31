@@ -7,9 +7,9 @@
     ],
 
     "initial_attitude_state": [
-        50.0,
-        50.0,
-        50.0,
+        10.0,
+        10.0,
+        10.0,
         0.0,
         0.0,
         0.0
@@ -71,7 +71,7 @@
 
     // Number of reaction wheels: 
     "number_of_reaction_wheels": [
-        2, 
+        3, 
         6
     ], 
 
@@ -81,7 +81,7 @@
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.2, 
+    "slew_saturation_rate" : 0.01, 
     "controller_type" : "cascade_saturation",   
 
     // Radial vector of the satellite from spacecraft [m]. 
@@ -97,7 +97,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 1000.0,
+    "end_epoch": 3000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
@@ -106,6 +106,6 @@
 
     // Output
     // Set up file writer options.
-    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/metadata.csv",
+    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/metadata_",
     "state_history_file_path": "/home/superman/Desktop/bulk_simulation/state_history_"
 }

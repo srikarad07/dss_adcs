@@ -64,12 +64,12 @@ print "******************************************************************"
 print ""
 
 # Update this part to use the json input for plotting. 
-path                =  "/home/superman/Desktop/single_simulation/"
-
+# path                =  "/home/superman/Desktop/single_simulation/"
+path                        = "/home/superman/Desktop/bulk_simulation/"
 stringToSearchWith          = 'state_history'
-# numberOfReactionWheels      = '4.csv'
-# filesForTheplots            = requiredFiles( path, stringToSearchWith, numberOfReactionWheels)
-filesForTheplots            = requiredFiles( path, stringToSearchWith )
+numberOfReactionWheels      = '_44.csv'
+filesForTheplots            = requiredFiles( path, stringToSearchWith, numberOfReactionWheels)
+# filesForTheplots            = requiredFiles( path, stringToSearchWith )
 
 ## Plot spacecraft attitudes. ## 
 fig, ( ax1, ax2, ax3, ax4 ) = plt.subplots(4, sharex=False, figsize=(11,7) )

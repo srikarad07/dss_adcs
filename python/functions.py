@@ -7,15 +7,20 @@ See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 import pandas as pd
 import numpy as np 
 
+import csv_functions
 from csv_functions import stringLocator
 
-def calculateSettlingTime( state_history ):
+def calculateSettlingTime( filePath ):
+
+    # State history from the filePath 
+    state_history = pd.read_csv( filePath ) 
+
     # settlingTimeIdx     = [ idx for i in range(slew_rate_history.si ]
     tolerance = 1e-10
     slew_rate_history = np.array( state_history['slewRate'] )
     time_history  = np.array( state_history['t'] / 60.0 )
     
-    print("Calculating settling time ... ")
+    # print("Calculating settling time ... ")
     
     for i in range( slew_rate_history.size ): 
 
@@ -30,7 +35,7 @@ def calculateSettlingTime( state_history ):
                 settlingTime        = time_history[i] 
                 break 
             elif( i == slew_rate_history.size - 13):
-                print("Settling time doesn't exist. Need more simulation time.")
+                print("Settling time doesn't exist. Need more simulation time for file: ", filePath)
                 settlingTime = None  
                 pass 
             pass 
@@ -38,8 +43,11 @@ def calculateSettlingTime( state_history ):
         pass
     return settlingTime
 
-def calculateSaturationRate( state_history, filePath, reference_attitude, angular_velocity_gain, slew_saturation_rate ): 
+def calculateSaturationTime( filePath, reference_attitude, angular_velocity_gain, slew_saturation_rate ): 
     
+    # State history from the filePath 
+    state_history = pd.read_csv( filePath ) 
+
     # Start of the coasting phase calculated with formula from Bong wie (EigenAxis rotation with slew rate saturation). 
     startOfCoastingPhase    =  np.ceil( 4.0 / angular_velocity_gain )
 
@@ -59,7 +67,6 @@ def calculateSaturationRate( state_history, filePath, reference_attitude, angula
     stringToBeLocated           = 'reactionWheelAngularVelocity'
     reactionWheelVelocityNames  =  stringLocator( filePath, stringToBeLocated )
 
-    
     # print(startOfCoastingPhase)
     initialAttitude         = np.array([ q1[0], q2[0], q3[0], q4[0]])
     initialAttitudeError    = commandedAttitudeMatrix.dot(initialAttitude)
@@ -73,15 +80,80 @@ def calculateSaturationRate( state_history, filePath, reference_attitude, angula
     
     return saturationRate, startOfCoastingPhase/60.0, endOfCoastingPhase/60.0
 
-filePath = "/home/superman/Desktop/single_simulation/state_history.csv"
-state_history = pd.read_csv( filePath )
+def meanNormalization( vectorX ):
+    
+    averagedVector      = np.average( vectorX )
+    denominator         = np.amax(vectorX) - np.amin(vectorX) 
+    # normalizedVector    = [ vector for vector in range(len(vectorX)) ] 
+    normalizedVector    = np.array([ ])
+    for ii in range(len(vectorX)): 
+        tempNormalizedVector    = ( vectorX[ii] - averagedVector ) / denominator  
+        normalizedVector        = np.append( normalizedVector, tempNormalizedVector )
+        pass 
+    return normalizedVector
 
-settlingTimeFinal = calculateSettlingTime( state_history )
-print( "The settling time is: ", settlingTimeFinal )
+def calculatePerformance( settlingTime, saturationTime ): 
+    
+    normalizedSettlingTime      = meanNormalization( settlingTime )
+    normalizedSaturationTime    = meanNormalization( saturationTime )
+    # print("Saturation time: ", len(normalizedSaturationTime) )
+    # print("Saturation time: ", len(normalizedSettlingTime) )
+    performanceReverse          = normalizedSaturationTime + normalizedSettlingTime 
 
-referenceAttitude       = [0, 0, 0, 1]
-angularVelocityGain     = 2 * 0.707 * 0.1 
-slewRate                = np.deg2rad(0.2)
+    return performanceReverse
 
-saturationRate, startOfCoastingPhase, endOfCoastingPhase = calculateSaturationRate( state_history, filePath, referenceAttitude, angularVelocityGain, slewRate ) 
-print("Time during saturation: ", saturationRate, startOfCoastingPhase, endOfCoastingPhase )
+def calculateCost( mass, volume, avgPower ): 
+    
+    normalizedMass              = meanNormalization( mass )
+    normalizedVolume            = meanNormalization( volume )
+    normalizedAvgPower          = meanNormalization( avgPower )
+
+    cost                        = normalizedMass + normalizedVolume + normalizedAvgPower 
+
+    return cost  
+
+def calculatePower( stateHistoryFiles ):
+    maxPower    = np.array([])
+    avgPower    = np.array([])
+    for ii in range(len(stateHistoryFiles)):
+        
+        stateHistoryFile    = stateHistoryFiles[ii]
+        stateHistory        = pd.read_csv(stateHistoryFile)
+        powerStrings        = stringLocator( stateHistoryFile, 'powerConsumption')
+        
+        maxPowerReactionWheels        = np.array([])
+        avgPowerReactionWheels        = np.array([])
+
+        for jj in range(len(powerStrings)):
+            tempMaxPower            = stateHistory[powerStrings[jj]]
+            avgPowerReactionWheels  = np.append( avgPowerReactionWheels, np.average( tempMaxPower ) ) 
+            maxPowerReactionWheels  = np.append( maxPowerReactionWheels, np.amax( tempMaxPower ) )
+            pass 
+        
+        maxPower        = np.append( maxPower, np.sum( maxPowerReactionWheels ) )    
+        avgPower        = np.append( avgPower, np.sum( avgPowerReactionWheels ) )
+        # print(maxPowerReactionWheels)
+        pass 
+    # print(maxPower)
+    return maxPower, avgPower    
+
+# filePath = "/home/superman/Desktop/single_simulation/state_history.csv"
+# state_history = pd.read_csv( filePath )
+
+# settlingTimeFinal = calculateSettlingTime( state_history )
+# print( "The settling time is: ", settlingTimeFinal )
+
+# referenceAttitude       = [0, 0, 0, 1]
+# angularVelocityGain     = 2 * 0.707 * 0.1 
+# slewRate                = np.deg2rad(0.2)
+
+# saturationRate, startOfCoastingPhase, endOfCoastingPhase = calculateSaturationRate( state_history, filePath, referenceAttitude, angularVelocityGain, slewRate ) 
+
+# print("Time during saturation: ", saturationRate, startOfCoastingPhase, endOfCoastingPhase )
+
+# bulkFilePath         = "/home/superman/Desktop/bulk_simulation"
+# stateHistoryFiles    = csv_functions.requiredFiles( bulkFilePath, 'state_history', '4.csv') 
+
+# maxPower             = calculatePower(stateHistoryFiles)
+# print(maxPower)
+
