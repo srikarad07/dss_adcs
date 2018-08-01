@@ -112,8 +112,8 @@ if(BUILD_MAIN)
   target_link_libraries(
     ${MAIN_NAME}
     ${LIB_NAME}
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
+    # ${Boost_FILESYSTEM_LIBRARY}
+    # ${Boost_SYSTEM_LIBRARY}
     ${CPR_LIBRARIES}
     # ${TEST_NAME}
 #    ${PYKEP_LIBRARY}
