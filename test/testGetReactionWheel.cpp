@@ -72,7 +72,9 @@ TEST_CASE( "Test 3: Test the function callTheApi", "[rw-0-01 Sinclair Interplane
     REQUIRE( reactionWheelDataStringComputed.compare(reactionWheelDataStringExpected) == 0);     
 } 
 
-// Test getReactionWheelAttributes. 
+//! Test getReactionWheelAttributes. The test if performed by using data from the data sheets 
+//! in satsearch. The conversions from units given in the datasheets to SI units is done before 
+//! verifying with the values obtained from the getReactionWheelAttribute function. 
 
 TEST_CASE( "Test 4: Test the getReactionWheelAttributes function", "[Microwheel 4000]")
 {
@@ -154,6 +156,63 @@ TEST_CASE( "Test 6: Test the getReactionWheelAttributes function", "[rwp050 Blue
     REQUIRE( computedReactionWheel.name.compare( expectedReactionWheel.name )                   == 0);
     REQUIRE( computedReactionWheel.supplierName.compare( expectedReactionWheel.supplierName )   == 0);
         
+}
+
+//! Integration testing for the function getReactionWheel. 
+
+TEST_CASE( "Test 7: Test the getReactionWheel function", "[rwp050 Blue Canyon Technologies Uuid]")
+{
+    // Tolerance to compensate for machine precision. 
+    const Real tolerance = 1e-12; 
+
+    // Actuator uuid. 
+    std::vector< std::string > actuatorUuid; 
+    actuatorUuid.push_back( "b4eb8ec7-f484-5357-a3e7-634c630d0a3e" );
+    actuatorUuid.push_back( "890c1d1a-0289-5e3b-ae68-c51468ecdaf5" );
+    actuatorUuid.push_back( "6454b937-f0e9-5fc5-8165-0cc79c44b424" ); 
+
+    // Get the reaction wheel properties for BCT rwp050 from the getReactionWheelAttribute. 
+    const std::vector <ReactionWheel> computedReactionWheel = getReactionWheels( "actuator" , actuatorUuid );
+
+    // Define a reaction wheel with the properties of rwp050 Blue Canyon Technologies from satsearch datasheet. 
+    const ReactionWheel expectedReactionWheel( 0.24, 0.058, 0.025, 0.058, std::nan("radius"), 0.007, "RWP050", "Blue Canyon Technologies"); 
+    
+    // Define a reaction wheel with the properties ofrw-0-01 Sinclair Interplanetary from satsearch datasheet. 
+    const ReactionWheel expectedReactionWheel2( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, "RW-0.01", "Sinclair Interplanetary"); 
+
+    // Define a reaction wheel with the properties of Microwheel 4000 from satsearch datasheet. 
+    const ReactionWheel expectedReactionWheel3( 3.30, 0.218, 0.081, 0.218, std::nan("radius"), 0.300, "MicroWheel 4000", "Microsat Systems Canada"); 
+
+    // Check for the attributes for BCT computed and expected. 
+    REQUIRE( computedReactionWheel[0].mass         == Approx( expectedReactionWheel.mass).epsilon(tolerance) ); 
+    REQUIRE( computedReactionWheel[0].length       == Approx( expectedReactionWheel.length).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[0].width        == Approx( expectedReactionWheel.width).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[0].height       == Approx( expectedReactionWheel.height).epsilon(tolerance) );
+    // REQUIRE( computedReactionWheel[0].radius       == Approx( expectedReactionWheel.radius).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[0].maxTorque    == Approx( expectedReactionWheel.maxTorque).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[0].name.compare( expectedReactionWheel.name )                   == 0);
+    REQUIRE( computedReactionWheel[0].supplierName.compare( expectedReactionWheel.supplierName )   == 0);
+
+    // Check the attributs for RW0-001 
+    REQUIRE( computedReactionWheel[1].mass         == Approx( expectedReactionWheel2.mass).epsilon(tolerance) ); 
+    REQUIRE( computedReactionWheel[1].length       == Approx( expectedReactionWheel2.length).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[1].width        == Approx( expectedReactionWheel2.width).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[1].height       == Approx( expectedReactionWheel2.height).epsilon(tolerance) );
+    // REQUIRE( computedReactionWheel[1].radius       == Approx( expectedReactionWheel2.radius).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[1].maxTorque    == Approx( expectedReactionWheel2.maxTorque).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[1].name.compare( expectedReactionWheel2.name )                   == 0);
+    REQUIRE( computedReactionWheel[1].supplierName.compare( expectedReactionWheel2.supplierName )   == 0);
+
+    // Check the attribtues for BCT rwp050.   
+    REQUIRE( computedReactionWheel[2].mass         == Approx( expectedReactionWheel3.mass).epsilon(tolerance) ); 
+    REQUIRE( computedReactionWheel[2].length       == Approx( expectedReactionWheel3.length).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[2].width        == Approx( expectedReactionWheel3.width).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[2].height       == Approx( expectedReactionWheel3.height).epsilon(tolerance) );
+    // REQUIRE( computedReactionWheel[2].radius       == Approx( expectedReactionWheel3.radius).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[2].maxTorque    == Approx( expectedReactionWheel3.maxTorque).epsilon(tolerance) );
+    REQUIRE( computedReactionWheel[2].name.compare( expectedReactionWheel3.name )                   == 0);
+    REQUIRE( computedReactionWheel[2].supplierName.compare( expectedReactionWheel3.supplierName )   == 0);
+
 }
 
 } // tests 
