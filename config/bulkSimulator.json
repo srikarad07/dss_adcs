@@ -37,7 +37,7 @@
     "reaction_wheel_config_type": "homogenous", 
 
     // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
-    // Angles given by the user in radians. 
+    // Angles given by the user in deg. 
     
     "wheel_orientation": [
         [
@@ -81,7 +81,7 @@
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.01, 
+    "slew_saturation_rate" : 0.2, 
     "controller_type" : "cascade_saturation",   
 
     // Radial vector of the satellite from spacecraft [m]. 

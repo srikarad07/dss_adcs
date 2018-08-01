@@ -122,19 +122,19 @@ for filename in range(len(filesForTheplots)):
     #Plot angular velocity with respect to time. 
     ax1.plot(state_history['t'], state_history['controlTorque1'])
     ax1.set_xlabel('time[sec]')
-    ax1.set_ylabel('Control_X [N/m]')
+    ax1.set_ylabel('Control_X [Nm]')
     ax1.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
     ax1.grid()
 
     ax2.plot(state_history['t'], state_history['controlTorque2'])
     ax2.set_xlabel('time[sec]')
-    ax2.set_ylabel('Control_Y [N/m]')
+    ax2.set_ylabel('Control_Y [Nm]')
     ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
     ax2.grid()
 
     ax3.plot(state_history['t'], state_history['controlTorque3'])
     ax3.set_xlabel('time[sec]')
-    ax3.set_ylabel('Control_Z [N/m]')
+    ax3.set_ylabel('Control_Z [Nm]')
     ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
     ax3.grid()
 
@@ -167,7 +167,7 @@ for filename in range(len(filesForTheplots)):
 
     pass 
 # # fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/motorTorques.eps')
-plt.close()
+# plt.close()
 
 ## Plot angular momentum of the reaction wheels. 
 fig = plt.figure()

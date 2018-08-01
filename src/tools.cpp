@@ -82,4 +82,12 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
     return result;
 }
 
+// Fast way to write from a file into a c++ string.
+std::string getStringFromFile(std::ifstream& in) 
+{
+    std::stringstream sstr;
+    sstr << in.rdbuf();
+    return sstr.str();
+}
+
 } // namespace dss_adcs

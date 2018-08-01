@@ -151,7 +151,7 @@ if(BUILD_TESTS)
   if(NOT CATCH_FOUND)
     add_dependencies(${TEST_NAME} catch-lib)
   endif(NOT CATCH_FOUND)
-  target_link_libraries(${TEST_NAME} ${LIB_NAME} ${CPR_LIBRARIES})
+  target_link_libraries(${TEST_NAME} ${LIB_NAME} ${CPR_LIBRARIES} stdc++fs)
   add_test(NAME ${TEST_NAME} COMMAND "${TEST_PATH}/${TEST_NAME}")
 
   if(BUILD_COVERAGE_ANALYSIS)

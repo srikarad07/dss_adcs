@@ -7,8 +7,10 @@
 #ifndef DSS_ADCS_TOOLS_HPP
 #define DSS_ADCS_TOOLS_HPP
 
+#include <fstream> 
 #include <map>
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include <rapidjson/document.h>
@@ -34,6 +36,9 @@ double signFunction( double integer );
 // std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjson::Value& attributes, const std::string& findMemberName, const std::string& findMemberValue, const std::vector<std::string>& keysToRetrieve); 
 
 std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjson::Value& attributes, const std::string& findMemberName, const std::vector< std::string > findMemberValue, const std::vector<std::string>& keysToRetrieve); 
+
+//! Save the text in a file as a c++ string 
+std::string getStringFromFile(std::ifstream& in); 
 
 } // namespace dss_adcs
 

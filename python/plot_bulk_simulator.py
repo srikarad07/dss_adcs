@@ -97,8 +97,8 @@ for filename in range(len(filesForTheplots)):
     plt.tight_layout()
 
     pass
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/attitudes.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/attitudes.eps')
+# plt.close()
 
 ## PLot spacecraft control torques ##
 fig = plt.figure()
@@ -134,8 +134,8 @@ for filename in range(len(filesForTheplots)):
     # plt.grid()
 
     pass
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/controlTorques.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/controlTorques.eps')
+# plt.close()
 
 ## Plot motor torques of the reaction wheels ##
 fig = plt.figure()
@@ -157,8 +157,8 @@ for filename in range(len(filesForTheplots)):
     plt.tight_layout()
 
     pass 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/motorTorques.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/motorTorques.eps')
+# plt.close()
 
 ## Plot angular momentum of the reaction wheels. 
 fig = plt.figure()

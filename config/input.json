@@ -5,7 +5,10 @@
         1200.0,
         1100.0
     ],
-
+    
+    // Attitude representation type. Change it to initial attitude 
+    "attitude_representation" : "euler_angles", 
+    
     "initial_attitude_state": [
         50.0,
         50.0,
@@ -15,17 +18,18 @@
         0.0
     ],
 
+    // chnage reference to target. [target_attitude_state]
     "attitude_reference_state": [
         0.0, 
         0.0, 
         0.0
     ],
 
-    "attitude_minimum_error": [
-        2.0, 
-        2.0, 
-        2.0
-    ],  
+    // "attitude_minimum_error": [
+    //     2.0, 
+    //     2.0, 
+    //     2.0
+    // ],  
 
     "is_gravity_gradient_active": true,
 
@@ -72,9 +76,6 @@
             ]
         }  
     ],
-          
-    // Attitude representation type. 
-    "attitude_representation" : "euler_angles", 
 
     // Controller properties 
     "natural_frequency" : 0.1,
@@ -82,10 +83,10 @@
     "slew_saturation_rate" : 0.2, 
     "controller_type" : "cascade_saturation",   
 
-    // Radial vector of the satellite from spacecraft [m]. 
+    // Radial distance of the center of the earth from spacecraft [m]. 
     "radius": 7371000.0,
 
-    // Semi major axis of the orbit of the satellite [km].
+    // Altitude of the satellite (circular orbit) [km]. change the name to altitude
     "semi_major_axis" : 500.0,
     
     // Select numerical integrator.
