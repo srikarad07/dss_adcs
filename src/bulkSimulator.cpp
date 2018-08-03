@@ -53,6 +53,19 @@ void executeBulkSimulator( const rapidjson::Document& config )
         const int numberOfReactionWheels = reactionWheelNumberIterator;
         std::cout << "Number of reaction wheels: " << numberOfReactionWheels << std::endl; 
 
+        // Create instance of dynamical system.
+        std::cout << "Setting up dynamical model ..." << std::endl;
+        
+        //Set up numerical integrator. 
+        std::cout << "Executing numerical integrator ..." << std::endl;
+
+        // Set up dynamical model.
+        std::cout << "Generating angular accelerations ..." << std::endl;
+        std::cout << std::endl;
+
+        // Progress bar. 
+        std::cout << "Current Progress ..." << std::endl; 
+        
         // Print metadata to the file provide in metadatafile path. 
         std::ofstream metadatafile( input.metadataFilePath + std::to_string(numberOfReactionWheels) + ".csv" );
         if ( numberOfReactionWheels == 2 )
@@ -84,15 +97,14 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                                                                                reactionWheels, 
                                                                                                                numberOfReactionWheels, 
                                                                                                                input.wheelOrientation  ); 
-
+        // Current value in the reaction wheel concept iterator. 
+        unsigned int ii = 0; 
+        
         for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator !=   reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
         {
             const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
 
             const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
-            
-            // Create instance of dynamical system.
-            std::cout << "Setting up dynamical model ..." << std::endl;
 
             /*  testInt for the gravity gradient model 
             *   assumptions: radius is an assumption -> ideally radius should be derived from a ephemeris. 
@@ -130,8 +142,6 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 throw; 
             }
 
-            //Set up numerical integrator. 
-            std::cout << "Executing numerical integrator ..." << std::endl;
             VectorXd currentState( ( input.initialAttitudeState.size() + reactionWheelConcept.size() ) );                 
             for ( unsigned int stateIterator = 0; stateIterator < (input.initialAttitudeState.size() + reactionWheelConcept.size() ); ++stateIterator )
             {
@@ -149,13 +159,6 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 }
             }; 
             Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
-
-            // Set up dynamical model.
-            std::cout << "Dynamical model setting up ..." << std::endl;
-
-            // Set up dynamical model.
-            std::cout << "Generating angular accelerations ..." << std::endl;
-            std::cout << std::endl;
 
             const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
 
@@ -248,7 +251,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
  
             }
-
+            progressBar( reactionWheelConcepts.size(), ii ); 
+            ii +=  1; 
+            // std::cout << "Iterator: " << ii + 1 << std::endl; 
+            
             //! Write metadata to the metadata file path. 
             if (reactionWheelConcept.size() == 3)
             {
@@ -275,7 +281,6 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 std::cout << "Cannot print the metadata the for ther number of reaction wheels!" << std::endl; 
             }
             metadatafile << std::endl;
-
         }
     }
 };

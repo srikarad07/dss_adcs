@@ -90,4 +90,25 @@ std::string getStringFromFile(std::ifstream& in)
     return sstr.str();
 }
 
+// Progress bar for bulk simulations. 
+void progressBar( int maxProgress, int currentProgress )
+{
+    float progress           = ( 1.0 / maxProgress ) * (currentProgress + 1.0); 
+    int barWidth = 70;
+    if ( currentProgress == round(0.25 * maxProgress) || currentProgress == round(0.5 * maxProgress) || currentProgress == round(0.75 *maxProgress) || currentProgress == (maxProgress - 1) )
+    {
+        std::cout << "[";
+        int pos = barWidth * progress - 1;
+        for (int i = 0; i < barWidth; ++i) {
+            if (i < pos) std::cout << "=";
+            else if (i == pos) std::cout << ">";
+            else std::cout << " ";
+        }
+        std::cout << "] " << int(progress * 100.0) << " %\r";
+        std::cout.flush();
+        std::cout << std::endl;   
+    
+    }
+}
+
 } // namespace dss_adcs

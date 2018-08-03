@@ -40,6 +40,9 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
 //! Save the text in a file as a c++ string 
 std::string getStringFromFile(std::ifstream& in); 
 
+//! Print a progress bar for bulk simulations. 
+void progressBar( int maxProgress, int currentProgress ); 
+
 } // namespace dss_adcs
 
 #endif // DSS_ADCS_TOOLS_HPP

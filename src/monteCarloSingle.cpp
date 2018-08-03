@@ -4,6 +4,7 @@
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 */
 
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -91,6 +92,16 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
     
+    // Set up dynamical model.
+    std::cout << "Dynamical model setting up ..." << std::endl;
+
+    // Set up dynamical model.
+    std::cout << "Generating angular accelerations ..." << std::endl;
+    std::cout << std::endl;
+
+    // Progress bar. 
+    std::cout << "Current Progress .. " << std::endl; 
+
     for ( int i = 0; i < input.numberOfSamples; ++i )
     {
         std::string stateHistoryFilePath = input.stateHistoryFilePath + '_' + std::to_string(i) + ".csv"; 
@@ -161,13 +172,6 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
             }
         }; 
         Vector4 referenceAttitudeState       = input.referenceAttitudeState; 
-
-        // Set up dynamical model.
-        std::cout << "Dynamical model setting up ..." << std::endl;
-
-        // Set up dynamical model.
-        std::cout << "Generating angular accelerations ..." << std::endl;
-        std::cout << std::endl;
 
         std::vector< Vector4 > quaternionStateVector; 
 
@@ -261,7 +265,7 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
             }
             currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
         }
-
+        progressBar( input.numberOfSamples, i ); 
     }
 };
 
