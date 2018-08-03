@@ -141,9 +141,12 @@ void executeSingleSimulator( const rapidjson::Document& config )
         VectorXd reactionWheelAngularVelocities = actuatorConfiguration.computeReactionWheelVelocities(reactionWheelAngularMomentums);
         // std::cout << "Reaction wheel angular velocities" << reactionWheelAngularVelocities * 60 << std::endl; 
         
-        const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
-        // const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
-
+        Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
+        if ( input.asymmetricBodyTorqueModelFlag != false )
+        {
+            asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+        }
+        
         // Disturbance torques. 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
         if ( input.gravityGradientAccelerationModelFlag != false )
@@ -364,6 +367,10 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
     const bool gravityGradientAccelerationModelFlag = find( config, "is_gravity_gradient_active" )->value.GetBool( );
     std::cout << "Is Gravity Gradient disturbance model active?                 " << gravityGradientAccelerationModelFlag << std::endl;
 
+    // Extract assymetric body torque flag. 
+    const bool asymmetricBodyTorqueModelFlag    = find( config, "is_asymmetric_body_torque_active")->value.GetBool(); 
+    std::cout << "Is asymmetric body torque model active?                       " << asymmetricBodyTorqueModelFlag << std::endl; 
+
     // Extract actuator model and parameters. 
     const std::string attitudeControlMethod     = find( config, "attitude_control_method")->value.GetString();
     std::cout << "Attitude control method:                                      " << attitudeControlMethod << std::endl; 
@@ -428,6 +435,7 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
                                   relativeTolerance,
                                   absoluteTolerance,
                                   gravityGradientAccelerationModelFlag,
+                                  asymmetricBodyTorqueModelFlag,
                                   attitudeControlMethod,
                                   actuator, 
                                   actuatorUuid,

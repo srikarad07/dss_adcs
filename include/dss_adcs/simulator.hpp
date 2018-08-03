@@ -67,6 +67,7 @@ public:
                           const Real                      aRelativeTolerance,   
                           const Real                      anAbsoluteTolerance, 
                           const bool                      aGravityGradientAccelerationModelFlag,
+                          const bool                      anAsymmetricBodyTorqueModelFlag,
                           const std::string&              aConceptConfiguration,
                           const std::string&              aActuator, 
                           const std::vector <std::string> aActuatorUuid,
@@ -91,6 +92,7 @@ public:
           relativeTolerance( aRelativeTolerance ),
           absoluteTolerance( anAbsoluteTolerance ),
           gravityGradientAccelerationModelFlag( aGravityGradientAccelerationModelFlag ),
+          asymmetricBodyTorqueModelFlag( anAsymmetricBodyTorqueModelFlag ), 
           conceptConfiguration( aConceptConfiguration ),
           actuator( aActuator ),
           actuatorUuid( aActuatorUuid ),
@@ -142,6 +144,9 @@ public:
     
     //! Status of gravity gradient model. 
     const bool gravityGradientAccelerationModelFlag;
+
+    //! Status of the asymmetric body torque model. 
+    const bool asymmetricBodyTorqueModelFlag; 
 
     //! Configuration of the concept. 
     const std::string conceptConfiguration; 
