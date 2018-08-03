@@ -35,6 +35,9 @@ namespace dss_adcs
  */
 class DynamicalSystem
 {
+
+typedef std::vector<double> VectorXdIntegration; 
+
 public:
     // std::map< double, Vector3> controlTorqueMap;
     //! Construct dynamical system.
@@ -58,8 +61,8 @@ public:
             principleInertia( aPrincipleInertia )
     { }
 
-    void operator( )( const VectorXd& state,
-                      VectorXd& stateDerivative,
+    void operator( )( const VectorXdIntegration& state,
+                      VectorXdIntegration& stateDerivative,
                       const double time  )
     {
         Vector4 currentAttitude( state[0], state[1], state[2], state[3] ); 
@@ -68,52 +71,30 @@ public:
         Vector4 attitudeDerivative 
             = astro::computeQuaternionDerivative( currentAttitude, currentAttitudeRate );       
     
+        // The total torque acting on the system. 
         Vector3 torque    = asymmetricBodyTorque + controlTorque + disturbanceTorque; 
- 
+        
         // Angular acceleration on the spacecraft. // 
         Vector3 acceleration; 
         acceleration[0]     = torque[0] / principleInertia[0]; 
         acceleration[1]     = torque[1] / principleInertia[1]; 
         acceleration[2]     = torque[2] / principleInertia[2];   
  
-        // stateDerivative[ 0 ] << attitudeDerivative[ 0 ];
-        //         std::cout << "All okay until here! " << std::endl; 
-        // stateDerivative[ 1 ] << attitudeDerivative[ 1 ];
-        // stateDerivative[ 2 ] << attitudeDerivative[ 2 ];
-        // stateDerivative[ 3 ] << attitudeDerivative[ 3 ];
-        // stateDerivative[ 4 ] << acceleration[ 0 ];
-        // stateDerivative[ 5 ] << acceleration[ 1 ];
-        // stateDerivative[ 6 ] << acceleration[ 2 ];
-        
-        // stateDerivative << attitudeDerivative[ 0 ],
-        //  attitudeDerivative[ 1 ],
-        //  attitudeDerivative[ 2 ],
-        //  attitudeDerivative[ 3 ],
-        //  acceleration[ 0 ],
-        //  acceleration[ 1 ],
-        //  acceleration[ 2 ]; 
-        //                 std::cout << "All okay until here! " << std::endl; 
-        // std::cout << "Reaction wheel motor torques: " << reactionWheelMotorTorques.size() << std::endl;
-        // std::cout << "Iterator number " << ( 7 + reactionWheelMotorTorques.size() ) << std::endl; 
-        VectorXd tempStateDerivative(state.size());
-         
         for ( unsigned int iterator = 0; iterator < state.size(); ++iterator )
         {
             if ( iterator < attitudeDerivative.size() )
             {
-                tempStateDerivative[iterator] = attitudeDerivative[iterator];
+                stateDerivative[iterator] = attitudeDerivative[iterator];
             } 
             else if ( iterator >= attitudeDerivative.size() && iterator < ( attitudeDerivative.size() + acceleration.size() ) )
             {
-                tempStateDerivative[iterator] = acceleration[(iterator - attitudeDerivative.size())];
+                stateDerivative[iterator] = acceleration[(iterator - attitudeDerivative.size())];
             }
             else if ( iterator >= ( attitudeDerivative.size() + acceleration.size() ) && iterator < state.size() )
             {
-                tempStateDerivative[iterator] = reactionWheelMotorTorques[(iterator - attitudeDerivative.size() - acceleration.size())]; 
+                stateDerivative[iterator] = reactionWheelMotorTorques[(iterator - attitudeDerivative.size() - acceleration.size())]; 
             }
         }
-        // std::cout << "temp state derivative size: " << tempStateDerivative.size() << std::endl; 
-        stateDerivative = tempStateDerivative;  
     } 
 
 protected:

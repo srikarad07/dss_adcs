@@ -214,51 +214,39 @@ void executeBulkSimulator( const rapidjson::Document& config )
 
                 // Dynamics of the system 
                 DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
-                // std::cout << "Integration start time: " << integrationStartTime << std::endl; 
+                
+                // Convert the eigen type vector to std::vector for compatibility with boost integrators. 
+                VectorXdIntegration currentStateForIntegration( currentState.data(), currentState.data() + currentState.rows() * currentState.cols() );
+        
                 if ( input.integrator == rk4 )
                 {
                     using namespace boost::numeric::odeint;
-                    integrate_const( runge_kutta4< VectorXd, double, VectorXd, double, vector_space_algebra >( ),
+
+                    integrate_const( runge_kutta4< VectorXdIntegration >( ),
                                      dynamics,
-                                     currentState,
+                                     currentStateForIntegration,
                                      integrationStartTime,
                                      integrationEndTime,
                                      input.timeStep,
-                                     writer );
+                                     writer );   
                 }
-                // else if ( input.integrator == dopri5 )
-                // {
-                //     using namespace boost::numeric::odeint;
-                //     // make_dense_output< Vector7, double, Vector7, double, vector_space_algebra > stepper( input.relativeTolerance,
-                //     //                                                             input.absoluteTolerance );
-                //     typedef runge_kutta_dopri5<Vector7, double, Vector7, double, vector_space_algebra > stepper; 
-
-                //     integrate_const( make_dense_output< stepper >( input.relativeTolerance, input.absoluteTolerance ),
-                //                      dynamics,
-                //                      currentState,
-                //                      integrationStartTime,
-                //                      integrationEndTime,
-                //                      input.timeStep,
-                //                      writer );
-                // }
-                // else if ( input.integrator == bs )
-                // {
-                //     using namespace boost::numeric::odeint;
-                //     bulirsch_stoer_dense_out<  Vector7, vector_space_algebra > stepper( input.absoluteTolerance,
-                //                                                input.relativeTolerance );
-                //     integrate_const( stepper,
-                //                      dynamics,
-                //                      currentState,
-                //                      integrationStartTime,
-                //                      integrationEndTime,
-                //                      input.timeStep,
-                //                      writer );
-                // }
-                else
+                else if ( input.integrator == dopri5 )
                 {
-                    std::cout << "Numerical integrator not defined" << std::endl;
-                    throw;
-                } 
+                    using namespace boost::numeric::odeint; 
+                    integrate(  dynamics, 
+                                currentStateForIntegration, 
+                                integrationStartTime, 
+                                integrationEndTime, 
+                                input.timeStep, 
+                                writer ); 
+                }
+                else 
+                {
+                    std::cout << "Numerical Integrator " << input.integrator << " not defined yet! " << std::endl; 
+                    throw; 
+                }
+                currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
+ 
             }
 
             //! Write metadata to the metadata file path. 

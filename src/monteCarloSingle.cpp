@@ -230,33 +230,39 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
             // Dynamics of the system 
             DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, principleInertia );
 
-            // To Do: Use different integrator for the simulation. 
+            // Convert the eigen type vector to std::vector for compatibility with boost integrators. 
+            VectorXdIntegration currentStateForIntegration( currentState.data(), currentState.data() + currentState.rows() * currentState.cols() );
+
             if ( input.integrator == rk4 )
             {
-                using namespace boost::numeric::odeint;
-                integrate_const( runge_kutta4< VectorXd, double, VectorXd, double, vector_space_algebra >( ),
+                using namespace boost::numeric::odeint;  
+                integrate_const( runge_kutta4< VectorXdIntegration >( ),
                                  dynamics,
-                                 currentState,
+                                 currentStateForIntegration,
                                  integrationStartTime,
                                  integrationEndTime,
                                  input.timeStep,
-                                 writer );
+                                 writer );   
             }
-            else
+            else if ( input.integrator == dopri5 )
             {
-                std::cout << "Numerical integrator not defined" << std::endl;
-                throw;
+                using namespace boost::numeric::odeint; 
+                integrate(  dynamics, 
+                            currentStateForIntegration, 
+                            integrationStartTime, 
+                            integrationEndTime, 
+                            input.timeStep, 
+                            writer ); 
             }
-            // quaternionStateVector.push_back( currentAttitude ); 
+            else 
+            {
+                std::cout << "Numerical Integrator " << input.integrator << " not defined yet! " << std::endl; 
+                throw; 
+            }
+            currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
         }
 
     }
-    // ObjectiveFunction objectiveFunction( reactionWheels, 
-    //                                      quaternionStateVector, 
-    //                                      input.stateHistoryFilePath );   
-    // Real functionValue      = objectiveFunction.computeObjectiveFunction(); 
-
-    // std::cout << "The objective function is: " << functionValue << std::endl; 
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 

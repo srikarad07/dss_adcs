@@ -59,6 +59,9 @@ typedef Vector7 State;
 //! Set type for ineratia vector to 3D vector. 
 typedef Vector3 Inertia; 
 
+//! Set type for integration with dynamically allocated vector. 
+typedef std::vector<double> VectorXdIntegration; 
+
 //! JSON config iterator.
 typedef rapidjson::Value::ConstMemberIterator ConfigIterator;
 

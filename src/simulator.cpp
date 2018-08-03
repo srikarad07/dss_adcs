@@ -141,8 +141,8 @@ void executeSingleSimulator( const rapidjson::Document& config )
         VectorXd reactionWheelAngularVelocities = actuatorConfiguration.computeReactionWheelVelocities(reactionWheelAngularMomentums);
         // std::cout << "Reaction wheel angular velocities" << reactionWheelAngularVelocities * 60 << std::endl; 
         
-        // const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
-        const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
+        const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+        // const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
 
         // Disturbance torques. 
         Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
@@ -157,7 +157,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
         disturbanceTorque[1] += gravityGradientTorque[1];
         disturbanceTorque[2] += gravityGradientTorque[2]; 
         
-        // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
+        // Compute reaction wheel torques and control input torques. 
         std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
                                                                                           referenceAttitudeState,
                                                                                           currentAttitudeRate, 
@@ -182,32 +182,40 @@ void executeSingleSimulator( const rapidjson::Document& config )
         // Dynamics of the system 
         DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
 
-        // To Do: Use different integrator for the simulation. 
+        // Convert the eigen type vector to std::vector for compatibility with boost integrators. 
+        VectorXdIntegration currentStateForIntegration( currentState.data(), currentState.data() + currentState.rows() * currentState.cols() );
+        
         if ( input.integrator == rk4 )
         {
             using namespace boost::numeric::odeint;
-            integrate_const( runge_kutta4< VectorXd, double, VectorXd, double, vector_space_algebra >( ),
+            
+            integrate_const( runge_kutta4< VectorXdIntegration >( ),
                              dynamics,
-                             currentState,
+                             currentStateForIntegration,
                              integrationStartTime,
                              integrationEndTime,
                              input.timeStep,
-                             writer );
+                             writer );   
         }
-        else
+        else if ( input.integrator == dopri5 )
         {
-            std::cout << "Numerical integrator not defined" << std::endl;
-            throw;
+            using namespace boost::numeric::odeint; 
+            integrate(  dynamics, 
+                        currentStateForIntegration, 
+                        integrationStartTime, 
+                        integrationEndTime, 
+                        input.timeStep, 
+                        writer ); 
         }
-        // quaternionStateVector.push_back( currentAttitude ); 
+        else 
+        {
+            std::cout << "Numerical Integrator " << input.integrator << " not defined yet! " << std::endl; 
+            throw; 
+        }
+        currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
+
     }
 
-    // ObjectiveFunction objectiveFunction( reactionWheels, 
-    //                                      quaternionStateVector, 
-    //                                      input.stateHistoryFilePath );   
-    // Real functionValue      = objectiveFunction.computeObjectiveFunction(); 
-
-    // std::cout << "The objective function is: " << functionValue << std::endl; 
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 

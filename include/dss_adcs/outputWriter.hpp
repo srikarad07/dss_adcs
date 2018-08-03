@@ -18,7 +18,7 @@
 
 namespace dss_adcs
 {
-
+typedef std::vector<double> VectorXdIntegration; 
 //! Print value to stream.
 /*!
  * Prints a specified value to stream provided, given a specified width and a filler character.
@@ -142,7 +142,7 @@ public:
      * @param[in] state Current state
      * @param[in] time  Current epoch
      */
-    void operator( )( const VectorXd& state, const double time )
+    void operator( )( const VectorXdIntegration& state, const double time )
     {
         const Vector4 quaternion( state[0], state[1], state[2], state[3] ); 
         const Vector3 eulerAngles       = astro::transformQuaternionToEulerAngles( quaternion ); 

@@ -90,17 +90,17 @@
     "semi_major_axis" : 500.0,
     
     // Select numerical integrator.
-    // (rk4|dopri5|rkf78|bs)
-    "integrator": "rk4",
+    // (rk4|dopri5)
+    "integrator": "dopri5",
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
     "end_epoch": 1000.0,
-    "time_step": 0.1,
+    "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
-    "relative_tolerance": 1.0e-10,
-    "absolute_tolerance": 1.0e-12,
+    "relative_tolerance": 1.0e-2,
+    "absolute_tolerance": 1.0e-2,
 
     // Set up file writer options.
     "metadata_file_path": "/home/superman/Desktop/metadata.csv",
