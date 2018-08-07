@@ -314,7 +314,8 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     // Extract the initial attitude states and angular velocities. 
     ConfigIterator initialAttitudeStateEulerIterator    = find( config, "initial_attitude_state");
     ConfigIterator referenceAttitudeStateIterator       = find( config, "attitude_reference_state" );
- 
+    const rapidjson::Value& intialAttitudeStateSize 	= config["initial_attitude_state"]; 
+
     Vector7 initialAttitudeState;
     Vector4 referenceAttitudeState; 
     Vector3 initialAttitudeStateEuler;
@@ -324,6 +325,13 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
         initialAttitudeStateEuler[0]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[0].GetDouble() );
         initialAttitudeStateEuler[1]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[1].GetDouble() );
         initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
+	
+	// Check the size of the input attitude state! 	
+	if (  intialAttitudeStateSize.Size()  != 6 )
+	{
+		std::cout << "FATAL error! The size of the initial attitude state is more than 6 elements for the Euler kinematic representation!" << std::endl; 
+		throw;	
+	}
 
         Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
         initialAttitudeState[0]                        = quaternionInitialState[0];
@@ -344,6 +352,13 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     }
     else if ( attitudeRepresentationString.compare("quaternions") == 0 )
     {
+	// Check the size of the input attitude state! 	
+	if (  intialAttitudeStateSize.Size()  != 7 )
+	{
+		std::cout << "FATAL error! The size of the initial attitude state is not equal to 7 elements for the quaternion kinematic representation!" << std::endl; 
+		throw;	
+	}
+
         initialAttitudeState[0]                        = initialAttitudeStateEulerIterator->value[0].GetDouble();
         initialAttitudeState[1]                        = initialAttitudeStateEulerIterator->value[1].GetDouble();
         initialAttitudeState[2]                        = initialAttitudeStateEulerIterator->value[2].GetDouble();

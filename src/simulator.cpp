@@ -245,6 +245,8 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
     ConfigIterator initialAttitudeStateEulerIterator    = find( config, "initial_attitude_state");
     ConfigIterator referenceAttitudeStateIterator       = find( config, "attitude_reference_state" );
  
+    const rapidjson::Value& intialAttitudeStateSize 	= config["initial_attitude_state"]; 
+
     Vector7 initialAttitudeState;
     Vector4 referenceAttitudeState; 
     Vector3 initialAttitudeStateEuler;
@@ -254,6 +256,13 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
         initialAttitudeStateEuler[0]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[0].GetDouble() );
         initialAttitudeStateEuler[1]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[1].GetDouble() );
         initialAttitudeStateEuler[2]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerIterator->value[2].GetDouble() );
+
+	// Check the size of the input attitude state! 	
+	if (  intialAttitudeStateSize.Size()  != 6 )
+	{
+		std::cout << "FATAL error! The size of the initial attitude state is more than 6 elements for the Euler kinematic representation!" << std::endl; 
+		throw;	
+	}
 
         Vector4 quaternionInitialState                 = astro::transformEulerToQuaternion( initialAttitudeStateEuler );
         initialAttitudeState[0]                        = quaternionInitialState[0];
@@ -281,6 +290,13 @@ SingleSimulatorInput checkSingleSimulatorInput( const rapidjson::Document& confi
         initialAttitudeState[4]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[4].GetDouble() ); 
         initialAttitudeState[5]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[5].GetDouble() ); 
         initialAttitudeState[6]                        = sml::convertDegreesToRadians(initialAttitudeStateEulerIterator->value[6].GetDouble() ); 
+
+	// Check the size of the input attitude state! 	
+	if (  intialAttitudeStateSize.Size()  != 7 )
+	{
+		std::cout << "FATAL error! The size of the initial attitude state is not equal to 7 elements for the quaternion kinematic representation!" << std::endl; 
+		throw;	
+	}
 
         referenceAttitudeState[0]                      = referenceAttitudeStateIterator->value[0].GetDouble();
         referenceAttitudeState[1]                      = referenceAttitudeStateIterator->value[1].GetDouble();
