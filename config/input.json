@@ -1,5 +1,7 @@
 {
     "mode": "simulator",
+
+    // Principle moments of inertia in Body Fixed frame 
     "principle_inertia": [
         1000.0,
         1200.0,
@@ -7,8 +9,10 @@
     ],
     
     // Attitude representation type. Change it to initial attitude 
+    // euler_angles | quaternions
     "attitude_representation" : "euler_angles", 
     
+    // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3). 
     "initial_attitude_state": [
         50.0,
         50.0,
@@ -18,28 +22,35 @@
         0.0
     ],
 
-    // chnage reference to target. [target_attitude_state]
+    // Change reference to target. [target_attitude_state]
     "attitude_reference_state": [
         0.0, 
         0.0, 
         0.0
     ],
 
+    // Flag for the asymmetric body torque on the system 
+    // true | false
     "is_asymmetric_body_torque_active": true, 
     
+    // Flag for the gravity gradient torque on the system 
+    // true | false
     "is_gravity_gradient_active": true,
 
+    // Flag for the control torque on the system 
+    // true | false
     "is_control_torque_active": true, 
 
     // Gravitational Parameter of the central body [m^3 s^-2]. 
     "gravitational_parameter" : 3.986004418e14, 
 
-    // 3-axis reaction wheel model. 
+    // 3-axis reaction wheel model. REMOVE
     "attitude_control_method" : "3-axis-stabilization", 
     
+    // REMOVE 
     "actuator": "reaction_wheel",
 
-    // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from Z) 
+    // Uuids + Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from Z) 
     // Angles given by the user in radians. 
     
     "reaction_wheels": [
@@ -77,6 +88,9 @@
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
     "slew_saturation_rate" : 0.2, 
+
+    // Controller type
+    // quaternion_feedback | cascade_saturation
     "controller_type" : "cascade_saturation",   
 
     // Radial distance of the center of the earth from spacecraft [m]. 
