@@ -100,7 +100,7 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     }
     else
     {
-        std::cout << std::endl;
+        // std::cout << std::endl;
         std::cerr << "ERROR: Requested \"mode\" << mode << is invalid!" << std::endl;
         throw;
     }
