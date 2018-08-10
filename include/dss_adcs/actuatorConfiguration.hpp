@@ -63,8 +63,15 @@ public:
 
         for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheel.size(); ++reactionWheelIterator )
         {
-            volumeBudget += reactionWheel[reactionWheelIterator].length * reactionWheel[reactionWheelIterator].height * reactionWheel[reactionWheelIterator].width; 
-        }
+            if ( !isnan( reactionWheel[reactionWheelIterator].radius ) ) 
+            {
+                volumeBudget += reactionWheel[reactionWheelIterator].length * reactionWheel[reactionWheelIterator].height * reactionWheel[reactionWheelIterator].width; 
+            }
+            else if ( !isnan( reactionWheel[reactionWheelIterator].length) && !isnan( reactionWheel[reactionWheelIterator].width) )
+            {
+                volumeBudget += sml::SML_PI * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].height; 
+            }
+        }    
         return volumeBudget; 
     }
 
