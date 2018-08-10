@@ -65,11 +65,12 @@ public:
         {
             if ( !isnan( reactionWheel[reactionWheelIterator].radius ) ) 
             {
-                volumeBudget += reactionWheel[reactionWheelIterator].length * reactionWheel[reactionWheelIterator].height * reactionWheel[reactionWheelIterator].width; 
+                volumeBudget += sml::SML_PI * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].height; 
+                
             }
             else if ( !isnan( reactionWheel[reactionWheelIterator].length) && !isnan( reactionWheel[reactionWheelIterator].width) )
             {
-                volumeBudget += sml::SML_PI * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].radius * reactionWheel[reactionWheelIterator].height; 
+                volumeBudget += reactionWheel[reactionWheelIterator].length * reactionWheel[reactionWheelIterator].height * reactionWheel[reactionWheelIterator].width;
             }
         }    
         return volumeBudget; 
