@@ -1,0 +1,33 @@
+{
+    "mode" : "attribute_extraction",
+    "actuator_uuids" : [
+        "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+        "7e7539b5-4de9-5401-a1da-48c46159614d",
+        "aa23dabf-edc1-5e80-af7d-609d8b80730d",
+        "b79236dc-407a-59bb-9215-8bda084cc317",
+        "b4eb8ec7-f484-5357-a3e7-634c630d0a3e",
+        "4a3be253-c8f7-565f-bc85-56bd6a2ff152",
+        "1354b545-a497-5660-85a6-097f7cabb6b7",
+        "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
+        "93fd5c21-52ee-5b84-9bcd-9961cc4ec4ba",
+        "d4e5eb02-06c9-5690-9488-cba550a5ab9e",
+        "5df368dc-d93f-52bf-beff-896152078722",
+        "ae4cdb80-af17-5f1a-82af-b8f08b559147",
+        "481c435e-d1e6-5623-8545-dc26816bab07",
+        "e0c3d408-7546-5619-a256-5842585e27bd",
+        "5c1527d5-cd34-579a-b987-1c002381be4f",
+        "3514753f-d8b6-5c7e-955d-a4d89b40c268",
+        "890c1d1a-0289-5e3b-ae68-c51468ecdaf5",
+        "1e22ae37-a703-5840-b35a-f56c8eb18c43"
+    ], 
+    "attributes_to_retrieve" : [ 
+        "mass", 
+        "length", 
+        "width", 
+        "height", 
+        "maximum torque", 
+        "torque", 
+        "diameter"  
+    ], 
+    "metadataPath" : "/home/superman/Desktop/productAttributesData/metadata.csv" 
+}

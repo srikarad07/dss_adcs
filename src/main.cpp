@@ -14,6 +14,7 @@
 #include <rapidjson/document.h>
 
 #include "dss_adcs/bulkSimulator.hpp"
+#include "dss_adcs/productAttributes.hpp"
 #include "dss_adcs/monteCarloSingle.hpp"
 #include "dss_adcs/simulator.hpp"
 
@@ -97,6 +98,11 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     {
         std::cout << "Mode                               " << mode << std::endl;
         dss_adcs::executeMonteCarloSingleSimulator( config );
+    }
+    else if ( mode.compare("attribute_extraction") == 0)
+    {
+        std::cout << "Mode                               " << mode << std::endl;
+        dss_adcs::executeProductAttributeExtraction( config );
     }
     else
     {
