@@ -3,9 +3,9 @@
 
     // Principle moments of inertia in Body Fixed frame 
     "principle_inertia": [
-        1000.0,
-        1200.0,
-        1100.0
+        8.34,
+        8.34,
+        6.0
     ],
     
     // Attitude representation type. Change it to initial attitude 
@@ -14,12 +14,12 @@
     
     // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3). 
     "initial_attitude_state": [
-        50.0,
-        50.0,
-        50.0,
-        1.0,
-        2.0,
-        1.0
+        60.0,
+        60.0,
+        60.0,
+        0.0,
+        0.0,
+        0.0
     ],
 
     // Change reference to target. [target_attitude_state]
@@ -55,28 +55,28 @@
     
     "reaction_wheels": [
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
-            "wheel_orientation": [
-                90.0, 
-                0.0
-            ] 
-        },
-        {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
-            "wheel_orientation": [
-                90.0, 
-                90.0
-            ]
-        },
-        {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
             "wheel_orientation": [
                 0.0, 
                 90.0
+            ] 
+        },
+        {
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "wheel_orientation": [
+                90.0, 
+                90.0
+            ]
+        },
+        {
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "wheel_orientation": [
+                0.0, 
+                0.0
             ]
         }, 
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
             "wheel_orientation": [
                 45.0, 
                 45.0
@@ -87,7 +87,7 @@
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.2, 
+    "slew_saturation_rate" : 0.5, 
 
     // Controller type
     // quaternion_feedback | cascade_saturation
@@ -105,7 +105,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 1000.0,
+    "end_epoch": 800.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
