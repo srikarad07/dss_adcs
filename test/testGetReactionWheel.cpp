@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
- * Distributed under the MIT License.
- * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
+* Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
+* Distributed under the MIT License.
+* See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 */
 
 #include <cmath>
@@ -26,6 +26,12 @@ namespace tests
 *  test fails the cURL script should be run again in the test directory to 
 *  to update the product strings.
 */ 
+
+//! Curl system command for testing the api (replace 'productUuid' with the actual Uuid in the url below.)
+// curl -G https://api.satsearch.co/v1/products/productUuid -H "Authorization: Bearer 0405ab03e7ba20b906b9f154fced17a4271ba92230e64c2e7cec5e30f9a8b660a0de6b1339ddbe3d2e45eb0ee9847c4alu8+41RxSWVaJpqS8XLxdqKqOC0y75jJOraWB0jYvlUIJgvmqEQhIVUGypazLrNO" -H "X-APP-ID: 18a15813704205b3cf2ebeb364aa2ed246a9ed143b6911de4a52cb6045a0049ad1c951a6e8943e3dbc8c5c2c4242a447AbJtXh3J6aazkWKpCRz3nMut6Wu1YCWoEQESOin6qvkeqeDshqw0onjlA7dfM+3n" -o product.json --libcurl product.c
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //  
+// Automate the generation of reaction wheel string from within the function itself //  
 
 TEST_CASE( "Test 1: Test the function callTheApi", "[MR 103D thruster]")
 {
@@ -90,7 +96,7 @@ TEST_CASE( "Test 4: Test the getReactionWheelAttributes function", "[Microwheel 
     const ReactionWheel computedReactionWheel     = getReactionWheelAttributes( reactionWheelDataString ); 
 
     // Define a reaction wheel with the properties of Microwheel 4000 from satsearch datasheet. 
-    const ReactionWheel expectedReactionWheel( 3.30, 0.218, 0.081, 0.218, std::nan("radius"), 0.300, "MicroWheel 4000", "Microsat Systems Canada"); 
+    const ReactionWheel expectedReactionWheel( 3.30, 0.218, 0.081, 0.218, std::nan("radius"), 0.300, 4.0, "MicroWheel 4000", "Microsat Systems Canada"); 
 
     REQUIRE( computedReactionWheel.mass         == Approx( expectedReactionWheel.mass).epsilon(tolerance) ); 
     REQUIRE( computedReactionWheel.length       == Approx( expectedReactionWheel.length).epsilon(tolerance) );
@@ -118,7 +124,7 @@ TEST_CASE( "Test 5: Test the getReactionWheelAttributes function", "[rw-0-01 Sin
     const ReactionWheel computedReactionWheel     = getReactionWheelAttributes( reactionWheelDataString ); 
 
     // Define a reaction wheel with the properties ofrw-0-01 Sinclair Interplanetary from satsearch datasheet. 
-    const ReactionWheel expectedReactionWheel( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, "RW-0.01", "Sinclair Interplanetary"); 
+    const ReactionWheel expectedReactionWheel( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, "RW-0.01", "Sinclair Interplanetary"); 
 
     REQUIRE( computedReactionWheel.mass         == Approx( expectedReactionWheel.mass).epsilon(tolerance) ); 
     REQUIRE( computedReactionWheel.length       == Approx( expectedReactionWheel.length).epsilon(tolerance) );
@@ -142,9 +148,9 @@ TEST_CASE( "Test 6: Test the getReactionWheelAttributes function", "[rwp050 Blue
 
     // Extract the properties of rwp050 Blue Canyon Technologies with the string from the getReactionWheelAttributes
     const ReactionWheel computedReactionWheel     = getReactionWheelAttributes( reactionWheelDataString ); 
-
+    std::cout << "Supplier name: " << computedReactionWheel.supplierName << std::endl; 
     // Define a reaction wheel with the properties of rwp050 Blue Canyon Technologies from satsearch datasheet. 
-    const ReactionWheel expectedReactionWheel( 0.24, 0.058, 0.025, 0.058, std::nan("radius"), 0.007, "RWP050", "Blue Canyon Technologies"); 
+    const ReactionWheel expectedReactionWheel( 0.24, 0.058, 0.025, 0.058, std::nan("radius"), 0.007, 0.050, "RWP050", "Blue Canyon Technologies Inc."); 
 
     REQUIRE( computedReactionWheel.mass         == Approx( expectedReactionWheel.mass).epsilon(tolerance) ); 
     REQUIRE( computedReactionWheel.length       == Approx( expectedReactionWheel.length).epsilon(tolerance) );
@@ -175,13 +181,13 @@ TEST_CASE( "Test 7: Test the getReactionWheel function", "[rwp050 Blue Canyon Te
     const std::vector <ReactionWheel> computedReactionWheel = getReactionWheels( "actuator" , actuatorUuid );
 
     // Define a reaction wheel with the properties of rwp050 Blue Canyon Technologies from satsearch datasheet. 
-    const ReactionWheel expectedReactionWheel( 0.24, 0.058, 0.025, 0.058, std::nan("radius"), 0.007, "RWP050", "Blue Canyon Technologies"); 
+    const ReactionWheel expectedReactionWheel( 0.24, 0.058, 0.025, 0.058, std::nan("radius"), 0.007, 0.050, "RWP050", "Blue Canyon Technologies Inc."); 
     
     // Define a reaction wheel with the properties ofrw-0-01 Sinclair Interplanetary from satsearch datasheet. 
-    const ReactionWheel expectedReactionWheel2( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, "RW-0.01", "Sinclair Interplanetary"); 
+    const ReactionWheel expectedReactionWheel2( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, "RW-0.01", "Sinclair Interplanetary"); 
 
     // Define a reaction wheel with the properties of Microwheel 4000 from satsearch datasheet. 
-    const ReactionWheel expectedReactionWheel3( 3.30, 0.218, 0.081, 0.218, std::nan("radius"), 0.300, "MicroWheel 4000", "Microsat Systems Canada"); 
+    const ReactionWheel expectedReactionWheel3( 3.30, 0.218, 0.081, 0.218, std::nan("radius"), 0.300, 4.0, "MicroWheel 4000", "Microsat Systems Canada"); 
 
     // Check for the attributes for BCT computed and expected. 
     REQUIRE( computedReactionWheel[0].mass         == Approx( expectedReactionWheel.mass).epsilon(tolerance) ); 
