@@ -38,14 +38,14 @@ inline ReactionWheel getReactionWheelAttributes( const std::string 	productJson 
 	const std::string reactionWheelName 	= config["name"].GetString();
 	const std::string supplierName 			= config["supplier_name"].GetString();
 	
-	std::cout << "Reaction wheel name: 	" << reactionWheelName << std::endl; 
-	std::cout << "Supplier name: 		" << supplierName << std::endl; 
+	// std::cout << "Reaction wheel name: 	" << reactionWheelName << std::endl; 
+	// std::cout << "Supplier name: 		" << supplierName << std::endl; 
 	
 	const rapidjson::Value& attributes 	= config["attributes"];
 	assert(attributes.IsArray()); 
 
 	std::vector<std::string> keysToRetrieve = {"measurement_unit", "value"};
-	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque", "torque", "diameter" };
+	std::vector< std::string > attributesToRetrieve = { "mass", "length", "width", "height", "maximum torque", "torque", "diameter", "angular momentum storage", "maximum momentum storage" };
 	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve );	
 
 	const ReactionWheel reactionWheel = getReactionWheelAttributesInSiUnits( mapForResult, 

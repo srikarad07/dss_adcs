@@ -112,6 +112,30 @@ namespace dss_adcs
 		return reactionWheelTorque; 
 	};
 
+	inline double convertToNewtonMeterSec( 	std::string momentum_storage_measurement_unit,  
+						   		 			std::string momentum_storage_value, 
+						   		 			std::string reactionWheelName, 
+						   		 			std::string supplierName )
+	{
+		double reactionWheelMomentumStorage(0.0); 
+		std::string::size_type sz;
+
+		if ( momentum_storage_measurement_unit.compare("N m") != 0 && !momentum_storage_value.empty() )
+	    {
+	    	reactionWheelMomentumStorage		= sml::convertMilliNewtonMeterToNewtonMeter( std::stod( momentum_storage_value, &sz ) );
+	    }
+		else if( momentum_storage_value.empty() )
+		{  
+			reactionWheelMomentumStorage = std::nan("Torque"); 
+		}
+	    else 
+	    {
+	    	reactionWheelMomentumStorage		= std::stod( momentum_storage_value, &sz );	
+	    }
+
+		return reactionWheelMomentumStorage; 
+	};
+
 	inline ReactionWheel getReactionWheelAttributesInSiUnits( std::map< std::string, std::string > mapForResult, 
 													   		  std::string 							reactionWheelName, 
 													   		  std::string 							supplierName )
@@ -153,12 +177,30 @@ namespace dss_adcs
 											               supplierName); 
 		}
 
+		double reactionWheelMomentumStorage; 
+		if ( mapForResult.find("maximum momentum storage-measurement_unit") != mapForResult.end() )
+		{
+			reactionWheelMomentumStorage = convertToNewtonMeterSec( 
+														mapForResult["maximum momentum storage-measurement_unit"],
+											         	mapForResult["maximum momentum storage-value"],
+											         	reactionWheelName,
+											            supplierName); 
+		}
+		else 
+		{
+			reactionWheelMomentumStorage = convertToNewtonMeterSec( 
+														mapForResult["angular momentum storage-measurement_unit"],
+											         	mapForResult["angular momentum storage-value"],
+											         	reactionWheelName,
+											            supplierName); 
+		}
+
 		const Real reactionWheelRadius = ( 1.0/2.0 ) * convertToMeter( mapForResult["diameter-measurement_unit"],
 											         	   mapForResult["diameter-value"],
 											         	   reactionWheelName,
 											               supplierName) ; 
 
-		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelHeight, reactionWheelWidth,reactionWheelRadius, reactionWheelTorque, reactionWheelName, supplierName ); 
+		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelHeight, reactionWheelWidth,reactionWheelRadius, reactionWheelTorque, reactionWheelMomentumStorage, reactionWheelName, supplierName ); 
 		
 		return reactionWheel; 
 	} 

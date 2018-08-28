@@ -24,6 +24,7 @@ public:
                     const Real          aWidth, 
                     const Real          aRadius, 
                     const Real          aMaxTorque, 
+                    const Real          aMaxMomentumStorage,
                     const std::string   aName, 
                     const std::string   aSupplierName   )
                 :   mass( aMass ),
@@ -32,6 +33,7 @@ public:
                     width( aWidth ),
                     radius( aRadius ), 
                     maxTorque( aMaxTorque ), 
+                    maxMomentumStorage( aMaxMomentumStorage ), 
                     name( aName ), 
                     supplierName( aSupplierName )
     { }
@@ -47,6 +49,8 @@ public:
     const Real radius; 
 
     const Real maxTorque;
+    
+    const Real maxMomentumStorage; 
     
     const std::string name; 
 
