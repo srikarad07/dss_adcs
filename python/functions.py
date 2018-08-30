@@ -137,25 +137,26 @@ def calculatePower( stateHistoryFiles ):
     # print(maxPower)
     return maxPower, avgPower    
 
-filePath = "/home/superman/Desktop/single_simulation/state_history.csv"
-state_history = pd.read_csv( filePath )
+if __name__ == "__main__":
+    filePath = "/home/superman/Desktop/single_simulation/state_history.csv"
+    state_history = pd.read_csv( filePath )
 
-settlingTimeFinal = calculateSettlingTime( filePath )
-print( "The settling time is: ", settlingTimeFinal )
+    settlingTimeFinal = calculateSettlingTime( filePath )
+    print( "The settling time is: ", settlingTimeFinal )
 
-referenceAttitude       = [0, 0, 0, 1]
-angularVelocityGain     = 2 * 0.707 * 0.1 
-slewRate                = np.deg2rad(0.2)
+    referenceAttitude       = [0, 0, 0, 1]
+    angularVelocityGain     = 2 * 0.707 * 0.1 
+    slewRate                = np.deg2rad(0.2)
 
-saturationRate, startOfCoastingPhase, endOfCoastingPhase = calculateSaturationTime( filePath, referenceAttitude, angularVelocityGain, slewRate ) 
+    saturationRate, startOfCoastingPhase, endOfCoastingPhase = calculateSaturationTime( filePath, referenceAttitude, angularVelocityGain, slewRate ) 
 
-print("Time during saturation: ", saturationRate, startOfCoastingPhase, endOfCoastingPhase )
+    print("Time during saturation: ", saturationRate, startOfCoastingPhase, endOfCoastingPhase )
 
-bulkFilePath         = "/home/superman/Desktop/bulk_simulation"
-# stateHistoryFiles    = csv_functions.requiredFiles( bulkFilePath, 'state_history', '4.csv') 
-stateHistoryFiles       = np.array([filePath])
-maxPower, avgPower             = calculatePower(stateHistoryFiles)
+    bulkFilePath         = "/home/superman/Desktop/bulk_simulation"
+    # stateHistoryFiles    = csv_functions.requiredFiles( bulkFilePath, 'state_history', '4.csv') 
+    stateHistoryFiles       = np.array([filePath])
+    maxPower, avgPower             = calculatePower(stateHistoryFiles)
 
-print("The maximum power is: ", maxPower)
-print("The average power is: ", avgPower)
+    print("The maximum power is: ", maxPower)
+    print("The average power is: ", avgPower)
 

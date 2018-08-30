@@ -7,6 +7,7 @@
 #ifndef DSS_ADCS_ACTUATOR_CONFIGURATION_HPP
 #define DSS_ADCS_ACTUATOR_CONFIGURATION_HPP
 
+#include <cmath>
 #include <math.h> 
 
 #include <Eigen/QR>    
@@ -121,6 +122,35 @@ public:
         }  
 
         return reactionWheelAngularVelocities; 
+    }
+
+    //! Reaction wheel power consumption is calculated as an estimate with formula given below: 
+    /* Reaction wheel power consumption given as an estimate for reaction wheel after estimating it 
+     * for 20 reaction wheels in "Comparison of Control Moment Gyros and Reaction Wheels for small 
+     * Earth observing satellites" (https://digitalcommons.usu.edu/cgi/viewcontent.cgi?article=1080&context=smallsat).      
+     *   \f[
+     *         P_{RW} = 1000T + 4.51h^{0.47}  
+     *   \f]  
+     * where $P_{RW}$ is the power consumed by the reaction wheel in $W$, $T$ is the motor torque acting on the reaction 
+     * wheel in $N-m$ and $h$ is the angular momentum of the reaction wheel in $Nm-sec$.
+     *  
+     *   @tparam         VectorXd                    x dimensional-vector type
+     *   @param[in]      VectorXd                    Reaction wheel motor torque [N-m] 
+     *   @param[in]      VectorXd                    Reaction wheel angular momentums [Nm-sec] 
+     *   @param[out]     VectorXd                    Power consumption reaction wheels [W]
+    */ 
+
+    const VectorXd computeReactionWheelPower( const VectorXd reactionWheelMotorTorque, 
+                                              const VectorXd reactionWheelAngularMomentum  ) const 
+    {
+        VectorXd reactionWheelPowerConsumption( reactionWheelAngularMomentum.size() );
+        for ( unsigned int iterator = 0; iterator < reactionWheelAngularMomentum.size(); ++iterator )
+        {
+            reactionWheelPowerConsumption[iterator] = 1000.0 * reactionWheelMotorTorque[iterator] + 
+                                                        4.51 * signFunction(reactionWheelAngularMomentum[iterator]) * 
+                                                        pow( abs( reactionWheelAngularMomentum[iterator] ), 0.47 ) ; 
+        } 
+        return reactionWheelPowerConsumption; 
     }
     
 protected: 

@@ -60,6 +60,7 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
     }
     
     const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"] ); 
+    const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConcepts["Concept"];
 
     // std::cout << "Reaction Wheel moment of inertia: " << actuatorConfiguration.calculateMomentOfInertia() << std::endl; 
 
@@ -79,9 +80,16 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
     boost::random::mt19937 randomSeed;
 
     // Random number generator for principle inertia vector. 
-    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorXX( input.principleInertiaMin[0], input.principleInertiaMax[0] );
-    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorYY( input.principleInertiaMin[1], input.principleInertiaMax[1] );
-    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorZZ( input.principleInertiaMin[2], input.principleInertiaMax[2] );
+    
+    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorXX( 
+        input.principleInertia[0] - input.principleInertiaUncertainty[0], 
+        input.principleInertia[0] + input.principleInertiaUncertainty[0] );
+    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorYY( 
+        input.principleInertia[1] - input.principleInertiaUncertainty[1], 
+        input.principleInertia[1] + input.principleInertiaUncertainty[1]  );
+    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorZZ( 
+        input.principleInertia[2] - input.principleInertiaUncertainty[2], 
+        input.principleInertia[2] + input.principleInertiaUncertainty[2]  );
 
     // Random number generator for initial attitude state. 
     // boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ1( input.initialAttitudeStateMin[0], input.initialAttitudeStateMax[0] );
@@ -89,6 +97,10 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
     // boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ3( input.initialAttitudeStateMin[2], input.initialAttitudeStateMax[2] );
     // boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ4( input.initialAttitudeStateMax[3], input.initialAttitudeStateMin[3] );
 
+    // Print metadata to the file provide in metadatafile path. 
+    std::ofstream metadatafile( input.metadataFilePath );
+    metadatafile << "mass,volume,rw1,rw2,rw3,rw4,maxMomentumStorage1,maxMomentumStorage2,maxMomentumStorage3,maxMomentumStorage4" << std::endl;
+    
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
     
@@ -229,7 +241,11 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
                 controlTorque = { 0.0, 0.0, 0.0 };
             }
 
-            StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities );
+            // Compute reaction wheel power. 
+            VectorXd reactionWheelPowerConsumption   = actuatorConfiguration.computeReactionWheelPower( reactionWheelMotorTorque, 
+                                                                                       reactionWheelAngularMomentums ); 
+
+            StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities, reactionWheelPowerConsumption );
     
             // Dynamics of the system 
             DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, principleInertia );
@@ -263,9 +279,19 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
                 std::cout << "Numerical Integrator " << input.integrator << " not defined yet! " << std::endl; 
                 throw; 
             }
+            //! Convert back to eigen type vector from std::vector. 
             currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
         }
+        // Print the progress bar
         progressBar( input.numberOfSamples, i ); 
+        
+        // Save the metadata to metadatafile
+        doPrint( metadatafile, actuatorConfiguration.calculateMassBudget(), 
+                 actuatorConfiguration.calculateVolumeBudget(), reactionWheelConcept[0].name, 
+                 reactionWheelConcept[1].name, reactionWheelConcept[2].name, reactionWheelConcept[3].name,
+                 reactionWheelConcept[0].maxMomentumStorage, reactionWheelConcept[1].maxMomentumStorage, 
+                 reactionWheelConcept[2].maxMomentumStorage, reactionWheelConcept[3].maxMomentumStorage ); 
+         metadatafile << std::endl;
     }
 };
 
@@ -273,28 +299,28 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
 monteCarloSingleSimulatorInput checkMonteCarloSingleSimulatorInput( const rapidjson::Document& config )
 {
     // Extract principle inertia. 
-    ConfigIterator principleInertiaMaxDiagonalIterator     = find( config, "principle_inertia_maximum"); 
-    Inertia principleInertiaMax; 
-    principleInertiaMax[0]                                 = principleInertiaMaxDiagonalIterator->value[0].GetDouble( ); 
-    principleInertiaMax[1]                                 = principleInertiaMaxDiagonalIterator->value[1].GetDouble( ); 
-    principleInertiaMax[2]                                 = principleInertiaMaxDiagonalIterator->value[2].GetDouble( );
-    std::cout << "Max Principle inertia around X axis:                          " << principleInertiaMax[0]
+    ConfigIterator principleInertiaDiagonalIterator     = find( config, "principle_inertia"); 
+    Inertia principleInertia; 
+    principleInertia[0]                                 = principleInertiaDiagonalIterator->value[0].GetDouble( ); 
+    principleInertia[1]                                 = principleInertiaDiagonalIterator->value[1].GetDouble( ); 
+    principleInertia[2]                                 = principleInertiaDiagonalIterator->value[2].GetDouble( );
+    std::cout << "Principle inertia around X axis:                          " << principleInertia[0]
               << "[kg/m^2]" << std::endl; 
-    std::cout << "Max Principle inertia around Y axis:                          " << principleInertiaMax[1]
+    std::cout << "Principle inertia around Y axis:                          " << principleInertia[1]
               << "[kg/m^2]" << std::endl;          
-    std::cout << "Max Principle inertia around Z axis:                          " << principleInertiaMax[2]
+    std::cout << "Principle inertia around Z axis:                          " << principleInertia[2]
               << "[kg/m^2]" << std::endl; 
 
-    ConfigIterator principleInertiaMinDiagonalIterator     = find( config, "principle_inertia_minimum"); 
-    Inertia principleInertiaMin; 
-    principleInertiaMin[0]                                 = principleInertiaMinDiagonalIterator->value[0].GetDouble( ); 
-    principleInertiaMin[1]                                 = principleInertiaMinDiagonalIterator->value[1].GetDouble( ); 
-    principleInertiaMin[2]                                 = principleInertiaMinDiagonalIterator->value[2].GetDouble( );
-    std::cout << "Min Principle inertia around X axis:                          " << principleInertiaMin[0]
+    ConfigIterator principleInertiaUncertianityDiagonalIterator     = find( config, "principle_inertia_uncertainties"); 
+    Inertia principleInertiaUncertainty; 
+    principleInertiaUncertainty[0]                                 = principleInertiaUncertianityDiagonalIterator->value[0].GetDouble( ); 
+    principleInertiaUncertainty[1]                                 = principleInertiaUncertianityDiagonalIterator->value[1].GetDouble( ); 
+    principleInertiaUncertainty[2]                                 = principleInertiaUncertianityDiagonalIterator->value[2].GetDouble( );
+    std::cout << "Uncertainty in Principle inertia around X axis:                          " << principleInertiaUncertainty[0]
               << "[kg/m^2]" << std::endl; 
-    std::cout << "Min Principle inertia around Y axis:                          " << principleInertiaMin[1]
+    std::cout << "Uncertainty in Principle inertia around Y axis:                          " << principleInertiaUncertainty[1]
               << "[kg/m^2]" << std::endl;          
-    std::cout << "Min Principle inertia around Z axis:                          " << principleInertiaMin[2]
+    std::cout << "Uncertainty in Principle inertia around Z axis:                          " << principleInertiaUncertainty[2]
               << "[kg/m^2]" << std::endl; 
     
     // Extract attitude kinematic type. 
@@ -500,12 +526,14 @@ monteCarloSingleSimulatorInput checkMonteCarloSingleSimulatorInput( const rapidj
 
     // Extract file writer settings.
     const std::string metadataFilePath                = find( config, "metadata_file_path" )->value.GetString( ); 
-    std::cout << "Metadata file path  " <<  metadataFilePath << std::endl;
+    std::cout << "Metadata file path                                            " << metadataFilePath << std::endl;
+    const bool saveStateHistory                       = find( config, "save_state_history" )->value.GetBool( ); 
+    std::cout << "Save state history files?                                     " << saveStateHistory << std::endl; 
     const std::string stateHistoryFilePath            = find( config, "state_history_file_path" )->value.GetString( ); 
-    std::cout << "State history file path  " <<  stateHistoryFilePath << std::endl;  
+    std::cout << "State history file path                                       " <<  stateHistoryFilePath << std::endl;  
 
-    return monteCarloSingleSimulatorInput(  principleInertiaMin,
-                                  principleInertiaMax,  
+    return monteCarloSingleSimulatorInput(  principleInertia,
+                                  principleInertiaUncertainty,  
                                   initialAttitudeStateMin,
                                   initialAttitudeStateMax,
                                   referenceAttitudeState,
@@ -530,6 +558,7 @@ monteCarloSingleSimulatorInput checkMonteCarloSingleSimulatorInput( const rapidj
                                   slewSaturationRate, 
                                   controllerType,
                                   metadataFilePath,
+                                  saveStateHistory,
                                   stateHistoryFilePath);
 };
 

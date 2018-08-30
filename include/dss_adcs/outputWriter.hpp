@@ -123,12 +123,14 @@ public:
                         const Vector3   aControlTorque, 
                         const VectorXd  aMotorTorque, 
                         const Vector3   aDisturbanceTorque, 
-                        const VectorXd  aReactionWheelAngularVelocities )
+                        const VectorXd  aReactionWheelAngularVelocities,
+                        const VectorXd  aReactionWheelPowerConsumption )
         : stateHistoryStream( aStateHistoryStream ),
           controlTorque( aControlTorque ),
           motorTorque( aMotorTorque ), 
           disturbanceTorque( aDisturbanceTorque ), 
-          reactionWheelAngularVelocities( aReactionWheelAngularVelocities )   
+          reactionWheelAngularVelocities( aReactionWheelAngularVelocities ), 
+          reactionWheelPowerConsumption( aReactionWheelPowerConsumption )   
     { }
 
     //! Overload ()-operator to write state to output stream.
@@ -149,7 +151,7 @@ public:
         const Real eulerRotationAngle   = 2 * acos( state[3] ); 
         const Vector3 attitudeRate( state[4], state[5], state[6] ); 
         const Real slewRate             = attitudeRate.norm(); 
-        const VectorXd powerConsumption = motorTorque * reactionWheelAngularVelocities; 
+        // const VectorXd powerConsumption = motorTorque * reactionWheelAngularVelocities; 
 
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
                             << time                                                     << ','
@@ -186,7 +188,7 @@ public:
     }
     for ( unsigned int powerIterator = 0; powerIterator < motorTorque.size(); ++powerIterator )
     {
-        stateHistoryStream  << powerConsumption[powerIterator]                          << ',';
+        stateHistoryStream  << reactionWheelPowerConsumption[powerIterator]             << ',';
     }
         stateHistoryStream  << disturbanceTorque[0]                                     << ','
                             << disturbanceTorque[1]                                     << ',' 
@@ -211,6 +213,9 @@ private:
 
     //! Reaction Wheel angular velocities. 
     const VectorXd reactionWheelAngularVelocities; 
+
+    //! Reaction wheel power consumption. 
+    const VectorXd reactionWheelPowerConsumption; 
 };
 
 }

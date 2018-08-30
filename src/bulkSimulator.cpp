@@ -219,7 +219,11 @@ void executeBulkSimulator( const rapidjson::Document& config )
                     controlTorque = { 0.0, 0.0, 0.0 };
                 }
 
-                StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities );
+                // Compute reaction wheel power. 
+                VectorXd reactionWheelPowerConsumption   = actuatorConfiguration.computeReactionWheelPower( reactionWheelMotorTorque, 
+                                                                                       reactionWheelAngularMomentums ); 
+
+                StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities, reactionWheelPowerConsumption );
 
                 // Dynamics of the system 
                 DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );

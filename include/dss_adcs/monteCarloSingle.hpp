@@ -54,8 +54,8 @@ public:
      * @param[in] aMetadataFilePath           Path to output file for metadata
      * @param[in] aStateHistoryFilePath       Path to output file for state history
      */
-    monteCarloSingleSimulatorInput( const Inertia                   aPrincipleInertiaMin,
-                                    const Inertia                   aPrincipleInertiaMax,    
+    monteCarloSingleSimulatorInput( const Inertia                   aPrincipleInertia,
+                                    const Inertia                   aPrincipleInertiaUncertainty,    
                                     const State                     anInitialAttitudeStateMin, 
                                     const State                     anInitialAttitudeStateMax,
                                     const Vector4                   aReferenceAttitudeState,
@@ -80,9 +80,10 @@ public:
                                     const Real                      aSlewSaturationRate, 
                                     const std::string&              aControllerType,
                                     const std::string&              aMetadataFilePath,
+                                    const bool                      aSaveStateHistory,
                                     const std::string&              aStateHistoryFilePath )     
-        : principleInertiaMin( aPrincipleInertiaMin ),
-          principleInertiaMax( aPrincipleInertiaMax ),
+        : principleInertia( aPrincipleInertia ),
+          principleInertiaUncertainty( aPrincipleInertiaUncertainty ),
           initialAttitudeStateMin( anInitialAttitudeStateMin ),
           initialAttitudeStateMax( anInitialAttitudeStateMax ),
           referenceAttitudeState( aReferenceAttitudeState ),
@@ -107,12 +108,13 @@ public:
           slewSaturationRate( aSlewSaturationRate ),
           controllerType( aControllerType ),  
           metadataFilePath( aMetadataFilePath ),
+          saveStateHistory( aSaveStateHistory ), 
           stateHistoryFilePath( aStateHistoryFilePath )
     { }
 
     //! Principle Inertia of the spacecraft [kg m^2].
-    const Inertia principleInertiaMin;
-    const Inertia principleInertiaMax;
+    const Inertia principleInertia;
+    const Inertia principleInertiaUncertainty;
 
     //! Initial attitude state and angular velocities of the spacecraft [deg], [deg/sec].
     const State initialAttitudeStateMin;
@@ -184,6 +186,9 @@ public:
     //! Metadata file path.
     const std::string metadataFilePath; 
 
+    //! Save state history files. 
+    const bool saveStateHistory; 
+    
     //! State History file path. 
     const std::string stateHistoryFilePath; 
     
