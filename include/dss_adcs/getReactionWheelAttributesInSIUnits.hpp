@@ -120,7 +120,7 @@ namespace dss_adcs
 		double reactionWheelMomentumStorage(0.0); 
 		std::string::size_type sz;
 
-		if ( momentum_storage_measurement_unit.compare("N m") != 0 && !momentum_storage_value.empty() )
+		if ( momentum_storage_measurement_unit.compare("N m s") != 0 && !momentum_storage_value.empty() )
 	    {
 	    	reactionWheelMomentumStorage		= sml::convertMilliNewtonMeterToNewtonMeter( std::stod( momentum_storage_value, &sz ) );
 	    }
