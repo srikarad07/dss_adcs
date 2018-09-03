@@ -48,7 +48,7 @@ void executeProductAttributeExtraction( const rapidjson::Document& config )
 	// Get the path to save the metadata parameters. 
 	std::ofstream metadatHistoryStream( find( config, "metadataPath" )->value.GetString() ); 
 
-	metadatHistoryStream << "name,supplier,mass,volume,torque" << std::endl; 
+	metadatHistoryStream << "name,supplier,mass,length,height,width,radius,volume,torque,momentumStorage" << std::endl; 
 
     // Get the product json using the api.
     for( unsigned int actuatorIterator2 = 0; actuatorIterator2 < actuatorUuids.size(); ++actuatorIterator2 )
@@ -70,63 +70,31 @@ void executeProductAttributeExtraction( const rapidjson::Document& config )
     	std::map<std::string, std::string> mapForResult = mapForAttributeThatMatchesName( attributes, "name", attributesToRetrieve, keysToRetrieve );	 
 
         // Extract the reaction wheel properties from the map into SI Units. 
-        const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
-												       mapForResult["mass-value"],
-												       reactionWheelName,
-												       supplierName );
-		
-		const Real reactionWheelLength = convertToMeter( mapForResult["length-measurement_unit"],
-											         mapForResult["length-value"],
-											         reactionWheelName,
-											         supplierName );
+		const ReactionWheel reactionWheel = getReactionWheelAttributesInSiUnits( mapForResult, 
+																			 	 reactionWheelName,
+												       						 	 supplierName ); 
 
-		const Real reactionWheelHeight = convertToMeter( mapForResult["height-measurement_unit"],
-											         mapForResult["height-value"],
-											         reactionWheelName,
-											         supplierName );
-
-		const Real reactionWheelWidth = convertToMeter( mapForResult["width-measurement_unit"],
-											        mapForResult["width-value"],
-											        reactionWheelName,
-											        supplierName );
-		
-		double reactionWheelTorque; 
-
-		if ( mapForResult.find("maximum torque-measurement_unit") != mapForResult.end() )
-		{
-			reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
-											         	   mapForResult["maximum torque-value"],
-											         	   reactionWheelName,
-											               supplierName); 
-		}
-		else 
-		{
-			reactionWheelTorque = convertToNewtonMeter( mapForResult["torque-measurement_unit"],
-											         	   mapForResult["torque-value"],
-											         	   reactionWheelName,
-											               supplierName); 
-		}
-
-		const Real reactionWheelRadius = ( 1.0/2.0 ) * convertToMeter( mapForResult["diameter-measurement_unit"],
-											         	   mapForResult["diameter-value"],
-											         	   reactionWheelName,
-											               supplierName) ; 
 		double volume( 0.0 ); 
 
-		if ( !isnan( reactionWheelRadius ) ) 
+		if ( !isnan( reactionWheel.radius ) ) 
         {
-			volume += sml::SML_PI * reactionWheelRadius * reactionWheelRadius *reactionWheelHeight; 
+			volume += sml::SML_PI * reactionWheel.radius * reactionWheel.radius *reactionWheel.height; 
         }
-        else if ( !isnan( reactionWheelLength ) && !isnan( reactionWheelWidth ) )
+        else if ( !isnan( reactionWheel.length ) && !isnan( reactionWheel.width ) )
         {
-            volume += reactionWheelLength * reactionWheelHeight * reactionWheelWidth; 
+            volume += reactionWheel.length * reactionWheel.height * reactionWheel.width; 
         }
 
-		metadatHistoryStream 	<< reactionWheelName 		<< "," 
-						 		<< supplierName 	 		<< ","
-								<< reactionWheelMass 		<< ","
-								<< volume 					<< ","
-								<< reactionWheelTorque 		<< "," << std::endl; 
+		metadatHistoryStream 	<< reactionWheel.name				<< "," 
+						 		<< reactionWheel.supplierName		<< ","
+								<< reactionWheel.mass				<< ","
+								<< reactionWheel.length 			<< ","
+								<< reactionWheel.height 			<< ","
+								<< reactionWheel.width 				<< ","
+								<< reactionWheel.radius 			<< ","
+								<< volume							<< ","
+								<< reactionWheel.maxTorque			<< "," 
+								<< reactionWheel.maxMomentumStorage	<< std::endl; 
     }
 }
 

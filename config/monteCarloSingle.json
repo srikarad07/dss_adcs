@@ -1,20 +1,30 @@
 {
     "mode": "monte_carlo_single_simulation",
     "principle_inertia": [
-        1000.0,
-        1200.0,
-        1100.0
+        8.34,
+        8.34,
+        6.0
     ],
     "principle_inertia_uncertainties": [
-        100.0,
-        200.0,
-        150.0
+        2.0,
+        2.5,
+        3.0
     ],
 
+    "monte_carlo_on_inertia" : false,
+
+    // Slew rate 
+    "slew_saturation_rate" : 0.5, 
+    
+    // Range of slew 
+    "slew_rate_range" : 0.4, 
+    
+    "monte_carlo_on_slew": true,
+
     "initial_attitude_state_minimum": [
-        10.0,
-        10.0,
-        10.0,
+        40.0,
+        40.0,
+        40.0,
         0.0,
         0.0,
         0.0
@@ -29,13 +39,15 @@
         0.0
     ],
 
+    "monte_carlo_on_initial_attitude": false, 
+
     "attitude_reference_state": [
         0.0, 
         0.0, 
         0.0
     ], 
 
-    "number_0f_samples": 98, 
+    "number_0f_samples": 100, 
     
     "is_gravity_gradient_active": true,
 
@@ -54,28 +66,28 @@
     
     "reaction_wheels": [
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
             "wheel_orientation": [
                 90.0, 
                 0.0
             ] 
         },
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
             "wheel_orientation": [
                 0.0, 
                 90.0
             ]
         }, 
         {
-            "uuid": "6454b937-f0e9-5fc5-8165-0cc79c44b424",
+            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
             "wheel_orientation": [
                 45.0, 
                 45.0
@@ -89,9 +101,8 @@
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.2, 
     "controller_type" : "cascade_saturation",   
-
+    
     // Radial vector of the satellite from spacecraft [m]. 
     "radius": 7371000.0,
 
