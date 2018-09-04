@@ -151,6 +151,7 @@ public:
         const Real eulerRotationAngle   = 2 * acos( state[3] ); 
         const Vector3 attitudeRate( state[4], state[5], state[6] ); 
         const Real slewRate             = attitudeRate.norm(); 
+        Real totalSystemPower(0.0); 
         // const VectorXd powerConsumption = motorTorque * reactionWheelAngularVelocities; 
 
         stateHistoryStream  << std::setprecision ( std::numeric_limits< double>::digits10 )
@@ -189,8 +190,10 @@ public:
     for ( unsigned int powerIterator = 0; powerIterator < motorTorque.size(); ++powerIterator )
     {
         stateHistoryStream  << reactionWheelPowerConsumption[powerIterator]             << ',';
+        totalSystemPower    += reactionWheelPowerConsumption[powerIterator];
     }
-        stateHistoryStream  << disturbanceTorque[0]                                     << ','
+        stateHistoryStream  << totalSystemPower                                         << ','
+                            << disturbanceTorque[0]                                     << ','
                             << disturbanceTorque[1]                                     << ',' 
                             << disturbanceTorque[2]                                     << std::endl;                      
     }

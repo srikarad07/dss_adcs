@@ -146,9 +146,9 @@ public:
         VectorXd reactionWheelPowerConsumption( reactionWheelAngularMomentum.size() );
         for ( unsigned int iterator = 0; iterator < reactionWheelAngularMomentum.size(); ++iterator )
         {
-            reactionWheelPowerConsumption[iterator] = 1000.0 * reactionWheelMotorTorque[iterator] + 
+            reactionWheelPowerConsumption[iterator] = abs( 1000.0 * reactionWheelMotorTorque[iterator] + 
                                                         4.51 * signFunction(reactionWheelAngularMomentum[iterator]) * 
-                                                        pow( abs( reactionWheelAngularMomentum[iterator] ), 0.47 ) ; 
+                                                        pow( abs( reactionWheelAngularMomentum[iterator] ), 0.47 ) ); 
         } 
         return reactionWheelPowerConsumption; 
     }
