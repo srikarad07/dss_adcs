@@ -62,7 +62,12 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
     const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"] ); 
     const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConcepts["Concept"];
 
-    // std::cout << "Reaction Wheel moment of inertia: " << actuatorConfiguration.calculateMomentOfInertia() << std::endl; 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>...... // 
+    // Change this and if there is a better way to do it.                             // 
+    const bool monteCarloInitialAttitudeActiveFlag     = find( config, "monte_carlo_on_initial_attitude" )->value.GetBool( );
+    const Real slewRateUncertainty                     = sml::convertDegreesToRadians(
+                                                            find( config, "slew_rate_range" )->value.GetDouble( ) );  
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  // 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
@@ -80,7 +85,6 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
     boost::random::mt19937 randomSeed;
 
     // Random number generator for principle inertia vector. 
-    
     boost::random::uniform_real_distribution< Real > principleInertiaGeneratorXX( 
         input.principleInertia[0] - input.principleInertiaUncertainty[0], 
         input.principleInertia[0] + input.principleInertiaUncertainty[0] );
@@ -92,14 +96,52 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
         input.principleInertia[2] + input.principleInertiaUncertainty[2]  );
 
     // Random number generator for initial attitude state. 
-    // boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ1( input.initialAttitudeStateMin[0], input.initialAttitudeStateMax[0] );
-    // boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ2( input.initialAttitudeStateMin[1], input.initialAttitudeStateMax[1] );
-    // boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ3( input.initialAttitudeStateMin[2], input.initialAttitudeStateMax[2] );
-    // boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ4( input.initialAttitudeStateMax[3], input.initialAttitudeStateMin[3] );
+    // <<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+    // FINd a better way to generate random numbers for initial attitude state. // 
+    Vector4 initialAttitudeQuaternionInput; 
+    initialAttitudeQuaternionInput[0]          = input.initialAttitudeStateMax[0]; 
+    initialAttitudeQuaternionInput[1]          = input.initialAttitudeStateMax[1]; 
+    initialAttitudeQuaternionInput[2]          = input.initialAttitudeStateMax[2]; 
+    initialAttitudeQuaternionInput[3]          = input.initialAttitudeStateMax[3]; 
+
+    Vector4 initialAttitudeQuaternionUncertaintyInput; 
+    initialAttitudeQuaternionUncertaintyInput[0]          = input.initialAttitudeStateMin[0]; 
+    initialAttitudeQuaternionUncertaintyInput[1]          = input.initialAttitudeStateMin[1]; 
+    initialAttitudeQuaternionUncertaintyInput[2]          = input.initialAttitudeStateMin[2]; 
+    initialAttitudeQuaternionUncertaintyInput[3]          = input.initialAttitudeStateMin[3]; 
+
+    Vector3 eulerAngleInitialAttitudeStateTemp              = astro::transformQuaternionToEulerAngles( initialAttitudeQuaternionInput );
+    Vector3 eulerAngleInitialAttitudeStateUncertaintyTemp   = astro::transformQuaternionToEulerAngles( initialAttitudeQuaternionUncertaintyInput ); 
+    
+    Vector3 eulerAngleInitialAttitudeState; 
+    eulerAngleInitialAttitudeState[0]      = sml::convertRadiansToDegrees( eulerAngleInitialAttitudeStateTemp[0] );
+    eulerAngleInitialAttitudeState[1]      = sml::convertRadiansToDegrees( eulerAngleInitialAttitudeStateTemp[1] );
+    eulerAngleInitialAttitudeState[2]      = sml::convertRadiansToDegrees( eulerAngleInitialAttitudeStateTemp[2] );
+
+    Vector3 eulerAngleInitialAttitudeStateUncertainty; 
+    eulerAngleInitialAttitudeStateUncertainty[0]      = sml::convertRadiansToDegrees( eulerAngleInitialAttitudeStateUncertaintyTemp[0] );
+    eulerAngleInitialAttitudeStateUncertainty[1]      = sml::convertRadiansToDegrees( eulerAngleInitialAttitudeStateUncertaintyTemp[1] );
+    eulerAngleInitialAttitudeStateUncertainty[2]      = sml::convertRadiansToDegrees( eulerAngleInitialAttitudeStateUncertaintyTemp[2] );
+
+    boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ1( 
+        eulerAngleInitialAttitudeState[0] - eulerAngleInitialAttitudeStateUncertainty[0], 
+        eulerAngleInitialAttitudeState[0] + eulerAngleInitialAttitudeStateUncertainty[0] );
+    boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ2( 
+        eulerAngleInitialAttitudeState[1] - eulerAngleInitialAttitudeStateUncertainty[1], 
+        eulerAngleInitialAttitudeState[1] + eulerAngleInitialAttitudeStateUncertainty[1] );
+    boost::random::uniform_real_distribution< Real > initialAttitudeStateGeneratorQ3( 
+        eulerAngleInitialAttitudeState[2] - eulerAngleInitialAttitudeStateUncertainty[2], 
+        eulerAngleInitialAttitudeState[2] + eulerAngleInitialAttitudeStateUncertainty[2] );
+    
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+
+    // Generate random seed for slew saturation rate. 
+    boost::random::uniform_real_distribution< Real > slewRateGenerator( 
+                                                    input.slewSaturationRate - slewRateUncertainty,                                          input.slewSaturationRate + slewRateUncertainty ); 
 
     // Print metadata to the file provide in metadatafile path. 
     std::ofstream metadatafile( input.metadataFilePath );
-    metadatafile << "mass,volume,rw1,rw2,rw3,rw4,maxMomentumStorage1,maxMomentumStorage2,maxMomentumStorage3,maxMomentumStorage4" << std::endl;
+    metadatafile << "mass,volume,rw1,rw2,rw3,rw4,maxMomentumStorage1,maxMomentumStorage2,maxMomentumStorage3,maxMomentumStorage4,principleInertia1,principleInertia2,principleInertia3,initialAttitude1,initialAttitude2,initialAttitude3,slewRate" << std::endl;
     
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
@@ -122,20 +164,20 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
         std::ofstream stateHistoryFile( stateHistoryFilePath );
         if ( reactionWheels.size() == 3 )
         {
-            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,powerConsumption1,powerConsumption2,powerConsumption3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,powerConsumption1,powerConsumption2,powerConsumption3,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
         }
         else if ( reactionWheels.size() == 4 )
         {
-            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
 
         }
         else if (  reactionWheels.size() == 5 )
         {
-            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorquecontrolTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentumangularMomentum4,angularMomentum5,reactionWheelAngularvelocity1,reactionWheelAngularvelocity2,reactionWheelAngularvelocityreactionWheelAngularVelocity4,reactionWheelAngularVelocity5,powerConsumption1,powerConsumption2,powerConsumptionpowerConsumption4,powerConsumption5,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorquecontrolTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentumangularMomentum4,angularMomentum5,reactionWheelAngularvelocity1,reactionWheelAngularvelocity2,reactionWheelAngularvelocityreactionWheelAngularVelocity4,reactionWheelAngularVelocity5,powerConsumption1,powerConsumption2,powerConsumptionpowerConsumption4,powerConsumption5,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
         }
         else if (  reactionWheels.size() == 6 )
         {
-            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorquecontrolTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,angularMomentum1,angularMomentumangularMomentum3,angularMomentum4,angularMomentum5,angularMomentum6,reactionWheelAngularVelocity1,reactionWheelAngularVelocityreactionWheelAngularVelocity3,reactionWheelAngularVelocity4,reactionWheelAngularVelocity5,reactionWheelAngularVelocitypowerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,powerConsumption5,powerConsumption6,disturbanceTorquedisturbanceTorque2,disturbanceTorque3" << std::endl;
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorquecontrolTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,angularMomentum1,angularMomentumangularMomentum3,angularMomentum4,angularMomentum5,angularMomentum6,reactionWheelAngularVelocity1,reactionWheelAngularVelocityreactionWheelAngularVelocity3,reactionWheelAngularVelocity4,reactionWheelAngularVelocity5,reactionWheelAngularVelocitypowerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,powerConsumption5,powerConsumption6,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
         }
         else
         {
@@ -143,29 +185,82 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
             throw; 
         }
 
-        const Inertia principleInertia( principleInertiaGeneratorXX(randomSeed), principleInertiaGeneratorYY(randomSeed), principleInertiaGeneratorZZ(randomSeed) ) ;
-        // std::cout << "Principle inertia: " << principleInertia << std::endl;
-        // const State initialAttitudeState( input.initialAttitudeStateMin[0], input.initialAttitudeStateMin[1], 
-        //                     input.initialAttitudeStateMin[1], input.initialAttitudeStateMin[3], 
-        //                         input.initialAttitudeStateMin[4], input.initialAttitudeStateMin[5], input.initialAttitudeStateMin[6]  ); 
+        Inertia principleInertia; 
+        //! Principle inertia random generator for X axis
+        if ( input.principleInertiaUncertainty[0] != 0 )
+        {
+            principleInertia[0] = principleInertiaGeneratorXX(randomSeed);  
+        }
+        else 
+        {
+            principleInertia[0]  = input.principleInertia[0]; 
+        }
+        //! Principle inertia random generator for Y axis
+        if ( input.principleInertiaUncertainty[1] != 0 )
+        {
+            principleInertia[1] = principleInertiaGeneratorYY(randomSeed);  
+        }
+        else 
+        {
+            principleInertia[1]  = input.principleInertia[1]; 
+        }
+        //! Principle inertia random generator for Z axis
+        if ( input.principleInertiaUncertainty[2] != 0 )
+        {
+            principleInertia[2] = principleInertiaGeneratorZZ(randomSeed);  
+        }
+        else 
+        {
+            principleInertia[2]  = input.principleInertia[2]; 
+        }
 
-        // State initialAttitudeState;
-        // initialAttitudeState[0] = initialAttitudeStateGeneratorQ1(randomSeed); 
-        // initialAttitudeState[1] = initialAttitudeStateGeneratorQ2(randomSeed);  
-        // initialAttitudeState[2] = initialAttitudeStateGeneratorQ3(randomSeed);  
-        // initialAttitudeState[3] = initialAttitudeStateGeneratorQ4(randomSeed);  
-        // initialAttitudeState[4] = input.initialAttitudeStateMin[4];  
-        // initialAttitudeState[5] = input.initialAttitudeStateMin[5];
-        // initialAttitudeState[6] = input.initialAttitudeStateMin[6]; 
-
+        // Slew saturation rate. 
+        Real slewRateRandomlyGenerated; 
+        if ( slewRateUncertainty != 0 )
+        {
+            slewRateRandomlyGenerated = slewRateGenerator( randomSeed );     
+        } 
+        else
+        {
+            slewRateRandomlyGenerated = input.slewSaturationRate; 
+        }
+        // std::cout << "randomly generated slew rate: " <<  slewRateRandomlyGenerated << std::endl; 
+        // Initial attitude state random number generator. 
+        Vector3 initialAttitudeEulerAnglesInDegrees( initialAttitudeStateGeneratorQ1(randomSeed), 
+                                                     initialAttitudeStateGeneratorQ2(randomSeed),
+                                                     initialAttitudeStateGeneratorQ3(randomSeed) );
+        // std::cout << "Initia; attotude in degrees random generated: " << initialAttitudeEulerAnglesInDegrees << std::endl; 
+        Vector3 initialAttitudeEulerAngles( sml::convertDegreesToRadians(initialAttitudeEulerAnglesInDegrees[0] ), 
+                                            sml::convertDegreesToRadians(initialAttitudeEulerAnglesInDegrees[1] ),
+                                            sml::convertDegreesToRadians(initialAttitudeEulerAnglesInDegrees[2] ) ); 
+        // std::cout << "Initial attitude state random: " << initialAttitudeEulerAngles << std::endl; 
+        // Vector3 initialAttitudeEulerAngles( 0.0, 0.0, 0.0 ); 
+        Vector4 initialQuaternionAttitude   = astro::transformEulerToQuaternion( initialAttitudeEulerAngles ); 
+         
         State initialAttitudeState;
-        initialAttitudeState[0] = input.initialAttitudeStateMin[0];
-        initialAttitudeState[1] = input.initialAttitudeStateMin[1];
-        initialAttitudeState[2] = input.initialAttitudeStateMin[2];
-        initialAttitudeState[3] = input.initialAttitudeStateMin[3];
-        initialAttitudeState[4] = input.initialAttitudeStateMin[4];  
-        initialAttitudeState[5] = input.initialAttitudeStateMin[5];
-        initialAttitudeState[6] = input.initialAttitudeStateMin[6]; 
+        if ( monteCarloInitialAttitudeActiveFlag == true )
+        {
+            initialAttitudeState[0] = initialQuaternionAttitude[0];
+            initialAttitudeState[1] = initialQuaternionAttitude[1];
+            initialAttitudeState[2] = initialQuaternionAttitude[2];
+            initialAttitudeState[3] = initialQuaternionAttitude[3];
+            initialAttitudeState[4] = input.initialAttitudeStateMax[4];  
+            initialAttitudeState[5] = input.initialAttitudeStateMax[5];
+            initialAttitudeState[6] = input.initialAttitudeStateMax[6]; 
+        }
+        else 
+        {
+            initialAttitudeState[0] = input.initialAttitudeStateMax[0];
+            initialAttitudeState[1] = input.initialAttitudeStateMax[1];
+            initialAttitudeState[2] = input.initialAttitudeStateMax[2];
+            initialAttitudeState[3] = input.initialAttitudeStateMax[3];
+            initialAttitudeState[4] = input.initialAttitudeStateMax[4];  
+            initialAttitudeState[5] = input.initialAttitudeStateMax[5];
+            initialAttitudeState[6] = input.initialAttitudeStateMax[6]; 
+        }
+        
+        Vector4 initialAttitudeQuaternionToSave( initialAttitudeState[0], initialAttitudeState[1], initialAttitudeState[2], initialAttitudeState[3]); 
+        Vector3 initialAttitudeEulerToSave = astro::transformQuaternionToEulerAngles(initialAttitudeQuaternionToSave); 
 
         VectorXd currentState( ( initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ) );                 
         for ( unsigned int stateIterator = 0; stateIterator < (initialAttitudeState.size() + reactionWheelConcepts["Concept"].size() ); ++stateIterator )
@@ -229,7 +324,7 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
                                                                                               input.controllerType, 
                                                                                               input.naturalFrequency, 
                                                                                               input.dampingRatio, 
-                                                                                              input.slewSaturationRate,
+                                                                                              slewRateRandomlyGenerated,
                                                                                               principleInertia, 
                                                                                               initialQuaternion, 
                                                                                               integrationStartTime ); 
@@ -290,7 +385,9 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
                  actuatorConfiguration.calculateVolumeBudget(), reactionWheelConcept[0].name, 
                  reactionWheelConcept[1].name, reactionWheelConcept[2].name, reactionWheelConcept[3].name,
                  reactionWheelConcept[0].maxMomentumStorage, reactionWheelConcept[1].maxMomentumStorage, 
-                 reactionWheelConcept[2].maxMomentumStorage, reactionWheelConcept[3].maxMomentumStorage ); 
+                 reactionWheelConcept[2].maxMomentumStorage, reactionWheelConcept[3].maxMomentumStorage, principleInertia[0], principleInertia[1], principleInertia[2], sml::convertRadiansToDegrees( initialAttitudeEulerToSave[0] ),  sml::convertRadiansToDegrees( initialAttitudeEulerToSave[1] ), 
+                 sml::convertRadiansToDegrees( initialAttitudeEulerToSave[2] ), 
+                 sml::convertRadiansToDegrees( slewRateRandomlyGenerated ) ); 
          metadatafile << std::endl;
     }
 };
@@ -336,6 +433,8 @@ monteCarloSingleSimulatorInput checkMonteCarloSingleSimulatorInput( const rapidj
     Vector4 referenceAttitudeState; 
     Vector3 initialAttitudeStateEulerMin, initialAttitudeStateEulerMax;
 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+    // Change the attitude such that the conversion from euler to quaternion happens later!! >> 
     if (attitudeRepresentationString.compare("euler_angles") == 0)
     {
         initialAttitudeStateEulerMin[0]                   = sml::convertDegreesToRadians( initialAttitudeStateEulerMinIterator->value[0].GetDouble() );
