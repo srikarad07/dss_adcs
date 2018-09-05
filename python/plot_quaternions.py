@@ -65,9 +65,9 @@ print "******************************************************************"
 print ""
 
 # Update this part to use the json input for plotting. 
-# path                =  "/home/superman/Desktop/single_simulation/"
+# path                =  "/home/superman/Desktop/monte_carlo_single/"
 path                        = "/home/superman/Desktop/single_simulation/"
-stringToSearchWith          = 'state_history'
+stringToSearchWith          = 'state_history.csv'
 numberOfReactionWheels      = '_44.csv'
 # filesForTheplots            = requiredFiles( path, stringToSearchWith, numberOfReactionWheels)
 filesForTheplots            = requiredFiles( path, stringToSearchWith )
@@ -128,8 +128,8 @@ for filename in range(len(filesForTheplots)):
     plt.grid()
     pass
 
-fig1.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/attitudes.eps')
-plt.close()
+# fig1.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/attitudes.eps')
+# plt.close()
 
 ## PLot spacecraft control torques ##
 fig  = plt.figure()
@@ -178,8 +178,8 @@ for filename in range(len(filesForTheplots)):
 
     pass
 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/controlTorques.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/controlTorques.eps')
+# plt.close()
 
 ## Plot motor torques of the reaction wheels ##
 fig = plt.figure()
@@ -217,8 +217,8 @@ for filename in range(len(filesForTheplots)):
     plt.grid()
     
     pass 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/motorTorques.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/motorTorques.eps')
+# plt.close()
 
 # ## Plot angular momentum of the reaction wheels. 
 fig = plt.figure()
@@ -255,8 +255,8 @@ for filename in range(len(filesForTheplots)):
         plt.grid()
     pass 
 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/angularMomentumReactionWheels.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/angularMomentumReactionWheels.eps')
+# plt.close()
 
 ## Plot the reaction wheel angular velocities. 
 fig = plt.figure()
@@ -290,8 +290,8 @@ for filename in range(len(filesForTheplots)):
     plt.legend(handles=[header1,header2,header3,header4])
     plt.grid()
     pass 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/reactionWheelAngularRates.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/reactionWheelAngularRates.eps')
+# plt.close()
 
 ## Plot the power consumption for the reaction wheels. ##  
 fig = plt.figure()
@@ -324,8 +324,8 @@ for filename in range(len(filesForTheplots)):
     plt.grid()
     
     pass 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/power.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/power.eps')
+# plt.close()
 
 ## Plot the angular rates of the spacecraft ## 
 fig = plt.figure()
@@ -368,8 +368,8 @@ for filename in range(len(filesForTheplots)):
     plt.grid()
     
     pass 
-fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/angularRatesSpacecraft.eps')
-plt.close()
+# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/angularRatesSpacecraft.eps')
+# plt.close()
 
 plt.show()
 
