@@ -72,7 +72,22 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
                                                                                     quaternionCurrent, 
                                                                                     angularVelocity );
     }
+    else if ( controllerType.compare("cascade_saturation_with_limiter") == 0 )
+    {
+        //! Maximum control input
+        const Vector3 maximumControlInput = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelTorqueMax; 
 
+        commandedControlTorque = astro::computeControlTorqueWithSaturationCascadeControllerWithLimiter( 
+                                                                                    naturalFrequency, 
+                                                                                    dampingRatio, 
+                                                                                    slewRateSaturation, 
+                                                                                    principleInertiaVector, 
+                                                                                    initialQuaternion, 
+                                                                                    quaternionReference, 
+                                                                                    quaternionCurrent, 
+                                                                                    angularVelocity,
+                                                                                    maximumControlInput );
+    }
     else
     {
         std::cout << "Controller " <<  controllerType << " not implemented! " << std::endl;
