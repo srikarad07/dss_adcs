@@ -53,9 +53,8 @@ n, bins, patches = axs.hist( mass, bins=n_bins)
 axs.set_xlabel('Mass [kg]')
 axs.set_ylabel('Count')
 axs.set_title('Mass distribution reaction wheels')
-# plt.grid()
-# plt.box()
 plt.close()
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/mass_distribution.eps')
 
 # Draw torque distribution plots. 
 torque          = metadata['torque']
@@ -64,6 +63,7 @@ ax2.hist(torque, bins=n_bins)
 ax2.set_xlabel('Torque [Nm]')
 ax2.set_ylabel('Count')
 plt.close()
+fig2.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/torque_distribution.eps')
 
 # Draw momentum storage distribution plots. 
 momentumStorage = metadata['momentumStorage']
@@ -73,6 +73,7 @@ ax3.set_xlabel('Momentum storage [Nmsec]')
 ax3.set_ylabel('Count')
 plt.grid()
 plt.close()
+fig3.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/momentum_distribution.eps')
 
 # Draw Volume distribution plot
 volume          = metadata['volume']
@@ -80,6 +81,7 @@ fig4, ax4       = plt.subplots(1, 1, tight_layout=True)
 ax4.hist(volume, bins=n_bins)
 plt.grid()
 plt.close()
+fig4.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/volume_distribution.eps')
 
 # Draw moments of inertia distribution plot. 
 
@@ -96,6 +98,7 @@ ax5.grid(which='major', linestyle='-', linewidth='0.5', color='red')
 # Customize the minor grid
 ax5.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
 plt.close(False)
+fig5.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/torqueVsMomentum.eps')
 
 # Log plot of torque vs mass 
 fig, ax     = plt.subplots(1, 1, tight_layout=True)
@@ -110,6 +113,7 @@ ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
 # Customize the minor grid
 ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
 plt.close()
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/torqueVsMass.eps')
 
 # Log plot of torque vs angular momentum/mass 
 fig, ax     = plt.subplots(1, 1, tight_layout=True)
@@ -124,6 +128,7 @@ ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
 # Customize the minor grid
 ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
 plt.close(False)
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/torqueVsMomentumPerMass.eps')
 
 # Log plot of momentum storage/mass vs angular momentum 
 fig, ax     = plt.subplots(1, 1, tight_layout=True)
@@ -138,6 +143,7 @@ ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
 # Customize the minor grid
 ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
 plt.close(False)
+fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/imd/momentumVsMomentumPerMass.eps')
 
 # Show plots 
 plt.show()
