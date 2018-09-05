@@ -64,6 +64,7 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
 
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>...... // 
     // Change this and if there is a better way to do it.                             // 
+    const bool asymmetricBodyTorqueModelFlag           = find( config, "is_asymmetric_body_torque_active")->value.GetBool(); 
     const bool monteCarloInitialAttitudeActiveFlag     = find( config, "monte_carlo_on_initial_attitude" )->value.GetBool( );
     const Real slewRateUncertainty                     = sml::convertDegreesToRadians(
                                                             find( config, "slew_rate_range" )->value.GetDouble( ) );  
@@ -300,8 +301,11 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
             VectorXd reactionWheelAngularVelocities = actuatorConfiguration.computeReactionWheelVelocities(reactionWheelAngularMomentums);
             // std::cout << "Reaction wheel angular velocities" << reactionWheelAngularVelocities * 60 << std::endl; 
 
-            // const Vector3 asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
-            const Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
+            Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
+            if ( asymmetricBodyTorqueModelFlag != false )
+            {
+                asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+            }
 
             // Disturbance torques. 
             Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
