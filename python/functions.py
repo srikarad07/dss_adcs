@@ -80,6 +80,33 @@ def calculateSaturationTime( filePath, reference_attitude, angular_velocity_gain
     
     return saturationRate, startOfCoastingPhase/60.0, endOfCoastingPhase/60.0
 
+# Calculate the percentage of mommentum storage w.r.t to the total momentum storage. 
+def calculateSaturationPercentage( metadataPath, stateHistoryFiles ): 
+    
+    metadata               = pd.read_csv( metadataPath )
+    maximumMomentumStorage = np.array([ metadata['maxMomentumStorage1'], metadata['maxMomentumStorage2'], 
+                                        metadata['maxMomentumStorage3'], metadata['maxMomentumStorage4'] ])
+    
+    for jj in range( len(stateHistoryFiles) ): 
+        
+        stateHistory                = pd.read_csv( stateHistoryFiles[jj] )
+        stateHistoryMomentumStorage = np.array( [ stateHistory['angularMomentum1'], stateHistory['angularMomentum2'],
+                                                  stateHistory['angularMomentum3'], stateHistory['angularMomentum4'] ] ) 
+        peakMomentumStoragePercent  = []
+        avgMomentumStoragePercent   = []
+
+        for ii in range(len( maximumMomentumStorage ) ):  
+            momentumStoragePercent          = ( stateHistoryMomentumStorage[ii] / maximumMomentumStorage[ii, jj] ) * 100.0
+            # print(momentumStoragePercent)
+            tempPeakMomentumStoragePercent  = np.amax( np.abs(momentumStoragePercent) )
+            print( tempPeakMomentumStoragePercent )
+        #     tempAvgMomentumStoragePercent   = np.average( momentumStoragePercent )
+        #     peakMomentumStoragePercent      = np.append( peakMomentumStoragePercent, tempPeakMomentumStoragePercent )
+        #     avgMomentumStoragePercent       = np.append( avgMomentumStoragePercent, tempAvgMomentumStoragePercent )
+            pass 
+        pass 
+    pass 
+
 def meanNormalization( vectorX ):
     
     averagedVector      = np.average( vectorX )
@@ -115,34 +142,47 @@ def calculateCost( mass, volume, avgPower ):
 def calculatePower( stateHistoryFiles ):
     maxPower    = np.array([])
     avgPower    = np.array([])
+    maxPowerReactionWheels = np.empty((0,4))
+    avgPowerReactionWheels = np.empty((0,4))
+
     for ii in range(len(stateHistoryFiles)):
         
         stateHistoryFile    = stateHistoryFiles[ii]
         stateHistory        = pd.read_csv(stateHistoryFile)
         powerStrings        = stringLocator( stateHistoryFile, 'powerConsumption')
-        
-        maxPowerReactionWheels        = np.array([])
-        avgPowerReactionWheels        = np.array([])
+
+        maxPowerReactionWheel        = np.array([])
+        avgPowerReactionWheel        = np.array([])
+        # reactionWheelPowerProfiles    = np.empty([])
+        reactionWheelPowerSum         = stateHistory['totalSystemPower']
 
         for jj in range(len(powerStrings)):
-            tempMaxPower            = stateHistory[powerStrings[jj]]
-            avgPowerReactionWheels  = np.append( avgPowerReactionWheels, np.average( tempMaxPower ) ) 
-            maxPowerReactionWheels  = np.append( maxPowerReactionWheels, np.amax( tempMaxPower ) )
+            # reactionWheelPowerProfiles  = np.append(reactionWheelPowerProfiles, np.abs(stateHistory[powerStrings[jj]]))
+            tempMaxPower                = np.abs(stateHistory[powerStrings[jj]])
+
+            avgPowerReactionWheel      = np.append( avgPowerReactionWheel, np.average( tempMaxPower ) ) 
+            maxPowerReactionWheel      = np.append( maxPowerReactionWheel, np.amax( tempMaxPower ) )
             pass 
-        
-        maxPower        = np.append( maxPower, np.sum( maxPowerReactionWheels ) )    
-        avgPower        = np.append( avgPower, np.sum( avgPowerReactionWheels ) )
+        # print(avgPowerReactionWheel)
+        # print(maxPowerReactionWheel)
+        # reactionWheelPowerSum = np.sum( reactionWheelPowerProfiles, axis=0 )
+        maxPower        = np.append( maxPower, np.amax( reactionWheelPowerSum ) )    
+        avgPower        = np.append( avgPower, np.average( reactionWheelPowerSum ) )
+        maxPowerReactionWheels = np.append( maxPowerReactionWheels, [maxPowerReactionWheel], axis=0 )
+        # print(maxPowerReactionWheels)
+        avgPowerReactionWheels = np.append( avgPowerReactionWheels, [avgPowerReactionWheel], axis=0 )
         # print(maxPowerReactionWheels)
         pass 
+    # print("Update the power model to extract single reaction wheels power models.")
     # print(maxPower)
-    return maxPower, avgPower    
+    return maxPower, avgPower, maxPowerReactionWheels, avgPowerReactionWheels    
 
 if __name__ == "__main__":
     filePath = "/home/superman/Desktop/single_simulation/state_history.csv"
     state_history = pd.read_csv( filePath )
 
     settlingTimeFinal = calculateSettlingTime( filePath )
-    print( "The settling time is: ", settlingTimeFinal )
+    # print( "The settling time is: ", settlingTimeFinal )
 
     referenceAttitude       = [0, 0, 0, 1]
     angularVelocityGain     = 2 * 0.707 * 0.1 
@@ -150,13 +190,19 @@ if __name__ == "__main__":
 
     saturationRate, startOfCoastingPhase, endOfCoastingPhase = calculateSaturationTime( filePath, referenceAttitude, angularVelocityGain, slewRate ) 
 
-    print("Time during saturation: ", saturationRate, startOfCoastingPhase, endOfCoastingPhase )
+    # print("Time during saturation: ", saturationRate, startOfCoastingPhase, endOfCoastingPhase )
 
     bulkFilePath         = "/home/superman/Desktop/bulk_simulation"
     # stateHistoryFiles    = csv_functions.requiredFiles( bulkFilePath, 'state_history', '4.csv') 
     stateHistoryFiles       = np.array([filePath])
-    maxPower, avgPower             = calculatePower(stateHistoryFiles)
+    print( "State history files: ", stateHistoryFiles )
+    maxPower, avgPower      = calculatePower(stateHistoryFiles)
 
     print("The maximum power is: ", maxPower)
     print("The average power is: ", avgPower)
+
+    # Calculate the saturation % from the state history files. 
+    metadataFilePath    = "/home/superman/Desktop/metadata.csv"
+    calculateSaturationPercentage( metadataFilePath, stateHistoryFiles )
+
 
