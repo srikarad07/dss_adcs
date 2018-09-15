@@ -48,7 +48,7 @@ void executeProductAttributeExtraction( const rapidjson::Document& config )
 	// Get the path to save the metadata parameters. 
 	std::ofstream metadatHistoryStream( find( config, "metadataPath" )->value.GetString() ); 
 
-	metadatHistoryStream << "name,supplier,mass,length,height,width,radius,volume,torque,momentumStorage" << std::endl; 
+	metadatHistoryStream << "name,supplier,mass,length,height,width,radius,volume,torque,momentumStorage,peakPower" << std::endl; 
 
     // Get the product json using the api.
     for( unsigned int actuatorIterator2 = 0; actuatorIterator2 < actuatorUuids.size(); ++actuatorIterator2 )
@@ -94,7 +94,8 @@ void executeProductAttributeExtraction( const rapidjson::Document& config )
 								<< reactionWheel.radius 			<< ","
 								<< volume							<< ","
 								<< reactionWheel.maxTorque			<< "," 
-								<< reactionWheel.maxMomentumStorage	<< std::endl; 
+								<< reactionWheel.maxMomentumStorage	<< ","
+                                << reactionWheel.peakPower          << std::endl; 
     }
 }
 
