@@ -195,12 +195,25 @@ namespace dss_adcs
 											            supplierName); 
 		}
 
+		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TEMP >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+		// Make it into a proper function like it has been done above. 
+		double reactionWheelPeakPower(0.0); 
+		std::string::size_type sz;
+		if (mapForResult["maximum power-measurement_unit"].compare("mW") != 0 && !mapForResult["maximum power-value"].empty())
+		{
+			reactionWheelPeakPower 		= std::stod( mapForResult["maximum power-value"], &sz ); 
+		}
+		else if ( mapForResult["maximum power-measurement_unit"].compare("W") != 0 && !mapForResult["maximum power-value"].empty() )
+		{
+			reactionWheelPeakPower 		= std::stod( mapForResult["maximum power-value"], &sz ) / 1000.0; 
+		}
+		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<       >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //  
 		const Real reactionWheelRadius = ( 1.0/2.0 ) * convertToMeter( mapForResult["diameter-measurement_unit"],
 											         	   mapForResult["diameter-value"],
 											         	   reactionWheelName,
 											               supplierName) ; 
 
-		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelHeight, reactionWheelWidth,reactionWheelRadius, reactionWheelTorque, reactionWheelMomentumStorage, reactionWheelName, supplierName ); 
+		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelHeight, reactionWheelWidth,reactionWheelRadius, reactionWheelTorque, reactionWheelMomentumStorage, reactionWheelPeakPower, reactionWheelName, supplierName ); 
 		
 		return reactionWheel; 
 	} 

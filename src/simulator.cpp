@@ -53,6 +53,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
         reactionWheelConcepts["Concept"].push_back( tempReactionWheel );   
     }
+    const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConcepts["Concept"];
     
     const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"] ); 
 
@@ -67,6 +68,10 @@ void executeSingleSimulator( const rapidjson::Document& config )
     *   assumption: random gravitational parameter defined for now -> ideally should be 
     *   taken from a reliable source. 
     */
+
+    // Print metadata to the file provide in metadatafile path. 
+    std::ofstream metadatafile( input.metadataFilePath );
+    metadatafile << "mass,volume,rw1,rw2,rw3,rw4,maxMomentumStorage1,maxMomentumStorage2,maxMomentumStorage3,maxMomentumStorage4,peakPower1,peakPower2,peakPower3,peakPower4" << std::endl;
 
     // Create file stream to write state history to.
     std::ofstream stateHistoryFile( input.stateHistoryFilePath );
@@ -222,6 +227,15 @@ void executeSingleSimulator( const rapidjson::Document& config )
         currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
 
     }
+    // Save the metadata to metadatafile
+    doPrint( metadatafile, actuatorConfiguration.calculateMassBudget(), 
+                 actuatorConfiguration.calculateVolumeBudget(), reactionWheelConcept[0].name, 
+                 reactionWheelConcept[1].name, reactionWheelConcept[2].name, reactionWheelConcept[3].name,
+                 reactionWheelConcept[0].maxMomentumStorage, reactionWheelConcept[1].maxMomentumStorage, 
+                 reactionWheelConcept[2].maxMomentumStorage, reactionWheelConcept[3].maxMomentumStorage,
+                 reactionWheelConcept[0].peakPower, reactionWheelConcept[1].peakPower, 
+                 reactionWheelConcept[2].peakPower, reactionWheelConcept[2].peakPower ); 
+    metadatafile << std::endl;
 
 };
 

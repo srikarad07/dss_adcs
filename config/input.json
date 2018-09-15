@@ -113,6 +113,6 @@
     "absolute_tolerance": 1.0e-2,
 
     // Set up file writer options.
-    "metadata_file_path": "/home/superman/Desktop/metadata.csv",
+    "metadata_file_path": "/home/superman/Desktop/single_simulation/metadata.csv",
     "state_history_file_path": "/home/superman/Desktop/single_simulation/state_history.csv"
 }

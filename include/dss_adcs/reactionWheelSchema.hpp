@@ -25,6 +25,7 @@ public:
                     const Real          aRadius, 
                     const Real          aMaxTorque, 
                     const Real          aMaxMomentumStorage,
+                    const Real          aPeakPower,
                     const std::string   aName, 
                     const std::string   aSupplierName   )
                 :   mass( aMass ),
@@ -34,6 +35,7 @@ public:
                     radius( aRadius ), 
                     maxTorque( aMaxTorque ), 
                     maxMomentumStorage( aMaxMomentumStorage ), 
+                    peakPower( aPeakPower ), 
                     name( aName ), 
                     supplierName( aSupplierName )
     { }
@@ -51,6 +53,8 @@ public:
     const Real maxTorque;
     
     const Real maxMomentumStorage; 
+
+    const Real peakPower;
     
     const std::string name; 
 
