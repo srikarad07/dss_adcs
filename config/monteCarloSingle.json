@@ -1,25 +1,21 @@
 {
     "mode": "monte_carlo_single_simulation",
     "principle_inertia": [
-        8.34,
-        8.34,
-        6.0
+        10.0,
+        10.0,
+        8.0
     ],
     "principle_inertia_uncertainties": [
-        2.0,
-        2.5,
-        3.0
+        null,
+        3.0,
+        null
     ],
-
-    "monte_carlo_on_inertia" : false,
 
     // Slew rate 
     "slew_saturation_rate" : 0.5, 
     
     // Range of slew 
-    "slew_rate_range" : 0.4, 
-    
-    "monte_carlo_on_slew": true,
+    "slew_rate_range" : null, 
 
     "initial_attitude_state_minimum": [
         40.0,
@@ -49,9 +45,11 @@
 
     "number_0f_samples": 100, 
     
-    "is_gravity_gradient_active": true,
+    "is_gravity_gradient_active": false,
 
     "is_control_torque_active": true, 
+
+    "is_asymmetric_body_torque_active": false, 
 
     // Gravitational Parameter of the central body [m^3 s^-2]. 
     "gravitational_parameter" : 3.986004418e14, 
@@ -66,33 +64,33 @@
     
     "reaction_wheels": [
         {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
-            "wheel_orientation": [
-                90.0, 
-                0.0
-            ] 
-        },
-        {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
-            "wheel_orientation": [
-                90.0, 
-                90.0
-            ]
-        },
-        {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
             "wheel_orientation": [
                 0.0, 
                 90.0
+            ] 
+        },
+        {
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
+            "wheel_orientation": [
+                90.0, 
+                90.0
+            ]
+        },
+        {
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
+            "wheel_orientation": [
+                0.0, 
+                0.0
             ]
         }, 
         {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
             "wheel_orientation": [
                 45.0, 
                 45.0
             ]
-        } 
+        }  
     ],
           
     // Attitude representation type. 
@@ -101,7 +99,7 @@
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "controller_type" : "cascade_saturation",   
+    "controller_type" : "cascade_saturation_with_limiter",   
     
     // Radial vector of the satellite from spacecraft [m]. 
     "radius": 7371000.0,
@@ -116,7 +114,7 @@
     // Set up integrator time parameters.
     "start_epoch": 0.0,
     "end_epoch": 1000.0,
-    "time_step": 0.1,
+    "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
     "relative_tolerance": 1.0e-10,

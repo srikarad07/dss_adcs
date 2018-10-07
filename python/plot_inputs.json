@@ -1,0 +1,27 @@
+{
+    "filePath" : "/home/superman/Desktop/monte_carlo_single/", 
+    "number_of_reactionWheels" : "none", 
+    "parameters_to_plot": [
+        "powerConsumption", 
+        "motorTorque",
+        "controlTorque",
+        "angularMomentum",
+        "reactionWheelAngularVelocity"
+    ],
+    "xAxisPlot" : "t", 
+    "pltTitles": [
+        "Power [W]", 
+        "Motor torque [Nm]",
+        "Control torque [Nm]", 
+        "Angular momentum [Nms]",
+        "Reaction wheel angular velocities [rpm]"
+    ],   
+    "showFigures": true, 
+    "saveFigures" : false,
+    "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case2/", 
+    "figSize" : 
+        [
+            15.0, 
+            7.0
+        ]
+}

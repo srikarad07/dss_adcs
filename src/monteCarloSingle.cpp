@@ -142,7 +142,7 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
 
     // Print metadata to the file provide in metadatafile path. 
     std::ofstream metadatafile( input.metadataFilePath );
-    metadatafile << "mass,volume,rw1,rw2,rw3,rw4,maxMomentumStorage1,maxMomentumStorage2,maxMomentumStorage3,maxMomentumStorage4,principleInertia1,principleInertia2,principleInertia3,initialAttitude1,initialAttitude2,initialAttitude3,slewRate" << std::endl;
+    metadatafile << "mass,volume,rw1,rw2,rw3,rw4,maxMomentumStorage1,maxMomentumStorage2,maxMomentumStorage3,maxMomentumStorage4,principleInertia1,principleInertia2,principleInertia3,initialAttitude1,initialAttitude2,initialAttitude3,slewRate,peakPower1,peakPower2,peakPower3,peakPower4" << std::endl;
     
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
@@ -391,7 +391,8 @@ void executeMonteCarloSingleSimulator( const rapidjson::Document& config )
                  reactionWheelConcept[0].maxMomentumStorage, reactionWheelConcept[1].maxMomentumStorage, 
                  reactionWheelConcept[2].maxMomentumStorage, reactionWheelConcept[3].maxMomentumStorage, principleInertia[0], principleInertia[1], principleInertia[2], sml::convertRadiansToDegrees( initialAttitudeEulerToSave[0] ),  sml::convertRadiansToDegrees( initialAttitudeEulerToSave[1] ), 
                  sml::convertRadiansToDegrees( initialAttitudeEulerToSave[2] ), 
-                 sml::convertRadiansToDegrees( slewRateRandomlyGenerated ) ); 
+                 sml::convertRadiansToDegrees( slewRateRandomlyGenerated ), reactionWheelConcept[0].peakPower,
+                 reactionWheelConcept[1].peakPower, reactionWheelConcept[2].peakPower, reactionWheelConcept[3].peakPower  ); 
          metadatafile << std::endl;
     }
 };

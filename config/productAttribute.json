@@ -43,7 +43,8 @@
         "torque", 
         "diameter", 
         "angular momentum storage", 
-        "maximum momentum storage" 
+        "maximum momentum storage", 
+        "maximum power" 
     ], 
     "metadataPath" : "/home/superman/Desktop/productAttributesData/metadata.csv" 
 }

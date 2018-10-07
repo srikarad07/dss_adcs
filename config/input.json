@@ -3,9 +3,9 @@
 
     // Principle moments of inertia in Body Fixed frame 
     "principle_inertia": [
-        8.34,
-        8.34,
-        6.0
+        10.0,
+        10.0,
+        8.0
     ],
     
     // Attitude representation type. Change it to initial attitude 
@@ -31,11 +31,11 @@
 
     // Flag for the asymmetric body torque on the system 
     // true | false
-    "is_asymmetric_body_torque_active": true, 
+    "is_asymmetric_body_torque_active": false, 
     
     // Flag for the gravity gradient torque on the system 
     // true | false
-    "is_gravity_gradient_active": true,
+    "is_gravity_gradient_active": false,
 
     // Flag for the control torque on the system 
     // true | false
@@ -55,28 +55,28 @@
     
     "reaction_wheels": [
         {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
             "wheel_orientation": [
                 0.0, 
                 90.0
             ] 
         },
         {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
             "wheel_orientation": [
                 0.0, 
                 0.0
             ]
         }, 
         {
-            "uuid": "5df368dc-d93f-52bf-beff-896152078722",
+            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
             "wheel_orientation": [
                 45.0, 
                 45.0

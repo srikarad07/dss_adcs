@@ -16,7 +16,7 @@ def calculateSettlingTime( filePath ):
     state_history = pd.read_csv( filePath ) 
 
     # settlingTimeIdx     = [ idx for i in range(slew_rate_history.si ]
-    tolerance = 1e-10
+    tolerance = 1e-3
     slew_rate_history = np.array( state_history['slewRate'] )
     time_history  = np.array( state_history['t'] / 60.0 )
     
@@ -86,26 +86,28 @@ def calculateSaturationPercentage( metadataPath, stateHistoryFiles ):
     metadata               = pd.read_csv( metadataPath )
     maximumMomentumStorage = np.array([ metadata['maxMomentumStorage1'], metadata['maxMomentumStorage2'], 
                                         metadata['maxMomentumStorage3'], metadata['maxMomentumStorage4'] ])
-    
+    peakMomentumStoragePercent  = np.empty((0,4))
+    # avgMomentumStoragePercent   = []
     for jj in range( len(stateHistoryFiles) ): 
-        
+        oneReactionWheelPercent     = np.array([])
         stateHistory                = pd.read_csv( stateHistoryFiles[jj] )
         stateHistoryMomentumStorage = np.array( [ stateHistory['angularMomentum1'], stateHistory['angularMomentum2'],
                                                   stateHistory['angularMomentum3'], stateHistory['angularMomentum4'] ] ) 
-        peakMomentumStoragePercent  = []
-        avgMomentumStoragePercent   = []
-
+        # print("Peak momentums: ", np.amax(np.abs(stateHistoryMomentumStorage[0])), np.amax(np.abs(stateHistoryMomentumStorage[1])), 
+        #                                     np.amax(np.abs(stateHistoryMomentumStorage[2])), np.amax(np.abs(stateHistoryMomentumStorage[3])) )
         for ii in range(len( maximumMomentumStorage ) ):  
             momentumStoragePercent          = ( stateHistoryMomentumStorage[ii] / maximumMomentumStorage[ii, jj] ) * 100.0
-            # print(momentumStoragePercent)
+            # print(momentumStoragePercent.shape)
             tempPeakMomentumStoragePercent  = np.amax( np.abs(momentumStoragePercent) )
-            print( tempPeakMomentumStoragePercent )
-        #     tempAvgMomentumStoragePercent   = np.average( momentumStoragePercent )
-        #     peakMomentumStoragePercent      = np.append( peakMomentumStoragePercent, tempPeakMomentumStoragePercent )
-        #     avgMomentumStoragePercent       = np.append( avgMomentumStoragePercent, tempAvgMomentumStoragePercent )
+            # print("Peak momentum temp: ", tempPeakMomentumStoragePercent)
+            # maxPowerReactionWheel      = np.append( maxPowerReactionWheel, np.amax( tempMaxPower ) )
+            oneReactionWheelPercent      = np.append( oneReactionWheelPercent, tempPeakMomentumStoragePercent)
             pass 
+        # print(oneReactionWheelPercent)
+        peakMomentumStoragePercent = np.append( peakMomentumStoragePercent, [oneReactionWheelPercent], axis=0 )
         pass 
     pass 
+    return peakMomentumStoragePercent
 
 def meanNormalization( vectorX ):
     
@@ -177,9 +179,126 @@ def calculatePower( stateHistoryFiles ):
     # print(maxPower)
     return maxPower, avgPower, maxPowerReactionWheels, avgPowerReactionWheels    
 
+def extractConceptAttributes( stateHistoryFiles ):
+
+    maxReactionWheelTorque  = np.empty((0,4))
+    avgReactionWheelTorque  = np.empty((0,4))
+
+    maxReactionWheelAngularMomentum  = np.empty((0,4))
+    avgReactionWheelAngularMomentum  = np.empty((0,4))
+
+    maxReactionWheelAngularVelocity  = np.empty((0,4))
+    avgReactionWheelAngularVelocity  = np.empty((0,4))
+
+    for ii in range(len(stateHistoryFiles)): 
+        stateHistoryFile        = stateHistoryFiles[ii]
+        stateHistory            = pd.read_csv(stateHistoryFile)
+        torqueStrings           = stringLocator( stateHistoryFile, 'motorTorque')
+        angularMomentumStrings  = stringLocator( stateHistoryFile, 'angularMomentum')
+        angularVelocityStrings  = stringLocator( stateHistoryFile, 'reactionWheelAngularVelocity')
+
+        maxMotorTorque        = np.array([])
+        avgMotorTorque        = np.array([])
+        
+        maxAngularMomentum        = np.array([])
+        avgAngularMomentum        = np.array([])
+        
+        maxAngularVelocity        = np.array([])
+        avgAngularVelocity        = np.array([])
+
+        for jj in range(len(torqueStrings)):
+
+            tempMotorTorque       = np.abs(stateHistory[torqueStrings[jj]])
+            tempAngularMomentum   = np.abs(stateHistory[angularMomentumStrings[jj]])
+            tempAngularVelocity   = np.abs(stateHistory[angularVelocityStrings[jj]])
+
+            avgMotorTorque      = np.append( avgMotorTorque, np.average( tempMotorTorque ) ) 
+            maxMotorTorque      = np.append( maxMotorTorque, np.amax( tempMotorTorque ) )
+            avgAngularMomentum  = np.append( avgAngularMomentum, np.average( tempAngularMomentum ) ) 
+            maxAngularMomentum  = np.append( maxAngularMomentum, np.amax( tempAngularMomentum ) )
+            avgAngularVelocity  = np.append( avgAngularVelocity, np.average( tempAngularVelocity ) ) 
+            maxAngularVelocity  = np.append( maxAngularVelocity, np.amax( tempAngularVelocity ) )
+
+            pass 
+
+        # Save maximum and average motor torque of each reaction wheel from each state history files.  
+        maxReactionWheelTorque  = np.append( maxReactionWheelTorque, [maxMotorTorque], axis=0 )
+        avgReactionWheelTorque  = np.append( avgReactionWheelTorque, [avgMotorTorque], axis=0 )
+        
+        # Save maximum and average angular momentum of each reaction wheel from each state history files. 
+        maxReactionWheelAngularMomentum  = np.append( maxReactionWheelAngularMomentum, [maxAngularMomentum], axis=0 )
+        avgReactionWheelAngularMomentum  = np.append( avgReactionWheelAngularMomentum, [avgAngularMomentum], axis=0 )
+        
+        # Save maximum and average angular momentum of each reaction wheel from each state history files. 
+        maxReactionWheelAngularVelocity  = np.append( maxReactionWheelAngularVelocity, [maxAngularVelocity], axis=0 )
+        avgReactionWheelAngularVelocity  = np.append( avgReactionWheelAngularVelocity, [avgAngularVelocity], axis=0 )
+        pass 
+    pass
+
+    return maxReactionWheelTorque, avgReactionWheelTorque, maxReactionWheelAngularMomentum, avgReactionWheelAngularMomentum, maxReactionWheelAngularVelocity, avgReactionWheelAngularVelocity
+
+# def calculateCalculateToGivenPercentage( calculatedValue, givenValue ): 
+    
+#     percent       = np.array([])
+#     for ii in range(len(calculatedValue)):
+#         tempPercent        = ( calculatedValue[ii] / givenValue[ii] ) * 100.0 
+#         percent   = np.append(percent, tempPercent) 
+#         pass 
+#     return percent
+    # pass
+ 
+# Calculate the percentage of mommentum storage w.r.t to the total momentum storage. 
+def calculatePeakPowerPercentage( metadataPath, stateHistoryFiles ): 
+    
+    metadata               = pd.read_csv( metadataPath )
+    peakPowerStrings       = stringLocator( metadataPath, 'peakPower' )
+    peakPower              = np.empty((0,4))
+    peakPowerPercent       = np.array([])
+
+    for jj in range(len(peakPowerStrings)): 
+        peakPower = np.append( peakPower, metadata[peakPowerStrings[jj] ] )
+        
+        xx, yy, reactionWheelPeakPowerCalculated, zz    = calculatePower( stateHistoryFiles )
+    # print("Peak Power: ", reactionWheelPeakPowerCalculated)
+    # print("Datasheet: ", peakPower.shape)
+    # print("Calculated: ", reactionWheelPeakPowerCalculated.shape)
+        for ii in range(len( peakPower ) ):  
+            peakPowerPercent          = np.append( peakPowerPercent, ( reactionWheelPeakPowerCalculated[jj,ii] / peakPower[ii] ) * 100.0 )
+            pass 
+        pass 
+    return peakPowerPercent
+
+# Calculate the percentage of mommentum storage w.r.t to the total momentum storage. 
+# def calculateMomentumStoragePercentage( metadataPath, stateHistoryFiles ): 
+    
+#     metadata               = pd.read_csv( metadataPath )
+#     peakPowerStrings       = stringLocator( metadataPath, 'angularMomentum' )
+#     peakPower              = np.empty((0,4))
+#     peakPowerPercent       = np.array([])
+
+#     for jj in range(len(peakPowerStrings)): 
+#         peakPower = np.append( peakPower, metadata[peakPowerStrings[jj] ] )
+#         pass
+#     xx, yy, reactionWheelPeakPowerCalculated, zz    = calculatePower( stateHistoryFiles )
+#     print("Datasheet: ", peakPower.shape)
+#     print("Calculated: ", reactionWheelPeakPowerCalculated.shape)
+#     for ii in range(len( peakPower ) ):  
+#         peakPowerPercent          = np.append( peakPowerPercent, ( reactionWheelPeakPowerCalculated[:,ii] / peakPower[ii] ) * 100.0 )
+#         pass 
+#     pass 
+#     return peakPowerPercent
+
 if __name__ == "__main__":
     filePath = "/home/superman/Desktop/single_simulation/state_history.csv"
     state_history = pd.read_csv( filePath )
+
+    import re
+    from csv_functions import requiredFiles
+
+    def natural_sort(l): 
+        convert = lambda text: int(text) if text.isdigit() else text.lower() 
+        alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
+        return sorted(l, key = alphanum_key)
 
     settlingTimeFinal = calculateSettlingTime( filePath )
     # print( "The settling time is: ", settlingTimeFinal )
@@ -196,13 +315,29 @@ if __name__ == "__main__":
     # stateHistoryFiles    = csv_functions.requiredFiles( bulkFilePath, 'state_history', '4.csv') 
     stateHistoryFiles       = np.array([filePath])
     print( "State history files: ", stateHistoryFiles )
-    maxPower, avgPower      = calculatePower(stateHistoryFiles)
-
-    print("The maximum power is: ", maxPower)
-    print("The average power is: ", avgPower)
+    maxPower, avgPower, maxPowerReactionWheels, avgPowerReactionWheels  = calculatePower(stateHistoryFiles)
 
     # Calculate the saturation % from the state history files. 
     metadataFilePath    = "/home/superman/Desktop/metadata.csv"
-    calculateSaturationPercentage( metadataFilePath, stateHistoryFiles )
+    path                = "/home/superman/Desktop/monte_carlo_single"
+    stringToSearchWith          = 'state_history'
+    filesForTheplots            = natural_sort( requiredFiles( path, stringToSearchWith ) )
 
+    testPeakMomentumStoragePercent = calculateSaturationPercentage( metadataFilePath, filesForTheplots )
+    print(testPeakMomentumStoragePercent.shape)
+    # Calculate reaction wheel max and average torques. 
+    # maxReactionWheelTorque, avgReactionWheelTorque, maxMomentum, avgMomentum, maxVelocity, avgVelocity  = extractConceptAttributes( stateHistoryFiles )
+    
+    # print(maxReactionWheelTorque)
+    # print(avgReactionWheelTorque)
+    # print(maxMomentum)
+    # print(avgMomentum)
+    # print(maxVelocity)
+    # print(avgVelocity)
 
+    # # Calculate reaction wheel peak power percent. 
+    # reactionWheelPeakPowerGiven      = [ 50.0, 10.0, 1.0, 100.0] # Reaction wheel power given (hardware)
+    # reactionWheelPeakPowerCalculated = [ 40.0, 1.0, 5.0, 10.0]
+
+    # reactionWheelPowerPercent       = calculateCalculateToGivenPercentage( reactionWheelPeakPowerCalculated, reactionWheelPeakPowerGiven)
+    # print(reactionWheelPowerPercent)

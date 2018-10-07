@@ -45,8 +45,15 @@ import os
 from csv_functions import stringLocator
 from csv_functions import requiredFiles
 
-plt.style.use('seaborn-whitegrid')
+# Post processign functions 
+from functions import calculatePower
+from functions import calculatePeakPowerPercentage
+from functions import calculateSaturationPercentage
+from functions import calculateSettlingTime
 
+# plt.style.use('seaborn-whitegrid')
+plt.style.use('dark_background')
+# plt.style.use(['dark_background', 'presentation'])
 print ""
 print "------------------------------------------------------------------"
 print "                             dss_adcs                             "
@@ -67,8 +74,10 @@ print ""
 # Update this part to use the json input for plotting. 
 # path                =  "/home/superman/Desktop/monte_carlo_single/"
 path                        = "/home/superman/Desktop/single_simulation/"
+metadataFilePath            = "/home/superman/Desktop/single_simulation/metadata.csv"
+# metadata                    = pd.read_csv(metadataFilePath)
 stringToSearchWith          = 'state_history.csv'
-numberOfReactionWheels      = '_44.csv'
+# numberOfReactionWheels      = '_44.csv'
 # filesForTheplots            = requiredFiles( path, stringToSearchWith, numberOfReactionWheels)
 filesForTheplots            = requiredFiles( path, stringToSearchWith )
 
@@ -78,8 +87,20 @@ linestyles = ['-', '--', '-.', ':']
 # Define colors 
 colors  = ['r', 'b', 'c', 'g']
 
+# Change the font size 
+font = {'family' : 'monospace',
+        'weight' : 'bold',
+        'size'   :  22}
+matplotlib.rc('font', **font)        
+matplotlib.rc('xtick', labelsize=22)
+matplotlib.rc('ytick', labelsize=22)
+
+closeplot    = True 
+# savefigPath  = '/home/superman/Delft/Thesis/IAC/iac_2018/Images/results/case1/'
+savefigPath    = '/home/superman/Delft/IAC/presentation/results/case1/'
+figureSize = (14.0,6.0)
 ## Plot spacecraft attitudes. ## 
-fig1  = plt.figure()
+fig1  = plt.figure(figsize=figureSize)
 ax1   = fig1.add_subplot(111)
 
 for filename in range(len(filesForTheplots)):
@@ -87,49 +108,39 @@ for filename in range(len(filesForTheplots)):
     state_history   = pd.read_csv( filesForTheplots[filename] )
 
     # Plot quaternion 1 with time.
-    ax1.plot(state_history['t']/60.0,state_history['q1'], c='r', linestyle='-')
-    ax1.plot(state_history['t']/60.0,state_history['q2'], c='b', linestyle='--')
-    ax1.plot(state_history['t']/60.0,state_history['q3'], c='g', linestyle='-.')
-    ax1.plot(state_history['t']/60.0,state_history['q4'], c='y', linestyle=':')
+    # ax1.plot(state_history['t']/60.0,state_history['q1'], c='r', linestyle='-', linewidth=5.0)
+    # ax1.plot(state_history['t']/60.0,state_history['q2'], c='b', linestyle='--', linewidth=5.0)
+    # ax1.plot(state_history['t']/60.0,state_history['q3'], c='c', linestyle='-.', linewidth=5.0)
+    # ax1.plot(state_history['t']/60.0,state_history['q4'], c='g', linestyle=':', linewidth=5.0)
 
-    ax1.set_ylabel('quaternions')
+    
+    ax1.plot(state_history['t']/60.0,state_history['q1'], c='r', linestyle='-', linewidth=2.0)
+    ax1.plot(state_history['t']/60.0,state_history['q2'], c='b', linestyle='--', linewidth=2.0)
+    ax1.plot(state_history['t']/60.0,state_history['q3'], c='c', linestyle='-.', linewidth=2.0)
+    ax1.plot(state_history['t']/60.0,state_history['q4'], c='g', linestyle=':', linewidth=2.0)
+
+    ax1.set_ylabel('Quaternions [-]')
     ax1.set_xlabel('Time [min]')
 
     ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    ax1.grid()
-    
-    # Plot quaternion 1 with time.
-    # ax2.set_ylabel('q_2')
-    # ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    # ax2.grid()
-
-    # # # Plot quaternion 1 with time.
-    # ax3.set_ylabel('q_3')
-    # ax3.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    # ax3.grid()
-
-    # # # Plot quaternion 1 with time.
-    # 
-    
-    # ax4.set_ylabel('q_4')
-    # ax4.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    # ax4.grid()
+    ax1.grid(linestyle='--', linewidth=0.25, color='white')
 
     plt.tight_layout()
     q1 = mlines.Line2D([], [], color='r', linestyle='-',
                           markersize=10, label='q1')
     q2 = mlines.Line2D([], [], color='b', linestyle='--',
                           markersize=10, label='q2')
-    q3 = mlines.Line2D([], [], color='g', linestyle='-.',
+    q3 = mlines.Line2D([], [], color='c', linestyle='-.',
                           markersize=10, label='q3')
-    q4 = mlines.Line2D([], [], color='y', linestyle=':',
+    q4 = mlines.Line2D([], [], color='g', linestyle=':',
                           markersize=10, label='q4') 
-    plt.legend(handles=[q1,q2,q3,q4]) 
-    plt.grid()
+    # plt.legend(handles=[q1,q2,q3,q4],loc=2) 
+    # plt.legend(handles=[q1,q2,q3,q4]) 
+    # plt.grid()
     pass
 
-# fig1.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/attitudes.eps')
-# plt.close()
+fig1.savefig(savefigPath + 'attitudes.png')
+plt.close()
 
 ## PLot spacecraft control torques ##
 fig  = plt.figure()
@@ -149,7 +160,7 @@ for filename in range(len(filesForTheplots)):
     ax1.plot(state_history['t']/60.0, state_history['controlTorque3'], c=colors[2], linestyle=linestyles[2])
     ax1.grid()
 
-    ax1.set_xlabel('time[min]')
+    ax1.set_xlabel('Time[min]')
     ax1.set_ylabel('Control Torque [N m]')
     ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     
@@ -178,8 +189,8 @@ for filename in range(len(filesForTheplots)):
 
     pass
 
-# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/controlTorques.eps')
-# plt.close()
+fig.savefig(savefigPath +'controlTorques.eps')
+plt.close(closeplot)
 
 ## Plot motor torques of the reaction wheels ##
 fig = plt.figure()
@@ -195,10 +206,10 @@ for filename in range(len(filesForTheplots)):
     jj = np.ceil( len(results)/ 2.0 )
     for i in range(len(results)):
         # ax = fig.add_subplot(2,jj,i+1)
-        ax.plot( state_history['t'], state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
-        ax.set_xlabel('time[sec]')
+        ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i], linewidth=2.0 )
+        ax.set_xlabel('Time [min]')
         ax.set_ylabel('Motor torque [N/m]')
-        ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+        ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         pass 
     ax.grid()
 
@@ -207,18 +218,18 @@ for filename in range(len(filesForTheplots)):
     header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
                           markersize=10, label='RW1 motor torque')
     header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-                          markersize=10, label='RW1 motor torque')
+                          markersize=10, label='RW2 motor torque')
     header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-                          markersize=10, label='RW1 motor torque')
+                          markersize=10, label='RW3 motor torque')
     header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-                          markersize=10, label='RW1 motor torque')   
+                          markersize=10, label='RW4 motor torque')   
     plt.legend(handles=[header1,header2,header3,header4])
 
     plt.grid()
     
     pass 
-# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/motorTorques.eps')
-# plt.close()
+fig.savefig(savefigPath +'motorTorques.eps')
+plt.close(closeplot)
 
 # ## Plot angular momentum of the reaction wheels. 
 fig = plt.figure()
@@ -235,7 +246,7 @@ for filename in range(len(filesForTheplots)):
         jj = np.ceil( len(results)/ 2.0 )
         # ax = fig.add_subplot(2,jj,i+1)
         ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
-        ax.set_xlabel('time[min]')
+        ax.set_xlabel('Time[min]')
         ax.set_ylabel('Angular momentum [kgm2/sec]')
         ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         pass 
@@ -245,18 +256,18 @@ for filename in range(len(filesForTheplots)):
         header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
                               markersize=10, label='RW1 angular momentum')
         header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-                              markersize=10, label='RW1 angular momentum')
+                              markersize=10, label='RW2 angular momentum')
         header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-                              markersize=10, label='RW1 angular momentum')
+                              markersize=10, label='RW3 angular momentum')
         header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-                              markersize=10, label='RW1 angular momentum')   
+                              markersize=10, label='RW4 angular momentum')   
         plt.legend(handles=[header1,header2,header3,header4])
 
         plt.grid()
     pass 
 
-# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/angularMomentumReactionWheels.eps')
-# plt.close()
+fig.savefig(savefigPath +'angularMomentumReactionWheels.eps')
+plt.close(closeplot)
 
 ## Plot the reaction wheel angular velocities. 
 fig = plt.figure()
@@ -272,7 +283,7 @@ for filename in range(len(filesForTheplots)):
     for i in range(len(results)):
         jj = np.ceil( len(results)/ 2.0 )
         ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
-        ax.set_xlabel('time[min]')
+        ax.set_xlabel('Time[min]')
         ax.set_title('Angular Velocity [rpm]')
         ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
         pass 
@@ -282,16 +293,16 @@ for filename in range(len(filesForTheplots)):
     header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
                           markersize=10, label='RW1 angular velocity')
     header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-                          markersize=10, label='RW1 angular velocity')
+                          markersize=10, label='RW2 angular velocity')
     header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-                          markersize=10, label='RW1 angular velocity')
+                          markersize=10, label='RW3 angular velocity')
     header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-                          markersize=10, label='RW1 angular velocity')   
+                          markersize=10, label='RW4 angular velocity')   
     plt.legend(handles=[header1,header2,header3,header4])
     plt.grid()
     pass 
-# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/reactionWheelAngularRates.eps')
-# plt.close()
+fig.savefig(savefigPath +'reactionWheelAngularRates.eps')
+plt.close(closeplot)
 
 ## Plot the power consumption for the reaction wheels. ##  
 fig = plt.figure()
@@ -306,8 +317,8 @@ for filename in range(len(filesForTheplots)):
     
     for i in range(len(results)):
         ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
-        ax.set_title( 'Power [W]' )
-        ax.set_xlabel('time[min]')
+        ax.set_ylabel( 'Power [W]' )
+        ax.set_xlabel('Time[min]')
         # ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
         pass 
     ax.grid()
@@ -315,17 +326,17 @@ for filename in range(len(filesForTheplots)):
     header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
                           markersize=10, label='RW1 power consumption')
     header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-                          markersize=10, label='RW1 power consumption')
+                          markersize=10, label='RW2 power consumption')
     header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-                          markersize=10, label='RW1 power consumption')
+                          markersize=10, label='RW3 power consumption')
     header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-                          markersize=10, label='RW1 power consumption')   
+                          markersize=10, label='RW4 power consumption')   
     plt.legend(handles=[header1,header2,header3,header4])
     plt.grid()
     
     pass 
-# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/power.eps')
-# plt.close()
+fig.savefig(savefigPath +'power.eps')
+plt.close(closeplot)
 
 ## Plot the angular rates of the spacecraft ## 
 fig = plt.figure()
@@ -352,13 +363,13 @@ for filename in range(len(filesForTheplots)):
     ax2.grid()
 
     ax3.plot(state_history['t'] / 60.0, state_history['w3'])
-    ax3.set_xlabel('time[min]')
+    ax3.set_xlabel('Time[min]')
     ax3.set_ylabel('V_z [deg/sec]')
     ax3.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     ax3.grid()
 
     ax4.plot(state_history['t'] / 60.0, state_history['slewRate'])
-    ax4.set_xlabel('time[min]')
+    ax4.set_xlabel('Time[min]')
     ax4.set_ylabel('Slew Rate [deg/sec]')
     ax4.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     ax4.grid()
@@ -368,14 +379,23 @@ for filename in range(len(filesForTheplots)):
     plt.grid()
     
     pass 
-# fig.savefig('/home/superman/Delft/Thesis/thesis-report/Images/results/case1/angularRatesSpacecraft.eps')
-# plt.close()
+fig.savefig(savefigPath +'angularRatesSpacecraft.eps')
+plt.close(closeplot)
 
 plt.show()
 
 print "Figures generated successfully!"
 print ""
 
+peakPowerPercents   = calculatePeakPowerPercentage( metadataFilePath, filesForTheplots )
+peakMomentumPercent = calculateSaturationPercentage( metadataFilePath, filesForTheplots )
+settlingTime        = calculateSettlingTime("/home/superman/Desktop/single_simulation/state_history.csv")
+maxPower, yy, xx, zz            = calculatePower(filesForTheplots)
+
+print("Peak power %:", peakPowerPercents)
+print("Peak momentum %:", peakMomentumPercent)
+print("Settling Time [min]: ", (settlingTime) )
+print("Total peak power [W]: ", maxPower)
 # Stop timer
 end_time = time.time( )
 
