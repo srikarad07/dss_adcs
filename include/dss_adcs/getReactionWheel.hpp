@@ -26,7 +26,7 @@ namespace dss_adcs
         {
             std::string reactionWheelString = callTheApi( actuatorUuid[iterator] );
             ReactionWheel tempReactionWheel = getReactionWheelAttributes( reactionWheelString ); 
-
+         
             if ( !isnan( tempReactionWheel.maxTorque ) )
             {
                 reactionWheels.push_back( tempReactionWheel ); 

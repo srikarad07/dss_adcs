@@ -6,6 +6,12 @@
         1100.0
     ],
 
+    "principle_inertia_uncertainties": [
+        null,
+        3.0,
+        null
+    ],
+    
     "initial_attitude_state": [
         10.0,
         10.0,
@@ -68,9 +74,8 @@
         ]
     ],
     
-    // "reaction_wheel_uuids" : "/home/superman/workspace/dss_adcs/config/reaction_wheel_uuids.json", 
     "reaction_wheel_uuids" : "/home/superman/workspace/trial/productUuids.json", 
-
+    
     // Number of reaction wheels: 
     "number_of_reaction_wheels": [
         3, 

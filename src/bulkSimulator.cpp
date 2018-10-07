@@ -46,26 +46,33 @@ void executeBulkSimulator( const rapidjson::Document& config )
     std::cout << "Defining actuator configuration ... \n" << std::endl; 
     
     const unsigned int minimumNumberOfReactionWheels    = input.numberOfReactionWheels[0]; 
-    const unsigned int maximumNumberOfReactionWheels    = input.numberOfReactionWheels[1] + 1; 
+    const unsigned int maximumNumberOfReactionWheels    = input.numberOfReactionWheels[1] + 1;  
 
-    for ( unsigned int reactionWheelNumberIterator = minimumNumberOfReactionWheels; reactionWheelNumberIterator < maximumNumberOfReactionWheels ; ++reactionWheelNumberIterator )
+    // Create instance of dynamical system.
+    std::cout << "Setting up dynamical model ..." << std::endl;
+    
+    //Set up numerical integrator. 
+    std::cout << "Executing numerical integrator ..." << std::endl;
+    // Set up dynamical model.
+    std::cout << "Generating angular accelerations ..." << std::endl;
+    std::cout << std::endl;
+    // Progress bar. 
+    std::cout << "Current Progress ..." << std::endl; 
+    
+    std::ofstream metadatafile( input.metadataFilePath + ".csv" );
+    std::map< std::pair<std::string, unsigned int>, std::vector <ReactionWheel> > reactionWheelConcepts = 
+                                            getReactionWheelConcepts( input.reactionWheelConfiguration, 
+                                                                      reactionWheels, 
+                                                                      minimumNumberOfReactionWheels,
+                                                                      maximumNumberOfReactionWheels, 
+                                                                      input.wheelOrientation  ); 
+    // Current value in the reaction wheel concept iterator. 
+    unsigned int ii = 0; 
+    
+    for ( std::map< std::pair<std::string, unsigned int>, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator != reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
     {
-        const int numberOfReactionWheels = reactionWheelNumberIterator;
-        std::cout << "Number of reaction wheels: " << numberOfReactionWheels << std::endl; 
-
-        // Create instance of dynamical system.
-        std::cout << "Setting up dynamical model ..." << std::endl;
-        
-        //Set up numerical integrator. 
-        std::cout << "Executing numerical integrator ..." << std::endl;
-
-        // Set up dynamical model.
-        std::cout << "Generating angular accelerations ..." << std::endl;
-        std::cout << std::endl;
-
-        // Progress bar. 
-        std::cout << "Current Progress ..." << std::endl; 
-
+        const std::pair<std::string, unsigned int> conceptIdentifier = reactionWheelConceptIterator->first; 
+        const unsigned int numberOfReactionWheels = conceptIdentifier.second; 
         // Print metadata to the file provide in metadatafile path. 
         std::ofstream metadatafile( input.metadataFilePath + std::to_string(numberOfReactionWheels) + ".csv" );
         if ( numberOfReactionWheels == 2 )
@@ -92,206 +99,172 @@ void executeBulkSimulator( const rapidjson::Document& config )
         {
             std::cout << "Metadatafile incorrect for the number of reaction wheels = " << numberOfReactionWheels << std::endl; 
         }
-        
-        std::map< std::string, std::vector <ReactionWheel> > reactionWheelConcepts = getReactionWheelConcepts( input.reactionWheelConfiguration, 
-                                                                                                               reactionWheels, 
-                                                                                                               numberOfReactionWheels, 
-                                                                                                               input.wheelOrientation  ); 
-        // Current value in the reaction wheel concept iterator. 
-        unsigned int ii = 0; 
-        
-        for ( std::map< std::string, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator !=   reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
+        const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
+        const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
+        // Create file stream to write state history to.`
+        // std::ofstream stateHistoryFile( input.stateHistoryFilePath + ".csv");
+        std::ofstream stateHistoryFile( input.stateHistoryFilePath + conceptIdentifier.first + std::to_string(numberOfReactionWheels) + ".csv");
+        if ( numberOfReactionWheels == 3 )
         {
-            const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2reactionWheelAngularVelocity3,powerConsumption1,powerConsumption2,powerConsumption3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl; 
+        }
+        else if ( numberOfReactionWheels == 2 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,angularMomentum1,angularMomentum2,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,powerConsumption1,powerConsumption2disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else if ( numberOfReactionWheels == 4 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,reactionWheelAngularVelocity1reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4,powerConsumption1,powerConsumption2,powerConsumption3powerConsumption4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else if ( numberOfReactionWheels == 5 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5,reactionWheelAngularvelocity1reactionWheelAngularvelocity2,reactionWheelAngularvelocity3,reactionWheelAngularVelocity4,reactionWheelAngularVelocity5,powerConsumption1,powerConsumption2powerConsumption3,powerConsumption4,powerConsumption5,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else if ( numberOfReactionWheels == 6 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5angularMomentum6,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4reactionWheelAngularVelocity5,reactionWheelAngularVelocity6,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,powerConsumption5powerConsumption6,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else
+        {
+            std::cout << "The state history file not set up for " << numberOfReactionWheels << " reaction wheels!" << std::endl; 
+            throw; 
+        }
 
-            const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
-
-            /*  testInt for the gravity gradient model 
-            *   assumptions: radius is an assumption -> ideally radius should be derived from a ephemeris. 
-            *   direction cosines and conversion from euler angles and quaternions. 
-            *   assumption: random gravitational parameter defined for now -> ideally should be 
-            *   taken from a reliable source. 
-            */
-
-            // Create file stream to write state history to.
-            std::ofstream stateHistoryFile( input.stateHistoryFilePath + reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels) + ".csv");
-            if ( numberOfReactionWheels == 3 )
+        VectorXd currentState( ( input.initialAttitudeState.size() + reactionWheelConcept.size() ) );                 
+        for ( unsigned int stateIterator = 0; stateIterator < (input.initialAttitudeState.size() + reactionWheelConcept.size() ); ++stateIterator )
+        {
+            if ( stateIterator < input.initialAttitudeState.size() )
             {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,powerConsumption1,powerConsumption2,powerConsumption3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl; 
+                currentState[stateIterator] = input.initialAttitudeState[stateIterator]; 
             }
-            else if ( numberOfReactionWheels == 2 )
+            else if ( stateIterator >= input.initialAttitudeState.size() && stateIterator < (input.initialAttitudeState.size() +        reactionWheelConcept.size() ) )
             {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,angularMomentum1,angularMomentum2,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,powerConsumption1,powerConsumption2,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
-            }
-            else if ( numberOfReactionWheels == 4 )
-            {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
-
-            }
-            else if ( numberOfReactionWheels == 5 )
-            {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5,reactionWheelAngularvelocity1,reactionWheelAngularvelocity2,reactionWheelAngularvelocity3,reactionWheelAngularVelocity4,reactionWheelAngularVelocity5,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,powerConsumption5,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
-            }
-            else if ( numberOfReactionWheels == 6 )
-            {
-                stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5,angularMomentum6,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4,reactionWheelAngularVelocity5,reactionWheelAngularVelocity6,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,powerConsumption5,powerConsumption6,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+                currentState[stateIterator] = 0.0; 
             }
             else
             {
-                std::cout << "The state history file not set up for " << numberOfReactionWheels << " reaction wheels!" << std::endl; 
-                throw; 
+                std::cout << "Something is going wrong in the initial current state iterator! " << std::endl; 
             }
+        }; 
+        Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
 
-            VectorXd currentState( ( input.initialAttitudeState.size() + reactionWheelConcept.size() ) );                 
-            for ( unsigned int stateIterator = 0; stateIterator < (input.initialAttitudeState.size() + reactionWheelConcept.size() ); ++stateIterator )
-            {
-                if ( stateIterator < input.initialAttitudeState.size() )
-                {
-                    currentState[stateIterator] = input.initialAttitudeState[stateIterator]; 
-                }
-                else if ( stateIterator >= input.initialAttitudeState.size() && stateIterator < (input.initialAttitudeState.size() +        reactionWheelConcept.size() ) )
-                {
-                    currentState[stateIterator] = 0.0; 
-                }
-                else
-                {
-                    std::cout << "Something is going wrong in the initial current state iterator! " << std::endl; 
-                }
-            }; 
-            Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
-
-            const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
-
-            for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
-            {
-                const Real integrationEndTime = integrationStartTime + input.timeStep; 
-
-                const Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
-                const Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
-
-                VectorXd reactionWheelAngularMomentums( reactionWheelConcept.size() ); 
-
-                for ( unsigned int angularMomentumIterator = 0; angularMomentumIterator < reactionWheelAngularMomentums.size(); ++angularMomentumIterator)
-                { 
-                    reactionWheelAngularMomentums[angularMomentumIterator] = currentState[input.initialAttitudeState.size() +       angularMomentumIterator ]; 
-                }
-
-                VectorXd reactionWheelAngularVelocities = actuatorConfiguration.computeReactionWheelVelocities(reactionWheelAngularMomentums);
-                
-                Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
-                if ( input.asymmetricBodyTorqueModelFlag != false )
-                {
-                    asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
-                }
-                
-
-                Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
-
-                // Disturbance torques. 
-                if ( input.gravityGradientAccelerationModelFlag != false )
-                {
-                    gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
-                }
-
-                Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
-
-                disturbanceTorque[0] += gravityGradientTorque[0];
-                disturbanceTorque[1] += gravityGradientTorque[1];
-                disturbanceTorque[2] += gravityGradientTorque[2]; 
-
-                // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
-                std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
-                                                                                                  referenceAttitudeState,
-                                                                                                  currentAttitudeRate, 
-                                                                                                  actuatorConfiguration, 
-                                                                                                  input.controllerType, 
-                                                                                                  input.naturalFrequency, 
-                                                                                                  input.dampingRatio, 
-                                                                                                  input.slewSaturationRate,
-                                                                                                  input.principleInertia, 
-                                                                                                  initialQuaternion, 
-                                                                                                  integrationStartTime ); 
-                Vector3 controlTorque( outputTorques.first ); 
-                VectorXd reactionWheelMotorTorque( outputTorques.second );  
-
-                if ( input.controlTorqueActiveModelFlag == false )
-                {
-                    controlTorque = { 0.0, 0.0, 0.0 };
-                }
-
-                // Compute reaction wheel power. 
-                VectorXd reactionWheelPowerConsumption   = actuatorConfiguration.computeReactionWheelPower( reactionWheelMotorTorque, 
-                                                                                       reactionWheelAngularMomentums ); 
-
-                StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities, reactionWheelPowerConsumption );
-
-                // Dynamics of the system 
-                DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
-                
-                // Convert the eigen type vector to std::vector for compatibility with boost integrators. 
-                VectorXdIntegration currentStateForIntegration( currentState.data(), currentState.data() + currentState.rows() * currentState.cols() );
-        
-                if ( input.integrator == rk4 )
-                {
-                    using namespace boost::numeric::odeint;
-
-                    integrate_const( runge_kutta4< VectorXdIntegration >( ),
-                                     dynamics,
-                                     currentStateForIntegration,
-                                     integrationStartTime,
-                                     integrationEndTime,
-                                     input.timeStep,
-                                     writer );   
-                }
-                else if ( input.integrator == dopri5 )
-                {
-                    using namespace boost::numeric::odeint; 
-                    integrate(  dynamics, 
-                                currentStateForIntegration, 
-                                integrationStartTime, 
-                                integrationEndTime, 
-                                input.timeStep, 
-                                writer ); 
-                }
-                else 
-                {
-                    std::cout << "Numerical Integrator " << input.integrator << " not defined yet! " << std::endl; 
-                    throw; 
-                }
-                currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
- 
+        const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
+        for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
+        {
+            const Real integrationEndTime = integrationStartTime + input.timeStep; 
+            const Vector4 currentAttitude( currentState[0], currentState[1], currentState[2], currentState[3] ); 
+            const Vector3 currentAttitudeRate( currentState[4], currentState[5], currentState[6] ); 
+            VectorXd reactionWheelAngularMomentums( reactionWheelConcept.size() ); 
+            for ( unsigned int angularMomentumIterator = 0; angularMomentumIterator < reactionWheelAngularMomentums.size(); ++angularMomentumIterator)
+            { 
+                reactionWheelAngularMomentums[angularMomentumIterator] = currentState[input.initialAttitudeState.size() +       angularMomentumIterator ]; 
             }
-            progressBar( reactionWheelConcepts.size(), ii ); 
-            ii +=  1; 
-            // std::cout << "Iterator: " << ii + 1 << std::endl; 
+            VectorXd reactionWheelAngularVelocities = actuatorConfiguration.computeReactionWheelVelocities(reactionWheelAngularMomentums);
             
-            //! Write metadata to the metadata file path. 
-            if (reactionWheelConcept.size() == 3)
+            Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
+            if ( input.asymmetricBodyTorqueModelFlag != false )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels, actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget(), reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name );
+                asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
             }
-            else if ( reactionWheelConcept.size() == 4 )
+            
+            Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
+            // Disturbance torques. 
+            if ( input.gravityGradientAccelerationModelFlag != false )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name ); 
+                gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
             }
-            else if ( reactionWheelConcept.size() == 2 )
+            Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
+            disturbanceTorque[0] += gravityGradientTorque[0];
+            disturbanceTorque[1] += gravityGradientTorque[1];
+            disturbanceTorque[2] += gravityGradientTorque[2]; 
+            // Vector3 controlTorque( 0.0, 0.0, 0.0 ); 
+            std::pair < Vector3, VectorXd > outputTorques = dss_adcs::computeRealTorqueValue( currentAttitude, 
+                                                                                              referenceAttitudeState,
+                                                                                              currentAttitudeRate, 
+                                                                                              actuatorConfiguration, 
+                                                                                              input.controllerType, 
+                                                                                              input.naturalFrequency, 
+                                                                                              input.dampingRatio, 
+                                                                                              input.slewSaturationRate,
+                                                                                              input.principleInertia, 
+                                                                                              initialQuaternion, 
+                                                                                              integrationStartTime ); 
+            Vector3 controlTorque( outputTorques.first ); 
+            VectorXd reactionWheelMotorTorque( outputTorques.second );  
+            if ( input.controlTorqueActiveModelFlag == false )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name ); 
-            } 
-            else if ( reactionWheelConcept.size() == 5 )
-            {
-                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name,reactionWheelConcept[4].name ); 
+                controlTorque = { 0.0, 0.0, 0.0 };
             }
-            else if ( reactionWheelConcept.size() == 6 )
+            // Compute reaction wheel power. 
+            VectorXd reactionWheelPowerConsumption   = actuatorConfiguration.computeReactionWheelPower( reactionWheelMotorTorque, 
+                                                                                   reactionWheelAngularMomentums ); 
+            StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities,reactionWheelPowerConsumption );
+            // Dynamics of the system 
+            DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
+            
+            // Convert the eigen type vector to std::vector for compatibility with boost integrators. 
+            VectorXdIntegration currentStateForIntegration( currentState.data(), currentState.data() + currentState.rows() * currentState.cols() );
+    
+            if ( input.integrator == rk4 )
             {
-                doPrint( metadatafile,reactionWheelConceptIterator->first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name,reactionWheelConcept[4].name,reactionWheelConcept[5].name ); 
-            } 
+                using namespace boost::numeric::odeint;
+                integrate_const( runge_kutta4< VectorXdIntegration >( ),
+                                 dynamics,
+                                 currentStateForIntegration,
+                                 integrationStartTime,
+                                 integrationEndTime,
+                                 input.timeStep,
+                                 writer );   
+            }
+            else if ( input.integrator == dopri5 )
+            {
+                using namespace boost::numeric::odeint; 
+                integrate(  dynamics, 
+                            currentStateForIntegration, 
+                            integrationStartTime, 
+                            integrationEndTime, 
+                            input.timeStep, 
+                            writer ); 
+            }
             else 
             {
-                std::cout << "Cannot print the metadata the for ther number of reaction wheels!" << std::endl; 
+                std::cout << "Numerical Integrator " << input.integrator << " not defined yet! " << std::endl; 
+                throw; 
             }
-            metadatafile << std::endl;
+            currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
+ 
         }
+        progressBar( reactionWheelConcepts.size(), ii ); 
+        ii +=  1; 
+        // std::cout << "Iterator: " << ii + 1 << std::endl; 
+            
+        //! Write metadata to the metadata file path. 
+        if (reactionWheelConcept.size() == 3)
+        {
+            doPrint( metadatafile,conceptIdentifier.first + std::to_string(numberOfReactionWheels),numberOfReactionWheels, actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget(), reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name );
+        }
+        else if ( reactionWheelConcept.size() == 4 )
+        {
+            doPrint( metadatafile,conceptIdentifier.first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name ); 
+        }
+        else if ( reactionWheelConcept.size() == 2 )
+        {
+            doPrint( metadatafile,conceptIdentifier.first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name ); 
+        } 
+        else if ( reactionWheelConcept.size() == 5 )
+        {
+            doPrint( metadatafile,conceptIdentifier.first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name,reactionWheelConcept[4].name ); 
+        }
+        else if ( reactionWheelConcept.size() == 6 )
+        {
+            doPrint( metadatafile,conceptIdentifier.first + std::to_string(numberOfReactionWheels),numberOfReactionWheels,actuatorConfiguration.calculateMassBudget(),actuatorConfiguration.calculateVolumeBudget(),reactionWheelConcept[0].name,reactionWheelConcept[1].name,reactionWheelConcept[2].name,reactionWheelConcept[3].name,reactionWheelConcept[4].name,reactionWheelConcept[5].name ); 
+        } 
+        else 
+        {
+            std::cout << "Cannot print the metadata the for ther number of reaction wheels!" << std::endl; 
+        }
+            // doPrint( metadatafile, 4, actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
+            metadatafile << std::endl;
     }
 };
 
@@ -311,7 +284,7 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     std::cout << "Principle inertia around Z axis:                              " << principleInertia[2]
               << "[kg/m^2]" << std::endl; 
     
-// Extract attitude kinematic type. 
+    // Extract attitude kinematic type. 
     const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
     std::cout << "Attitude representation:                                      " << attitudeRepresentationString << std::endl; 
     
@@ -477,9 +450,17 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     std::vector < Vector2 > wheelOrientation; 
     std::vector < std::string > actuatorUuid;  
 
+    // Reaction wheel orientations defined by the user. 
     const rapidjson::Value& reactionWheelsIterator 	= config["wheel_orientation"];
 	assert(reactionWheelsIterator.IsArray()); 
-    
+    for (rapidjson::Value::ConstValueIterator itr = reactionWheelsIterator.Begin(); itr !=  reactionWheelsIterator.End(); ++itr) 
+	{
+    	const rapidjson::Value& reactionWheelPropertiesUserDefined = *itr;
+        Vector2 orientation( sml::convertDegreesToRadians( reactionWheelPropertiesUserDefined[0].GetDouble() ), sml::convertDegreesToRadians(reactionWheelPropertiesUserDefined[1].GetDouble()  ) ); 
+        wheelOrientation.push_back( orientation );
+    }
+
+    // Reaction wheel Uuids defined in a separate input file
     std::string reactionWheelUuidFile   = find( config, "reaction_wheel_uuids")->value.GetString(); 
 
     std::ifstream uuidInputFile( reactionWheelUuidFile );
@@ -500,14 +481,7 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     {
         actuatorUuid.push_back( reactionWheelNameIterator->value.GetString() ); 
     }
-        
-    for (rapidjson::Value::ConstValueIterator itr = reactionWheelsIterator.Begin(); itr !=  reactionWheelsIterator.End(); ++itr) 
-	{
-    	const rapidjson::Value& reactionWheelPropertiesUserDefined = *itr;
-        Vector2 orientation( sml::convertDegreesToRadians( reactionWheelPropertiesUserDefined[0].GetDouble() ), sml::convertDegreesToRadians(reactionWheelPropertiesUserDefined[1].GetDouble()  ) ); 
-        wheelOrientation.push_back( orientation );
-    }
-       
+
     // Number of reaction wheels in a concept. 
     ConfigIterator numberOfReactionWheelIterator    = find( config, "number_of_reaction_wheels"); 
     const Vector2 numberOfReactionWheels( numberOfReactionWheelIterator->value[0].GetDouble(), numberOfReactionWheelIterator->value[1].GetDouble() ); 
