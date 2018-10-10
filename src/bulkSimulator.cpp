@@ -75,7 +75,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
     // Progress bar. 
     std::cout << "Current Progress ..." << std::endl; 
     
-    std::ofstream metadatafile( input.metadataFilePath + ".csv" );
+    // std::ofstream metadatafile( input.metadataFilePath + ".csv" );
     std::map< std::pair<std::string, unsigned int>, std::vector <ReactionWheel> > reactionWheelConcepts = 
                                             getReactionWheelConcepts( input.reactionWheelConfiguration, 
                                                                       reactionWheels, 
@@ -120,6 +120,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
     {
         const std::pair<std::string, unsigned int> conceptIdentifier = reactionWheelConceptIterator->first; 
         const unsigned int numberOfReactionWheels = conceptIdentifier.second; 
+
         // Print metadata to the file provide in metadatafile path. 
         std::ofstream metadatafile( input.metadataFilePath + std::to_string(numberOfReactionWheels) + ".csv" );
         if ( numberOfReactionWheels == 2 )
