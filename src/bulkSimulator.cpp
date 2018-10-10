@@ -10,7 +10,9 @@
 #include <vector>
 
 #include <boost/numeric/odeint.hpp>
-// #include "boost/numeric/odeint/external/eigen/eigen.hpp"
+#include <boost/random/mersenne_twister.hpp>
+// #include <boost/random/normal_distribution.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <Eigen/Core>
 
 #include <astro/astro.hpp>
@@ -48,6 +50,20 @@ void executeBulkSimulator( const rapidjson::Document& config )
     const unsigned int minimumNumberOfReactionWheels    = input.numberOfReactionWheels[0]; 
     const unsigned int maximumNumberOfReactionWheels    = input.numberOfReactionWheels[1] + 1;  
 
+    // Initialize random seed.
+    boost::random::mt19937 randomSeed;
+
+    // Random number generator for principle inertia vector. 
+    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorXX( 
+        input.principleInertia[0] - input.principleInertiaUncertainty[0], 
+        input.principleInertia[0] + input.principleInertiaUncertainty[0] );
+    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorYY( 
+        input.principleInertia[1] - input.principleInertiaUncertainty[1], 
+        input.principleInertia[1] + input.principleInertiaUncertainty[1]  );
+    boost::random::uniform_real_distribution< Real > principleInertiaGeneratorZZ( 
+        input.principleInertia[2] - input.principleInertiaUncertainty[2], 
+        input.principleInertia[2] + input.principleInertiaUncertainty[2]  );
+
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
     
@@ -67,7 +83,38 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                                       maximumNumberOfReactionWheels, 
                                                                       input.wheelOrientation  ); 
     // Current value in the reaction wheel concept iterator. 
-    unsigned int ii = 0; 
+    // unsigned int ii = 0; 
+    
+    for ( unsigned int numberOfSimulation = 0; numberOfSimulation < input.numberOfSamples; ++numberOfSimulation )
+    {
+        Inertia principleInertia; 
+        //! Principle inertia random generator for X axis
+        if ( input.principleInertiaUncertainty[0] != 0 )
+        {
+            principleInertia[0] = principleInertiaGeneratorXX(randomSeed);  
+        }
+        else 
+        {
+            principleInertia[0]  = input.principleInertia[0]; 
+        }
+        //! Principle inertia random generator for Y axis
+        if ( input.principleInertiaUncertainty[1] != 0 )
+        {
+            principleInertia[1] = principleInertiaGeneratorYY(randomSeed);  
+        }
+        else 
+        {
+            principleInertia[1]  = input.principleInertia[1]; 
+        }
+        //! Principle inertia random generator for Z axis
+        if ( input.principleInertiaUncertainty[2] != 0 )
+        {
+            principleInertia[2] = principleInertiaGeneratorZZ(randomSeed);  
+        }
+        else 
+        {
+            principleInertia[2]  = input.principleInertia[2]; 
+        }
     
     for ( std::map< std::pair<std::string, unsigned int>, std::vector<ReactionWheel> >::iterator reactionWheelConceptIterator = reactionWheelConcepts.begin(); reactionWheelConceptIterator != reactionWheelConcepts.end(); ++reactionWheelConceptIterator )
     {
@@ -101,9 +148,9 @@ void executeBulkSimulator( const rapidjson::Document& config )
         }
         const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConceptIterator->second; 
         const ActuatorConfiguration actuatorConfiguration( reactionWheelConcept ); 
-        // Create file stream to write state history to.`
+        // Create file stream to write state history to.
         // std::ofstream stateHistoryFile( input.stateHistoryFilePath + ".csv");
-        std::ofstream stateHistoryFile( input.stateHistoryFilePath + conceptIdentifier.first + std::to_string(numberOfReactionWheels) + ".csv");
+        std::ofstream stateHistoryFile( input.stateHistoryFilePath + conceptIdentifier.first + "_" + std::to_string(numberOfReactionWheels) + "_" + std::to_string(numberOfSimulation) + ".csv");
         if ( numberOfReactionWheels == 3 )
         {
             stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2reactionWheelAngularVelocity3,powerConsumption1,powerConsumption2,powerConsumption3,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl; 
@@ -149,6 +196,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
         Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
 
         const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
+
         for ( Real integrationStartTime = input.startEpoch; integrationStartTime < input.endEpoch; integrationStartTime++ )
         {
             const Real integrationEndTime = integrationStartTime + input.timeStep; 
@@ -164,14 +212,14 @@ void executeBulkSimulator( const rapidjson::Document& config )
             Vector3 asymmetricBodyTorque( 0.0, 0.0, 0.0 ); 
             if ( input.asymmetricBodyTorqueModelFlag != false )
             {
-                asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( input.principleInertia, currentAttitudeRate );
+                asymmetricBodyTorque    = astro::computeRotationalBodyAcceleration( principleInertia, currentAttitudeRate );
             }
             
             Vector3 gravityGradientTorque( 0.0, 0.0, 0.0 ); 
             // Disturbance torques. 
             if ( input.gravityGradientAccelerationModelFlag != false )
             {
-                gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, input.principleInertia, currentAttitude ); 
+                gravityGradientTorque += astro::computeGravityGradientTorque( input.gravitationalParameter, input.radius, principleInertia, currentAttitude ); 
             }
             Vector3 disturbanceTorque( 0.0, 0.0, 0.0 );
             disturbanceTorque[0] += gravityGradientTorque[0];
@@ -186,7 +234,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                                                               input.naturalFrequency, 
                                                                                               input.dampingRatio, 
                                                                                               input.slewSaturationRate,
-                                                                                              input.principleInertia, 
+                                                                                              principleInertia, 
                                                                                               initialQuaternion, 
                                                                                               integrationStartTime ); 
             Vector3 controlTorque( outputTorques.first ); 
@@ -200,7 +248,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                                                    reactionWheelAngularMomentums ); 
             StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities,reactionWheelPowerConsumption );
             // Dynamics of the system 
-            DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
+            DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, principleInertia );
             
             // Convert the eigen type vector to std::vector for compatibility with boost integrators. 
             VectorXdIntegration currentStateForIntegration( currentState.data(), currentState.data() + currentState.rows() * currentState.cols() );
@@ -232,10 +280,9 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 throw; 
             }
             currentState    = VectorXd::Map( currentStateForIntegration.data(), currentStateForIntegration.size() );   
- 
         }
-        progressBar( reactionWheelConcepts.size(), ii ); 
-        ii +=  1; 
+        // progressBar( reactionWheelConcepts.size(), ii ); 
+        // ii +=  1; 
         // std::cout << "Iterator: " << ii + 1 << std::endl; 
             
         //! Write metadata to the metadata file path. 
@@ -265,7 +312,9 @@ void executeBulkSimulator( const rapidjson::Document& config )
         }
             // doPrint( metadatafile, 4, actuatorConfiguration.calculateMassBudget(), actuatorConfiguration.calculateVolumeBudget() ); 
             metadatafile << std::endl;
-    }
+    } // Reaction wheel concept loop
+    progressBar( input.numberOfSamples, numberOfSimulation );
+    } // Monte Carlo simulation loop
 };
 
 //! Check input parameters for the attitude_dynamics_simulator mode. 
@@ -283,7 +332,20 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
               << "[kg/m^2]" << std::endl;          
     std::cout << "Principle inertia around Z axis:                              " << principleInertia[2]
               << "[kg/m^2]" << std::endl; 
-    
+
+    // Extract principle inertia uncertainty 
+    ConfigIterator principleInertiaUncertianityDiagonalIterator     = find( config, "principle_inertia_uncertainties"); 
+    Inertia principleInertiaUncertainty; 
+    principleInertiaUncertainty[0]                                 = principleInertiaUncertianityDiagonalIterator->value[0].GetDouble( ); 
+    principleInertiaUncertainty[1]                                 = principleInertiaUncertianityDiagonalIterator->value[1].GetDouble( ); 
+    principleInertiaUncertainty[2]                                 = principleInertiaUncertianityDiagonalIterator->value[2].GetDouble( );
+    std::cout << "Uncertainty in Principle inertia around X axis:                          " << principleInertiaUncertainty[0]
+              << "[kg/m^2]" << std::endl; 
+    std::cout << "Uncertainty in Principle inertia around Y axis:                          " << principleInertiaUncertainty[1]
+              << "[kg/m^2]" << std::endl;          
+    std::cout << "Uncertainty in Principle inertia around Z axis:                          " << principleInertiaUncertainty[2]
+              << "[kg/m^2]" << std::endl;
+
     // Extract attitude kinematic type. 
     const std::string attitudeRepresentationString      = find( config, "attitude_representation" )->value.GetString( );
     std::cout << "Attitude representation:                                      " << attitudeRepresentationString << std::endl; 
@@ -426,7 +488,10 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     std::cout << "Absolute Tolerance:                                           " << absoluteTolerance
               << "[-]" << std::endl;
 
-    // Extract gravity gradient model .
+    // Extract number of samples for monte carlo simulation  
+    const int numberOfSamples                  = find( config, "number_0f_samples")->value.GetInt( );  
+    
+    // Extract gravity gradient model.
     const bool gravityGradientAccelerationModelFlag = find( config, "is_gravity_gradient_active" )->value.GetBool( );
     std::cout << "Is Gravity Gradient disturbance model active?                 " << gravityGradientAccelerationModelFlag << std::endl;
 
@@ -503,8 +568,10 @@ simulatorInput checkBulkSimulatorInput( const rapidjson::Document& config )
     std::cout << "State history file path  " <<  stateHistoryFilePath << std::endl;  
 
     return simulatorInput(  principleInertia,
+                            principleInertiaUncertainty, 
                             initialAttitudeState,
                             referenceAttitudeState,
+                            numberOfSamples,
                             integrator,
                             startEpoch,
                             endEpoch,

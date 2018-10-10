@@ -90,7 +90,7 @@
     "slew_saturation_rate" : 0.5, 
 
     // Controller type
-    // quaternion_feedback | cascade_saturation
+    // quaternion_feedback | cascade_saturation | cascade_saturation_with_limiter
     "controller_type" : "cascade_saturation",   
 
     // Radial distance of the center of the earth from spacecraft [m]. 

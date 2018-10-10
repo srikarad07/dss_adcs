@@ -56,8 +56,10 @@ public:
  */
 
     simulatorInput( const Inertia                   aPrincipleInertia,
+                    const Inertia                   aPrincipleInertiaUncertainty, 
                     const State                     anInitialAttitudeState, 
                     const Vector4                   aReferenceAttitudeState,
+                    const int                       aNumberOfSamples,
                     const Integrator                anIntegrator,
                     const Real                      aStartEpoch,
                     const Real                      anEndEpoch, 
@@ -83,8 +85,10 @@ public:
                     const std::string&              aMetadataFilePath,
                     const std::string&              aStateHistoryFilePath )     
         : principleInertia( aPrincipleInertia ),
+          principleInertiaUncertainty( aPrincipleInertiaUncertainty ),
           initialAttitudeState( anInitialAttitudeState ),
           referenceAttitudeState( aReferenceAttitudeState ),
+          numberOfSamples( aNumberOfSamples ), 
           integrator( anIntegrator ),
           startEpoch( aStartEpoch ),
           endEpoch( anEndEpoch ),
@@ -113,12 +117,16 @@ public:
 
     //! Principle Inertia of the spacecraft [kg m^2].
     const Inertia principleInertia;
+    const Inertia principleInertiaUncertainty; 
 
     //! Initial attitude state and angular velocities of the spacecraft [deg], [deg/sec].
     const State initialAttitudeState; 
 
     //! Reference attitude state defined by the user. 
     const Vector4 referenceAttitudeState; 
+    
+    //! Number of samples. 
+    const Real numberOfSamples; 
     
     //! Selected numerical intergrator. 
     const Integrator integrator; 

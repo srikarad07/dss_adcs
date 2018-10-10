@@ -195,6 +195,11 @@ public:
                             << disturbanceTorque[2]                                     << std::endl;                      
     }
 
+    void saveHighLevelParameters( const VectorXdIntegration& state, const double time )
+    {
+
+    }
+    
 protected:
 
 private:

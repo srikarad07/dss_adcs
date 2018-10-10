@@ -1,52 +1,72 @@
 {
     "mode": "bulk_simulator",
+
+    // Principle moments of inertia in Body Fixed frame 
     "principle_inertia": [
-        1000.0,
-        1200.0,
-        1100.0
+        10.0,
+        12.0,
+        11.0
     ],
 
+    // Define the range of moments on inertia in Body fixed frame 
+    // null | double 
     "principle_inertia_uncertainties": [
         null,
         3.0,
         null
     ],
     
+    // Attitude representation type. Change it to initial attitude 
+    // euler_angles | quaternions 
+    "attitude_representation" : "euler_angles", 
+
+    // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3) + attiude rates [w1, w2, w3] in deg/sec. 
     "initial_attitude_state": [
-        10.0,
-        10.0,
-        10.0,
+        50.0,
+        50.0,
+        50.0,
         0.0,
         0.0,
         0.0
     ],
 
+    // Reference attitude state: either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3)
     "attitude_reference_state": [
         0.0, 
         0.0,
         0.0
     ],
 
-    "is_asymmetric_body_torque_active": true, 
+    // Number of samples for monte carlo simulation 
+    "number_0f_samples": 50, 
     
+    // Flag for the asymmetric body torque on the system 
+    // true | false
+    "is_asymmetric_body_torque_active": false, 
+    
+    // Flag for the gravity gradient torque on the system 
+    // true | false
     "is_gravity_gradient_active": false,
 
+    // Flag for the control torque on the system 
+    // true | false
     "is_control_torque_active": true, 
 
     // Gravitational Parameter of the central body [m^3 s^-2]. 
     "gravitational_parameter" : 3.986004418e14, 
 
-    // 3-axis reaction wheel model. 
+    // 3-axis reaction wheel model. REMOVE
     "attitude_control_method" : "3-axis-stabilization", 
     
+    // Remove 
     "actuator": "reaction_wheel",
 
-    // Reaction wheel configuration type. 
+    // Reaction wheel configuration type.
+    // homogenous | random  
     "reaction_wheel_config_type": "homogenous", 
 
-    // Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from X) 
-    // Angles given by the user in deg. 
-    
+    // Uuids + Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from Z) 
+    // Angles given by the user in radians. 
     "wheel_orientation": [
         [
             90.0, 
@@ -74,27 +94,30 @@
         ]
     ],
     
+    // Path to reaction wheel uuids file 
+    // file format json 
     "reaction_wheel_uuids" : "/home/superman/workspace/trial/productUuids.json", 
     
-    // Number of reaction wheels: 
+    // Number of reaction wheels
+    // [min, max]
     "number_of_reaction_wheels": [
         3, 
         6
     ], 
 
-    // Attitude representation type. 
-    "attitude_representation" : "euler_angles", 
-
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
     "slew_saturation_rate" : 0.2, 
-    "controller_type" : "cascade_saturation",   
 
-    // Radial vector of the satellite from spacecraft [m]. 
+    // Controller type
+    // quaternion_feedback | cascade_saturation | cascade_saturation_with_limiter
+    "controller_type" : "cascade_saturation",   
+    
+    // Radial distance of the center of the earth from spacecraft [m]. 
     "radius": 7371000.0,
 
-    // Semi major axis of the orbit of the satellite [km].
+    // Altitude of the satellite (circular orbit) [km]. change the name to altitude
     "semi_major_axis" : 500.0,
     
     // Numerical integrator
