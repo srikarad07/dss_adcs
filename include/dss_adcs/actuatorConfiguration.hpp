@@ -131,8 +131,9 @@ public:
      *   \f[
      *         P_{RW} = 1000T + 4.51h^{0.47}  
      *   \f]  
-     * where $P_{RW}$ is the power consumed by the reaction wheel in $W$, $T$ is the motor torque acting on the reaction 
-     * wheel in $N-m$ and $h$ is the angular momentum of the reaction wheel in $Nm-sec$.
+     * where $P_{RW}$ is the power consumed by the reaction wheel in $W$, $T$ is the motor torque acting on the 
+     * reaction wheel in $N-m$ and $h$ is the angular momentum of the reaction wheel in $Nm-sec$. Power values
+     * taken as positive.
      *  
      *   @tparam         VectorXd                    x dimensional-vector type
      *   @param[in]      VectorXd                    Reaction wheel motor torque [N-m] 
@@ -147,8 +148,7 @@ public:
         for ( unsigned int iterator = 0; iterator < reactionWheelAngularMomentum.size(); ++iterator )
         {
             reactionWheelPowerConsumption[iterator] = abs( 1000.0 * reactionWheelMotorTorque[iterator] + 
-                                                        4.51 * signFunction(reactionWheelAngularMomentum[iterator]) * 
-                                                        pow( abs( reactionWheelAngularMomentum[iterator] ), 0.47 ) ); 
+                                                        4.51 * pow( abs( reactionWheelAngularMomentum[iterator] ), 0.47 ) ); 
         } 
         return reactionWheelPowerConsumption; 
     }
