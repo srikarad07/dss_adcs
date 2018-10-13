@@ -278,14 +278,14 @@ public:
         const Real slewRate             = attitudeRate.norm(); 
         
         //! Save angular momentum of the reaction wheels. 
-        // <<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-        VectorXd reactionWheelAngularMomentums(  motorTorque.size() ); 
-        // <<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
-
-        // for ( unsigned int stateIterator = 7; stateIterator < state.size(); ++stateIterator )
-        // {
-        //       << state[stateIterator]                                     << ',';
-        // }
+        VectorXd reactionWheelAngularMomentums(  motorTorque.size() );         
+        unsigned int it = 0; 
+        for ( unsigned int stateIterator = 7; stateIterator < state.size(); ++stateIterator )
+        {
+            reactionWheelAngularMomentums[it] =  state[stateIterator];
+            it += 1;  
+        }
+        // std::cout << "Momentums: " << reactionWheelAngularMomentums << std::endl; 
         //! Save total system power 
         Real totalSystemPower(0.0); 
         for ( unsigned int powerIterator = 0; powerIterator < motorTorque.size(); ++powerIterator )
@@ -303,10 +303,10 @@ public:
         saveStateHistories.slewRate =  slewRate;
         saveStateHistories.reactionWheelMotorTorques =  motorTorque;    
         saveStateHistories.systemPeakPower =  totalSystemPower; 
+        saveStateHistories.reactionWheelAngularMomentums = reactionWheelAngularMomentums; 
 
         // Save the state history for each epoch in the storage container. 
         stateHistoryStorageContainer.push_back(saveStateHistories); 
-
 
     }
     
