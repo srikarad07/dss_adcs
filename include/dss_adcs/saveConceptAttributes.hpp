@@ -7,12 +7,20 @@
 #ifndef DSS_ADCS_SAVE_CONCEPT_ATTRIBUTES_HPP
 #define DSS_ADCS_SAVE_CONCEPT_ATTRIBUTES_HPP
 
+#include <numeric> // std::accumulate
+
 namespace dss_adcs
 {
 
 static bool abs_compare(double a, double b)
 {
     return (std::abs(a) < std::abs(b));
+}
+
+inline const double abs_vector( double a, double b)
+{
+    const double retValue = std::abs(a) + std::abs(b); 
+    return retValue; 
 }
 
 //! Structure to save state histories of power profiles, motor torques, attitudes, 
@@ -75,7 +83,7 @@ public:
         // Iterate over the number of reaction wheels. 
         for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheelPowerHistories[0].size(); ++reactionWheelIterator )
         {
-            std::vector<Real> reactionWheelTempPower(reactionWheelPowerHistories.size());
+            std::vector<Real> reactionWheelTempPower;
 
             // Iterate over the time histories to save the power profiles for each reaction wheel. 
             for( std::vector<VectorXd>::iterator powerTimeHistoryIterator = reactionWheelPowerHistories.begin(); powerTimeHistoryIterator != reactionWheelPowerHistories.end(); ++powerTimeHistoryIterator )
@@ -92,6 +100,52 @@ public:
         
         return outputPower; 
     } 
+    //! Get reaction wheel angular momentums. 
+    /*  The operator getAngularMomentums is used to get peak and average angular momentums of all the reaction wheels. 
+     *  from the time histories of angular momentums stored in the storageContainer. Iterate over the entire array   
+     *  to find the peak values for each of the reaction wheels. 
+     *  
+     *  @param[out]   std::pair< const VectorXd, const VectorXd > outputAngularMomentums
+    */
+    std::pair< const VectorXd, const VectorXd> getAngularMomentums( )
+    {
+        std::vector< VectorXd > reactionWheelMomentumHistories; 
+
+        // Save the parameters for the entire time history 
+        for( std::vector<SaveStateHistories>::iterator it = stateHistoryStorageContainer.begin(); it != stateHistoryStorageContainer.end(); ++it)
+        {
+            const SaveStateHistories tempStateHistories = *it; 
+            reactionWheelMomentumHistories.push_back( tempStateHistories.reactionWheelAngularMomentums );
+        }
+
+        // Reaction wheel peak power
+        std::vector<Real>::iterator reactionWheelPeakMomentumDistance; 
+        VectorXd reactionWheelPeakMomentum( reactionWheelMomentumHistories[0].size() ); 
+        VectorXd reactionWheelAverageMomentum( reactionWheelMomentumHistories[0].size() ); 
+        
+        // Iterate over the number of reaction wheels. 
+        for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheelMomentumHistories[0].size(); ++reactionWheelIterator )
+        {
+            std::vector<Real> reactionWheelTempMomentum;
+
+            // Iterate over the time histories to save the power profiles for each reaction wheel. 
+            for( std::vector<VectorXd>::iterator momentumTimeHistoryIterator = reactionWheelMomentumHistories.begin(); momentumTimeHistoryIterator != reactionWheelMomentumHistories.end(); ++momentumTimeHistoryIterator )
+            { 
+                VectorXd tempMomentumContainer = *momentumTimeHistoryIterator;
+                reactionWheelTempMomentum.push_back( tempMomentumContainer[reactionWheelIterator] );  
+            } 
+            reactionWheelPeakMomentumDistance = std::max_element( reactionWheelTempMomentum.begin(), reactionWheelTempMomentum.end(), abs_compare ); 
+            
+            reactionWheelPeakMomentum[reactionWheelIterator] = reactionWheelTempMomentum[std::distance(reactionWheelTempMomentum.begin(), reactionWheelPeakMomentumDistance )]; 
+            reactionWheelAverageMomentum[reactionWheelIterator] = ( std::accumulate( reactionWheelTempMomentum.begin(), 
+                                                                    reactionWheelTempMomentum.end(), 0.0, abs_vector ) ) / reactionWheelTempMomentum.size();  
+            std::cout << "Momentum storage Size: " << reactionWheelTempMomentum.size() << std::endl; 
+            // std::cout << ""
+            // std::cout << "Reaction wheel momentum: " << reactionWheelTempMomentum[0] << reactionWheelTempMomentum[1] << reactionWheelTempMomentum[2] << reactionWheelTempMomentum[3] << reactionWheelTempMomentum[4] << std::endl; 
+        }
+        std::pair< const VectorXd, const VectorXd > outputMomentum( reactionWheelPeakMomentum, reactionWheelAverageMomentum );  
+        return outputMomentum; 
+    }
 
 private: 
     //! State history storage container.
