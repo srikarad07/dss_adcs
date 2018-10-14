@@ -40,12 +40,31 @@ typedef std::vector<double> VectorXdIntegration;
 //     stream << std::left << std::setw( width ) << std::setfill( filler ) << value;
 // }
 
+// inline void doPrint( std::ostream& out, Vector3 vector3 )
+// {
+//     for( unsigned int iterator = 0; iterator < 3; ++iterator )
+//     {
+//         out << vector3[iterator] << ','; 
+//     }
+// }
+
+// template < typename T>
+// inline void doPrint( std::ostream& out, T item )
+// {
+//     out << item << ','; 
+// }
+
 template <typename Arg, typename... Args>
 void doPrint(std::ostream& out, Arg&& arg, Args&&... args)
+// inline void doPrint(std::ostream& out, Args&&... args)
 {
     out << std::forward<Arg>(arg);
+    // out << ',' << doPrint(out, args ...);
     using expander = int[];
-    (void)expander{0, (void(out << ',' << std::forward<Args>(args)),0)...};
+    (void)expander
+    {
+        0, (void(out << ',' << std::forward<Args>(args)),0)...
+    };
 }
 
 //! Print metadata parameter to stream.
