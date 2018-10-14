@@ -9,6 +9,8 @@
 
 #include <numeric> // std::accumulate
 
+#include "dss_adcs/reactionWheelSchema.hpp"
+
 namespace dss_adcs
 {
 
@@ -56,7 +58,8 @@ public:
      *  
      *  @param[out]   std::pair< const Real, const VectorXd >  peakPower 
     */ 
-    std::pair< const Real, const VectorXd > getPeakPower( )
+    std::tuple< const Real, const VectorXd, const VectorXd > getPeakPower( 
+                                    const std::vector<ReactionWheel> reactionWheelConcept )
     {
         std::vector< VectorXd > reactionWheelPowerHistories;  
         std::vector< double > peakSystemPowerHistories;  
@@ -80,6 +83,9 @@ public:
         std::vector<Real>::iterator reactionWheelPeakPowerDistance; 
         VectorXd reactionWheelPeakPower( reactionWheelPowerHistories[0].size() ); 
         
+        // Peak power to given peak power percentage. 
+        VectorXd reactionWheelPeakPowerPercentage( reactionWheelPowerHistories[0].size() ); 
+        
         // Iterate over the number of reaction wheels. 
         for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheelPowerHistories[0].size(); ++reactionWheelIterator )
         {
@@ -93,10 +99,17 @@ public:
             } 
             reactionWheelPeakPowerDistance = std::max_element( reactionWheelTempPower.begin(), reactionWheelTempPower.end(), abs_compare ); 
             
+            //! Peak power of the reaction wheel in the simulation. 
             reactionWheelPeakPower[reactionWheelIterator] = reactionWheelTempPower[std::distance(reactionWheelTempPower.begin(), reactionWheelPeakPowerDistance )]; 
+            
+            //! Percentage of peak power in the simulation with respect to the peak power given for the hardware 
+            //! in the datasheet. 
+            const double peakPowerReactionWheelGiven    = reactionWheelConcept[reactionWheelIterator].peakPower; 
+            reactionWheelPeakPowerPercentage[reactionWheelIterator] = ( reactionWheelPeakPower[reactionWheelIterator] /
+                                                                        peakPowerReactionWheelGiven ) * 100.0; 
         }
 
-        std::pair< const Real, const VectorXd > outputPower( peakSystemPower, reactionWheelPeakPower );  
+        std::tuple< const Real, const VectorXd, const VectorXd > outputPower( peakSystemPower, reactionWheelPeakPower, reactionWheelPeakPowerPercentage );  
         
         return outputPower; 
     } 
@@ -107,7 +120,8 @@ public:
      *  
      *  @param[out]   std::pair< const VectorXd, const VectorXd > outputAngularMomentums
     */
-    std::pair< const VectorXd, const VectorXd> getAngularMomentums( )
+    std::tuple< const VectorXd, const VectorXd, const VectorXd > getAngularMomentums( 
+                                                                const std::vector<ReactionWheel> reactionWheelConcept )
     {
         std::vector< VectorXd > reactionWheelMomentumHistories; 
 
@@ -118,11 +132,12 @@ public:
             reactionWheelMomentumHistories.push_back( tempStateHistories.reactionWheelAngularMomentums );
         }
 
-        // Reaction wheel peak power
+        // Reaction wheel peak and average momentum. 
         std::vector<Real>::iterator reactionWheelPeakMomentumDistance; 
         VectorXd reactionWheelPeakMomentum( reactionWheelMomentumHistories[0].size() ); 
         VectorXd reactionWheelAverageMomentum( reactionWheelMomentumHistories[0].size() ); 
-        
+        VectorXd reactionWheelMomentumPercentage( reactionWheelMomentumHistories[0].size() ); 
+
         // Iterate over the number of reaction wheels. 
         for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheelMomentumHistories[0].size(); ++reactionWheelIterator )
         {
@@ -136,14 +151,20 @@ public:
             } 
             reactionWheelPeakMomentumDistance = std::max_element( reactionWheelTempMomentum.begin(), reactionWheelTempMomentum.end(), abs_compare ); 
             
+            //! Calculate the peal and average momentum for each reaction wheel. 
             reactionWheelPeakMomentum[reactionWheelIterator] = reactionWheelTempMomentum[std::distance(reactionWheelTempMomentum.begin(), reactionWheelPeakMomentumDistance )]; 
             reactionWheelAverageMomentum[reactionWheelIterator] = ( std::accumulate( reactionWheelTempMomentum.begin(), 
                                                                     reactionWheelTempMomentum.end(), 0.0, abs_vector ) ) / reactionWheelTempMomentum.size();  
-            std::cout << "Momentum storage Size: " << reactionWheelTempMomentum.size() << std::endl; 
-            // std::cout << ""
-            // std::cout << "Reaction wheel momentum: " << reactionWheelTempMomentum[0] << reactionWheelTempMomentum[1] << reactionWheelTempMomentum[2] << reactionWheelTempMomentum[3] << reactionWheelTempMomentum[4] << std::endl; 
+
+            //! Percentage of peak power in the simulation with respect to the peak power given for the hardware 
+            //! in the datasheet. 
+            const double peakMomentumReactionWheelGiven    = reactionWheelConcept[reactionWheelIterator].maxMomentumStorage; 
+            reactionWheelMomentumPercentage[reactionWheelIterator] = std::abs( ( reactionWheelPeakMomentum[reactionWheelIterator] /
+                                                                        peakMomentumReactionWheelGiven ) * 100.0 );
+            
         }
-        std::pair< const VectorXd, const VectorXd > outputMomentum( reactionWheelPeakMomentum, reactionWheelAverageMomentum );  
+        std::tuple< const VectorXd, const VectorXd, const VectorXd > outputMomentum( reactionWheelPeakMomentum, 
+                                                    reactionWheelAverageMomentum, reactionWheelMomentumPercentage );  
         return outputMomentum; 
     }
 
