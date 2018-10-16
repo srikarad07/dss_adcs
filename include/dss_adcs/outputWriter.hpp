@@ -19,7 +19,7 @@
 
 namespace dss_adcs
 {
-typedef std::vector<double> VectorXdIntegration; 
+// typedef std::vector<double> VectorXdIntegration; 
 //! Print value to stream.
 /*!
  * Prints a specified value to stream provided, given a specified width and a filler character.

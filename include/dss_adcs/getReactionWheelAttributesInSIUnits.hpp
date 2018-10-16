@@ -136,9 +136,11 @@ namespace dss_adcs
 		return reactionWheelMomentumStorage; 
 	};
 
-	inline ReactionWheel getReactionWheelAttributesInSiUnits( std::map< std::string, std::string > mapForResult, 
-													   		  std::string 							reactionWheelName, 
-													   		  std::string 							supplierName )
+	inline ReactionWheel getReactionWheelAttributesInSiUnits( 
+							std::map< std::string, std::string > mapForResult, 
+							std::string 						 reactionWheelName, 
+							std::string 						 supplierName, 
+							std::string 						 actuatorUuid )
 	{	
 		const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
 												       mapForResult["mass-value"],
@@ -213,7 +215,7 @@ namespace dss_adcs
 											         	   reactionWheelName,
 											               supplierName) ; 
 
-		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelHeight, reactionWheelWidth,reactionWheelRadius, reactionWheelTorque, reactionWheelMomentumStorage, reactionWheelPeakPower, reactionWheelName, supplierName ); 
+		const ReactionWheel reactionWheel( reactionWheelMass, reactionWheelLength, reactionWheelHeight, reactionWheelWidth,reactionWheelRadius, reactionWheelTorque, reactionWheelMomentumStorage, reactionWheelPeakPower, reactionWheelName, supplierName, actuatorUuid ); 
 		
 		return reactionWheel; 
 	} 

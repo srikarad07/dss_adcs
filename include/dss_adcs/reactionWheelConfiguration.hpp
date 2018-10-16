@@ -23,11 +23,12 @@ namespace dss_adcs
  * and a std::vector of reaction wheel structure. 
 */
 
-std::map< std::pair<std::string, unsigned int>, std::vector< ReactionWheel > > getReactionWheelConcepts( const std::string                   actuatorConfigurationType, 
-                                                                                const std::vector < ReactionWheel > reactionWheels, 
-                                                                                unsigned int                        minimumReactionWheelNumber, 
-                                                                                unsigned int                        maximumReactionWheelNumber,
-                                                                                const std::vector < Vector2 >       wheelOrientation  )
+std::map< std::pair<std::string, unsigned int>, std::vector< ReactionWheel > > 
+                getReactionWheelConcepts( const std::string actuatorConfigurationType, 
+                                          const std::vector < ReactionWheel > reactionWheels, 
+                                          unsigned int minimumReactionWheelNumber, 
+                                          unsigned int maximumReactionWheelNumber,
+                                          const std::vector < Vector2 > wheelOrientation  )
     {
           
         std::map< std::pair<std::string, unsigned int>, std::vector< ReactionWheel > > reactionWheelConcepts; 

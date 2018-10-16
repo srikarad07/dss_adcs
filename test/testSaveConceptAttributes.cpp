@@ -85,10 +85,10 @@ TEST_CASE("Test Case 1: Test the saveHighLevelConcept class for operator getPeak
     reactionWheelPowerConsumption4 << 1.0, 10.0, 5.0, 6.0; reactionWheelPowerConsumption.push_back(reactionWheelPowerConsumption4);
     
     //! Create reaction wheel concept. 
-    ReactionWheel reactionWheel1( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 10.0, "RW-0.01", "Sinclair Interplanetary"),
-    reactionWheel2( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 15.0, "RW-0.01", "Sinclair Interplanetary"), 
-    reactionWheel3( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 10.0, "RW-0.01", "Sinclair Interplanetary"), 
-    reactionWheel4( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 20.0, "RW-0.01", "Sinclair Interplanetary"); 
+    ReactionWheel reactionWheel1( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 10.0, "RW-0.01", "Sinclair Interplanetary", "abcdef"),
+    reactionWheel2( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 15.0, "RW-0.01", "Sinclair Interplanetary", "abcdef"), 
+    reactionWheel3( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 10.0, "RW-0.01", "Sinclair Interplanetary", "abcdef"), 
+    reactionWheel4( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 0.000018, 20.0, "RW-0.01", "Sinclair Interplanetary", "abcdef"); 
     
     std::vector< ReactionWheel > reactionWheelConcept;    
     reactionWheelConcept.push_back( reactionWheel1 ); 
@@ -206,10 +206,10 @@ TEST_CASE("Test Case 2: Test the saveHighLevelConcept class: for operator getAng
     reactionWheelPowerConsumption4 << 1.0, 10.0, 5.0, 6.0; reactionWheelPowerConsumption.push_back(reactionWheelPowerConsumption4);
     
     //! Create reaction wheel concept. 
-    ReactionWheel reactionWheel1( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 20.0, 10.0, "RW-0.01", "Sinclair Interplanetary"),
-    reactionWheel2( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 10.0, 15.0, "RW-0.01", "Sinclair Interplanetary"), 
-    reactionWheel3( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 12.0, 10.0, "RW-0.01", "Sinclair Interplanetary"), 
-    reactionWheel4( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 1.0, 20.0, "RW-0.01", "Sinclair Interplanetary"); 
+    ReactionWheel reactionWheel1( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 20.0, 10.0, "RW-0.01", "Sinclair Interplanetary",  "abcdef"),
+    reactionWheel2( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 10.0, 15.0, "RW-0.01", "Sinclair Interplanetary",  "abcdef"), 
+    reactionWheel3( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 12.0, 10.0, "RW-0.01", "Sinclair Interplanetary",  "abcdef"), 
+    reactionWheel4( 0.12, 0.05, 0.03, 0.05, std::nan("radius"), 0.001, 1.0, 20.0, "RW-0.01", "Sinclair Interplanetary",  "abcdef"); 
     
     std::vector< ReactionWheel > reactionWheelConcept;    
     reactionWheelConcept.push_back( reactionWheel1 ); 
