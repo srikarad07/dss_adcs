@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, K. Kumar, Delft University of Technology (me@kartikkumar.com)
+ * Copyright (c) 2018, S.D. Cherukuri, Delft University of Technology (srikarad007@gmail.com)
  * Distributed under the MIT License.
  * See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
  */
@@ -253,15 +253,14 @@ public:
      * @param[in] aGravitationalParameter   Gravitation parameter of central body        [km^3 s^-2]
      */
 
-    StateHistoryWriterToInternalStructure( std::ostream&               aStateHistoryStream, 
+    StateHistoryWriterToInternalStructure( 
                         StateHistoryStorageContainer&   aStateHistoryStorageContainer,
                         const Vector3                   aControlTorque, 
                         const VectorXd                  aMotorTorque, 
                         const Vector3                   aDisturbanceTorque, 
                         const VectorXd                  aReactionWheelAngularVelocities,
                         const VectorXd                  aReactionWheelPowerConsumption )
-        : stateHistoryStream( aStateHistoryStream ),
-          stateHistoryStorageContainer( aStateHistoryStorageContainer ), 
+        : stateHistoryStorageContainer( aStateHistoryStorageContainer ), 
           controlTorque( aControlTorque ),
           motorTorque( aMotorTorque ), 
           disturbanceTorque( aDisturbanceTorque ), 
@@ -334,7 +333,7 @@ protected:
 private:
 
     //! Output stream to write state history to.
-    std::ostream& stateHistoryStream;
+    // std::ostream& stateHistoryStream;
 
     //! Store state histories internally. 
     StateHistoryStorageContainer& stateHistoryStorageContainer; 

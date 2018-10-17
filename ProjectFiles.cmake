@@ -6,8 +6,8 @@
 set(SRC
   "${SRC_PATH}/bulkSimulator.cpp"
   "${SRC_PATH}/factorial.cpp"
-  "${SRC_PATH}/monteCarloSingle.cpp"
-  "${SRC_PATH}/productAttributes.cpp"
+  # "${SRC_PATH}/monteCarloSingle.cpp"
+  # "${SRC_PATH}/productAttributes.cpp"
   "${SRC_PATH}/simulator.cpp"
   "${SRC_PATH}/tools.cpp"
 )
@@ -24,5 +24,7 @@ set(TEST_SRC
   "${TEST_SRC_PATH}/testDssAdcs.cpp"
   "${TEST_SRC_PATH}/testFactorial.cpp"
   "${TEST_SRC_PATH}/testGetReactionWheel.cpp"
+  "${TEST_SRC_PATH}/testStateHistoryWriter.cpp"
+  "${TEST_SRC_PATH}/testSaveConceptAttributes.cpp"
   # "${TEST_SRC_PATH}/testMomentOfInertia.cpp"
 )

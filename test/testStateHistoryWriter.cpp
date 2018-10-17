@@ -92,8 +92,7 @@ TEST_CASE("Test Case 1: Test the stateHistoryWriterTemp with stateHistoryWriter"
         const VectorXd iteratorReactionWheelAngularVelocities = reactionWheelAngularVelocities[timeHistoryIterator]; 
         const VectorXd iteratorReactionWheelPowerConsumption = reactionWheelPowerConsumption[timeHistoryIterator]; 
 
-        StateHistoryWriterToInternalStructure testWriter( stateHistoryFile, 
-                                                          stateHistoryStorageContainer,
+        StateHistoryWriterToInternalStructure testWriter( stateHistoryStorageContainer,
                                                           iteratorControlTorque,
                                                           iteratorMotorTorque,
                                                           iteratorDisturbanceTorque,

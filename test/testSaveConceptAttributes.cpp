@@ -104,8 +104,7 @@ TEST_CASE("Test Case 1: Test the saveHighLevelConcept class for operator getPeak
         const VectorXd iteratorReactionWheelAngularVelocities = reactionWheelAngularVelocities[timeHistoryIterator]; 
         const VectorXd iteratorReactionWheelPowerConsumption = reactionWheelPowerConsumption[timeHistoryIterator]; 
 
-        StateHistoryWriterToInternalStructure testWriter( stateHistoryFile, 
-                                                          stateHistoryStorageContainer,
+        StateHistoryWriterToInternalStructure testWriter( stateHistoryStorageContainer,
                                                           iteratorControlTorque,
                                                           iteratorMotorTorque,
                                                           iteratorDisturbanceTorque,
@@ -226,13 +225,13 @@ TEST_CASE("Test Case 2: Test the saveHighLevelConcept class: for operator getAng
         const VectorXd iteratorReactionWheelPowerConsumption = reactionWheelPowerConsumption[timeHistoryIterator]; 
         const VectorXd iteratorInputState           = inputState[timeHistoryIterator]; 
 
-        StateHistoryWriterToInternalStructure testWriter( stateHistoryFile, 
-                                                          stateHistoryStorageContainer,
+        StateHistoryWriterToInternalStructure testWriter( stateHistoryStorageContainer,
                                                           iteratorControlTorque,
                                                           iteratorMotorTorque,
                                                           iteratorDisturbanceTorque,
                                                           iteratorReactionWheelAngularVelocities,
                                                           iteratorReactionWheelPowerConsumption  ); 
+                                                          
         VectorXdIntegration inputStateForIntegration( iteratorInputState.data(), iteratorInputState.data() + iteratorInputState.rows() * iteratorInputState.cols() );
 
         testWriter( inputStateForIntegration, time ); 
