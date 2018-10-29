@@ -137,62 +137,62 @@ namespace dss_adcs
 	};
 
 	inline ReactionWheel getReactionWheelAttributesInSiUnits( 
-							std::map< std::string, std::string > mapForResult, 
+							std::map< std::string, std::pair<std::string, std::string> > mapForResult, 
 							std::string 						 reactionWheelName, 
 							std::string 						 supplierName, 
 							std::string 						 actuatorUuid )
 	{	
-		const Real reactionWheelMass = convertToKilograms( mapForResult["mass-measurement_unit"],
-												       mapForResult["mass-value"],
+		const Real reactionWheelMass = convertToKilograms( mapForResult["mass"].second,
+												       mapForResult["mass"].first,
 												       reactionWheelName,
 												       supplierName );
 		
-		const Real reactionWheelLength = convertToMeter( mapForResult["length-measurement_unit"],
-											         mapForResult["length-value"],
+		const Real reactionWheelLength = convertToMeter( mapForResult["length"].second,
+											         mapForResult["length"].first,
 											         reactionWheelName,
 											         supplierName );
 
-		const Real reactionWheelHeight = convertToMeter( mapForResult["height-measurement_unit"],
-											         mapForResult["height-value"],
+		const Real reactionWheelHeight = convertToMeter( mapForResult["height"].second,
+											         mapForResult["height"].first,
 											         reactionWheelName,
 											         supplierName );
 
-		const Real reactionWheelWidth = convertToMeter( mapForResult["width-measurement_unit"],
-											        mapForResult["width-value"],
+		const Real reactionWheelWidth = convertToMeter( mapForResult["width"].second,
+											        mapForResult["width"].first,
 											        reactionWheelName,
 											        supplierName );
 		
 		double reactionWheelTorque; 
 
-		if ( mapForResult.find("maximum torque-measurement_unit") != mapForResult.end() )
+		if ( mapForResult.find("maximum torque") != mapForResult.end() )
 		{
-			reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque-measurement_unit"],
-											         	   mapForResult["maximum torque-value"],
+			reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque"].second,
+											         	   mapForResult["maximum torque"].first,
 											         	   reactionWheelName,
 											               supplierName); 
 		}
 		else 
 		{
-			reactionWheelTorque = convertToNewtonMeter( mapForResult["torque-measurement_unit"],
-											         	   mapForResult["torque-value"],
+			reactionWheelTorque = convertToNewtonMeter( mapForResult["torque"].second,
+											         	   mapForResult["torque"].first,
 											         	   reactionWheelName,
 											               supplierName); 
 		}
 
 		double reactionWheelMomentumStorage; 
-		if ( mapForResult.find("maximum momentum storage-measurement_unit") != mapForResult.end() )
+		if ( mapForResult.find("maximum momentum storage") != mapForResult.end() )
 		{
 			reactionWheelMomentumStorage = convertToNewtonMeterSec( 
-														mapForResult["maximum momentum storage-measurement_unit"],
-											         	mapForResult["maximum momentum storage-value"],
+														mapForResult["maximum momentum storage"].second,
+											         	mapForResult["maximum momentum storage"].first,
 											         	reactionWheelName,
 											            supplierName); 
 		}
 		else 
 		{
 			reactionWheelMomentumStorage = convertToNewtonMeterSec( 
-														mapForResult["angular momentum storage-measurement_unit"],
-											         	mapForResult["angular momentum storage-value"],
+														mapForResult["angular momentum storage"].second,
+											         	mapForResult["angular momentum storage"].first,
 											         	reactionWheelName,
 											            supplierName); 
 		}
@@ -201,17 +201,17 @@ namespace dss_adcs
 		// Make it into a proper function like it has been done above. 
 		double reactionWheelPeakPower(0.0); 
 		std::string::size_type sz;
-		if (mapForResult["maximum power-measurement_unit"].compare("mW") != 0 && !mapForResult["maximum power-value"].empty())
+		if (mapForResult["maximum power"].second.compare("mW") != 0 && !mapForResult["maximum power"].first.empty())
 		{
-			reactionWheelPeakPower 		= std::stod( mapForResult["maximum power-value"], &sz ); 
+			reactionWheelPeakPower 		= std::stod( mapForResult["maximum power"].first, &sz ); 
 		}
-		else if ( mapForResult["maximum power-measurement_unit"].compare("W") != 0 && !mapForResult["maximum power-value"].empty() )
+		else if ( mapForResult["maximum power"].second.compare("W") != 0 && !mapForResult["maximum power"].first.empty() )
 		{
-			reactionWheelPeakPower 		= std::stod( mapForResult["maximum power-value"], &sz ) / 1000.0; 
+			reactionWheelPeakPower 		= std::stod( mapForResult["maximum power"].first, &sz ) / 1000.0; 
 		}
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<       >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //  
-		const Real reactionWheelRadius = ( 1.0/2.0 ) * convertToMeter( mapForResult["diameter-measurement_unit"],
-											         	   mapForResult["diameter-value"],
+		const Real reactionWheelRadius = ( 1.0/2.0 ) * convertToMeter( mapForResult["diameter"].second,
+											         	   mapForResult["diameter"].first,
 											         	   reactionWheelName,
 											               supplierName) ; 
 

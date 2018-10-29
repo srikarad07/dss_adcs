@@ -42,9 +42,20 @@ double signFunction( double x )
 } 
 
 //! Extract attributes from the json file. 
-std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjson::Value& attributes, const std::string& findMemberName, const std::vector< std::string >findMemberValue, const std::vector<std::string>& keysToRetrieve) 
+/* Function call to extract the attributes from the reaction wheel JSON string. 
+*  @param[in]    attributes         Attributes of the JSON string in rapidjson::Value   
+*  @param[in]    findMemberName     String to compare the attribute with 
+*  @param[in]    findMemberValues   std::vector of attributes names to be extracted. 
+*  @param[in]    keysToRetreive     std::vector of attributes keys to be extracted. 
+*  @param[out]   std::map< std::string attributeName, std::pair< std::string value, std::string measurementUnit > >
+*/
+std::map<std::string, std::pair<std::string,std::string>> mapForAttributeThatMatchesName(const rapidjson::Value& attributes, const std::string& findMemberName, const std::vector< std::string >findMemberValue, const std::vector<std::string>& keysToRetrieve) 
 {   
-    std::map<std::string, std::string> result;
+    std::map<std::string, std::pair<std::string,std::string> > result;
+    //! Save the names of all the attributes from the JSON string to compare with 
+    //! the attributes in findMemberValue. 
+    std::vector< std::string > tempAttributeNamesToSave; 
+
     for (rapidjson::Value::ConstValueIterator itr = attributes.Begin(); itr != attributes.End(); ++itr) 
     {
         const rapidjson::Value& attributeClass = (*itr)["class"]; 
@@ -53,6 +64,12 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
             if ( findMemberName == itr2->name.GetString() && std::any_of( findMemberValue.cbegin(), findMemberValue.cend(), [&itr2]( std::string attributeString ){ return attributeString == itr2->value.GetString(); } ) ) 
             {   
                 std::string attributeName = itr2->value.GetString(); 
+                
+                tempAttributeNamesToSave.push_back(attributeName);
+
+                std::pair<std::string, std::string > attributeValueAndMeasurementUnit;
+                std::string tempAttributeValue("ERROR!"), tempAttributeMeasurementUnit("ERROR!"); 
+
                 // std::cout << attributeName << std::endl; 
                 for (auto &keyToRetrieve : keysToRetrieve) 
                 {
@@ -63,7 +80,17 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
                     if (currentAttributeToReturn != itr->MemberEnd() && currentAttributeToReturn->value.IsString() && currentAttributeValue.compare("") != 0 ) 
                     {
                         // std::cout << "Map element test: " << attributeName + "-" + keyToRetrieve << std::endl;
-                        result[attributeName + "-" + keyToRetrieve] = currentAttributeToReturn->value.GetString();
+                        if( keyToRetrieve.compare("value") == 0)
+                        {
+                            tempAttributeValue = currentAttributeToReturn->value.GetString();
+                        }
+                        else if(keyToRetrieve.compare("measurement_unit") == 0)
+                        {
+                            tempAttributeMeasurementUnit = currentAttributeToReturn->value.GetString();
+                            std::cout << "Enters the normal loop: " << tempAttributeMeasurementUnit << std::endl; 
+                        }
+                        attributeValueAndMeasurementUnit = std::make_pair( tempAttributeValue, tempAttributeMeasurementUnit );
+
                         // std::cout << currentAttributeToReturn->value.GetString() << std::endl; 
                     }
                     else if ( currentAttributeValue.compare("") == 0 )
@@ -71,14 +98,40 @@ std::map<std::string, std::string> mapForAttributeThatMatchesName(const rapidjso
                         // std::cout << attributeName + "-" + keyToRetrieve << std::endl;  
                         std::string tempValue = "maximum_value"; 
                         const rapidjson::Value::ConstMemberIterator currentAttributeValueTemp = itr->FindMember(tempValue.c_str()); 
-                        result[attributeName + "-" + keyToRetrieve] = currentAttributeValueTemp->value.GetString();
+                        // result[attributeName + "-" + keyToRetrieve] = currentAttributeValueTemp->value.GetString();
+                        // std::pair<std::string, std::string > attributeValueAndMeasurementUnit;
+                        if( keyToRetrieve.compare("value") == 0)
+                        {
+                            tempAttributeValue = currentAttributeValueTemp->value.GetString();
+                        }
+                        else if(keyToRetrieve.compare("measurement_unit") == 0)
+                        {
+                            tempAttributeMeasurementUnit = currentAttributeValueTemp->value.GetString();
+                            std::cout << "Enters the max loop: " << tempAttributeMeasurementUnit << std::endl; 
+                        }
+                        attributeValueAndMeasurementUnit = std::make_pair( tempAttributeValue, tempAttributeMeasurementUnit );
+
                         // std::cout << result[attributeName + "-" + keyToRetrieve] << std::endl; 
                     }
                 }
+                result[attributeName] = attributeValueAndMeasurementUnit;
+
             }
         }
-    }
+    };
 
+    //! Assign empty string for the attributes which are not present in the JSON string.
+    for ( std::vector<std::string>::const_iterator savedAttributeNamesIterator = findMemberValue.cbegin();
+          savedAttributeNamesIterator != findMemberValue.cend(); ++savedAttributeNamesIterator )
+    {
+        if ( 0 == (std::any_of( tempAttributeNamesToSave.begin(), tempAttributeNamesToSave.end(), [&savedAttributeNamesIterator]( std::string attributeString ){ return attributeString == *savedAttributeNamesIterator; } ) ) )
+        {
+            // std::cout << "Test name iterator: " << *savedAttributeNamesIterator << std::endl; 
+
+            std::pair<std::string, std::string> emptyAttributes( "", "" );
+            result[*savedAttributeNamesIterator] = emptyAttributes;
+        } 
+    }
     return result;
 }
 
