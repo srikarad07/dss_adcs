@@ -69,7 +69,7 @@ public:
         {
             const SaveStateHistories tempStateHistories = *it; 
             reactionWheelPowerHistories.push_back( tempStateHistories.reactionWheelPowerProfiles );
-            peakSystemPowerHistories.push_back( tempStateHistories.systemPeakPower);  
+            peakSystemPowerHistories.push_back( tempStateHistories.systemPeakPower );  
         }
 
         // System peak power

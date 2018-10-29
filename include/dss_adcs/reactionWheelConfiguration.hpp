@@ -49,7 +49,11 @@ std::map< std::pair<std::string, unsigned int>, std::vector< ReactionWheel > >
                         ReactionWheel tempReactionWheel         = reactionWheels[reactionWheelIterator];
                         tempReactionWheel.wheelOrientation[0]   = wheelOrientation[iterator][0]; 
                         tempReactionWheel.wheelOrientation[1]   = wheelOrientation[iterator][1]; 
-                        std::pair< std::string, unsigned int> conceptIdentifier("concept_" + tempReactionWheelConceptNumber.str(), numberOfReactionWheels); 
+                        // Concept identifier and metadat file. 
+                        std::pair< std::string, unsigned int> conceptIdentifier(
+                                            "concept_" + std::to_string(numberOfReactionWheels) + 
+                                            "_" + tempReactionWheelConceptNumber.str(), 
+                                            numberOfReactionWheels ); 
                         reactionWheelConcepts[conceptIdentifier].push_back( tempReactionWheel );   
                     }    
                 }

@@ -101,8 +101,34 @@ void executeSingleSimulator( const rapidjson::Document& config )
         std::cout << "MetadataFile pattern not defined for " << numberOfReactionWheels << "number of reaction wheels!! " << std::endl; 
     }
     
-    // Create file stream to write state history to.
-    std::ofstream stateHistoryFile( input.stateHistoryFilePath );
+        // Create file stream to write state history to.
+        std::ofstream stateHistoryFile( input.stateHistoryFilePath );
+        
+        if ( numberOfReactionWheels == 3 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,angularMomentum1,angularMomentum2,angularMomentum3,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,powerConsumption1,powerConsumption2,powerConsumption3,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl; 
+        }
+        else if ( numberOfReactionWheels == 2 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,angularMomentum1,angularMomentum2,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,powerConsumption1,powerConsumption2,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else if ( numberOfReactionWheels == 4 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1,motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else if ( numberOfReactionWheels == 5 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,motorTorque4,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5,reactionWheelAngularvelocity1reactionWheelAngularvelocity2,reactionWheelAngularvelocity3,reactionWheelAngularVelocity4,reactionWheelAngularVelocity5,powerConsumption1,powerConsumption2powerConsumption3,powerConsumption4,powerConsumption5,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else if ( numberOfReactionWheels == 6 )
+        {
+            stateHistoryFile << "t,q1,q2,q3,q4,eulerRotationAngle,theta1,theta2,theta3,w1,w2,w3,slewRate,controlTorque1,controlTorque2,controlTorque3,motorTorque1motorTorque2,motorTorque3,motorTorque4,motorTorque5,motorTorque6,angularMomentum1,angularMomentum2,angularMomentum3,angularMomentum4,angularMomentum5angularMomentum6,reactionWheelAngularVelocity1,reactionWheelAngularVelocity2,reactionWheelAngularVelocity3,reactionWheelAngularVelocity4reactionWheelAngularVelocity5,reactionWheelAngularVelocity6,powerConsumption1,powerConsumption2,powerConsumption3,powerConsumption4,powerConsumption5powerConsumption6,totalSystemPower,disturbanceTorque1,disturbanceTorque2,disturbanceTorque3" << std::endl;
+        }
+        else
+        {
+            std::cout << "The state history file not set up for " << numberOfReactionWheels << " reaction wheels!" << std::endl; 
+            throw; 
+        }
 
     //Set up numerical integrator. 
     std::cout << "Executing numerical integrator ..." << std::endl;
@@ -203,10 +229,13 @@ void executeSingleSimulator( const rapidjson::Document& config )
         StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities,reactionWheelPowerConsumption );
 
         // Dynamics of the system 
-        DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, disturbanceTorque, reactionWheelMotorTorque, input.principleInertia );
+        DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, 
+                                  disturbanceTorque, reactionWheelMotorTorque, 
+                                  input.principleInertia );
 
         // Convert the eigen type vector to std::vector for compatibility with boost integrator. 
-        VectorXdIntegration currentStateForIntegration( currentState.data(), currentState.data() + currentState.rows() * currentState.cols() );
+        VectorXdIntegration currentStateForIntegration( currentState.data(), 
+                                                        currentState.data() +                                      currentState.rows() * currentState.cols() );
         
         if ( input.integrator == rk4 )
         {
@@ -266,7 +295,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
 
     // Save the metadata to metadatafile
-    doPrint( metadatafile, conceptIdentifier, input.principleInertia, input.initialAttitudeState, 
+    doPrint( metadatafile, "\n", conceptIdentifier, input.principleInertia, input.initialAttitudeState, 
              input.referenceAttitudeState, input.asymmetricBodyTorqueModelFlag, 
              input.gravityGradientAccelerationModelFlag, input.controlTorqueActiveModelFlag, 
              input.gravitationalParameter, input.naturalFrequency, input.dampingRatio, input.slewSaturationRate, 
