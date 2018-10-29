@@ -102,7 +102,7 @@ int main( const int numberOfInputs, const char* inputArguments[ ] )
     else if ( mode.compare("attribute_extraction") == 0)
     {
         std::cout << "Mode                               " << mode << std::endl;
-        // dss_adcs::executeProductAttributeExtraction( config );
+        dss_adcs::executeProductAttributeExtraction( config );
     }
     else
     {

@@ -87,7 +87,7 @@ std::map<std::string, std::pair<std::string,std::string>> mapForAttributeThatMat
                         else if(keyToRetrieve.compare("measurement_unit") == 0)
                         {
                             tempAttributeMeasurementUnit = currentAttributeToReturn->value.GetString();
-                            std::cout << "Enters the normal loop: " << tempAttributeMeasurementUnit << std::endl; 
+                            // std::cout << "Enters the normal loop: " << tempAttributeMeasurementUnit << std::endl; 
                         }
                         attributeValueAndMeasurementUnit = std::make_pair( tempAttributeValue, tempAttributeMeasurementUnit );
 
@@ -107,7 +107,7 @@ std::map<std::string, std::pair<std::string,std::string>> mapForAttributeThatMat
                         else if(keyToRetrieve.compare("measurement_unit") == 0)
                         {
                             tempAttributeMeasurementUnit = currentAttributeValueTemp->value.GetString();
-                            std::cout << "Enters the max loop: " << tempAttributeMeasurementUnit << std::endl; 
+                            // std::cout << "Enters the max loop: " << tempAttributeMeasurementUnit << std::endl; 
                         }
                         attributeValueAndMeasurementUnit = std::make_pair( tempAttributeValue, tempAttributeMeasurementUnit );
 
