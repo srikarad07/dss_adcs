@@ -7,6 +7,8 @@
 #ifndef DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTES_IN_SI_UNITS_HPP
 #define DSS_ADCS_GET_REACTION_WHEEL_ATTRIBUTES_IN_SI_UNITS_HPP
 
+#include "math.h"
+
 #include "dss_adcs/reactionWheelSchema.hpp"
 #include "dss_adcs/typedefs.hpp"
 
@@ -163,20 +165,28 @@ namespace dss_adcs
 											        supplierName );
 		
 		double reactionWheelTorque; 
-
-		if ( mapForResult.find("maximum torque") != mapForResult.end() )
+		
+		//! Check if the value of reaction wheel maximum torque is given and if not 
+		//! use the torque value that is given for the reaction wheel. 
+		//! <<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+		//  Substituting the value of reaction wheel torque for maximum value where 
+		//  it is not given is dangerous. Substitute it with a formula which can be 
+		//  used to derive maximum torque. 
+		//! <<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+		std::string tempStringValue 	= mapForResult.find("maximum torque")->second.first; 
+		if ( tempStringValue.compare("") )
 		{
 			reactionWheelTorque = convertToNewtonMeter( mapForResult["maximum torque"].second,
-											         	   mapForResult["maximum torque"].first,
-											         	   reactionWheelName,
-											               supplierName); 
+											         	mapForResult["maximum torque"].first,
+											         	reactionWheelName,
+											            supplierName); 
 		}
 		else 
 		{
 			reactionWheelTorque = convertToNewtonMeter( mapForResult["torque"].second,
-											         	   mapForResult["torque"].first,
-											         	   reactionWheelName,
-											               supplierName); 
+											         	mapForResult["torque"].first,
+											         	reactionWheelName,
+											            supplierName); 
 		}
 
 		double reactionWheelMomentumStorage; 
