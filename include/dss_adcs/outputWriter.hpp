@@ -314,17 +314,17 @@ public:
         // <<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
         // Convert the type for parameters below to std::vector from eigen    // 
         // to be able to save them directly into the storage container        // 
-
-        saveStateHistories.reactionWheelPowerProfiles = reactionWheelPowerConsumption; 
-        saveStateHistories.quaternion = quaternion;
-        saveStateHistories.attitudeRates = attitudeRate;
-        saveStateHistories.slewRate =  slewRate;
-        saveStateHistories.reactionWheelMotorTorques =  motorTorque;    
-        saveStateHistories.systemPeakPower =  totalSystemPower; 
-        saveStateHistories.reactionWheelAngularMomentums = reactionWheelAngularMomentums; 
+        saveStateHistories.time                             = time; 
+        saveStateHistories.reactionWheelPowerProfiles       = reactionWheelPowerConsumption; 
+        saveStateHistories.quaternion                       = quaternion;
+        saveStateHistories.attitudeRates                    = attitudeRate;
+        saveStateHistories.slewRate                         = slewRate;
+        saveStateHistories.reactionWheelMotorTorques        = motorTorque;    
+        saveStateHistories.systemPeakPower                  = totalSystemPower; 
+        saveStateHistories.reactionWheelAngularMomentums    = reactionWheelAngularMomentums; 
 
         // Save the state history for each epoch in the storage container. 
-        stateHistoryStorageContainer.push_back(saveStateHistories); 
+        stateHistoryStorageContainer.push_back( saveStateHistories ); 
 
     }
     

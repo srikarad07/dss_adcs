@@ -31,6 +31,7 @@ inline const double abs_vector( double a, double b)
 struct SaveStateHistories
 {
 public: 
+    Real        time;
     VectorXd    reactionWheelPowerProfiles; 
     VectorXd    reactionWheelMotorTorques; 
     Vector3     attitudeRates; 
@@ -113,6 +114,7 @@ public:
         
         return outputPower; 
     } 
+
     //! Get reaction wheel angular momentums. 
     /*  The operator getAngularMomentums is used to get peak and average angular momentums of all the reaction wheels. 
      *  from the time histories of angular momentums stored in the storageContainer. Iterate over the entire array   
@@ -166,7 +168,82 @@ public:
         std::tuple< const VectorXd, const VectorXd, const VectorXd > outputMomentum( reactionWheelPeakMomentum, 
                                                     reactionWheelAverageMomentum, reactionWheelMomentumPercentage );  
         return outputMomentum; 
-    }
+    };
+
+    //! Get the maneuver time for the attitude control concept/ 
+    /*  Maneuver time is understood as the time during which the slew rate of the spacecraft  
+     *  becomes constant.  
+     */
+    const Real calculateSettingTime( )
+    {            
+        //! Save time of the state histories. 
+        std::vector<Real> stateHistoryTime; 
+
+        //! Save the slew rate time histories. 
+        std::vector<Real> stateHistorySlewRate; 
+
+        //! Store the time and slew rate histories in the storage containers define above. 
+        std::vector<SaveStateHistories>::iterator saveStateHistoryIterator; 
+        for ( saveStateHistoryIterator = stateHistoryStorageContainer.begin(); saveStateHistoryIterator !=
+              stateHistoryStorageContainer.end(); ++saveStateHistoryIterator )
+        {
+            const SaveStateHistories tempStateHistories = *saveStateHistoryIterator; 
+            stateHistoryTime.push_back( tempStateHistories.time );
+            stateHistorySlewRate.push_back( sml::convertRadiansToDegrees(tempStateHistories.slewRate) );  
+        }
+
+        //! Set the allowed tolerance for slew rate constancy. 
+        const Real tolerance  = 5e-3; 
+
+        //! Time iterator
+        unsigned int timeIterator = 0; 
+
+        //! Settling time storage container. 
+        Real settlingTime( 0.0 ); 
+
+        //! Loop over the slew rate histories to check the instant when it becomes constant. 
+        for( unsigned int stateHistoryIterator = 0; stateHistoryIterator < stateHistorySlewRate.size(); 
+             ++stateHistoryIterator )
+        {
+            if( stateHistoryIterator < (stateHistoryTime.size() - 12) )
+            {
+                const Real error1      = std::abs( stateHistorySlewRate[stateHistoryIterator] -
+                                        stateHistorySlewRate[stateHistoryIterator + 4] );
+                const Real error2      = std::abs( stateHistorySlewRate[stateHistoryIterator + 4] -
+                                        stateHistorySlewRate[stateHistoryIterator + 6] );  
+                const Real error3      = std::abs( stateHistorySlewRate[stateHistoryIterator + 6] -
+                                        stateHistorySlewRate[stateHistoryIterator + 8] );  
+                const Real error4      = std::abs( stateHistorySlewRate[stateHistoryIterator + 8] -
+                                        stateHistorySlewRate[stateHistoryIterator + 10] );  
+                const Real error5      = std::abs( stateHistorySlewRate[stateHistoryIterator + 10] -
+                                        stateHistorySlewRate[stateHistoryIterator + 12] );  
+                const Real error6      = std::abs( stateHistorySlewRate[stateHistoryIterator + 12] -
+                                        stateHistorySlewRate[stateHistoryIterator + 14] );  
+                // std::cout << "Tolerance: " << tolerance << " Errors: " << error1 << " , " << error2 << " , " << error3 << " , " << error4 << " , " << error5 << " , " << error6 << "," << (std::abs(stateHistorySlewRate[stateHistoryIterator] - 0)) << std::endl; 
+
+                if( (error1 < tolerance) & (error2 < tolerance) & (error3 < tolerance) & 
+                    (error4 < tolerance) & (error5 < tolerance) & (error6 < tolerance) & 
+                    ( std::abs(stateHistorySlewRate[stateHistoryIterator] - 0) < tolerance) )
+                {
+                    settlingTime        = stateHistoryTime[stateHistoryIterator];  
+                    break;
+                }
+                else if( (error1 > tolerance) & ( stateHistoryIterator == (stateHistoryTime.size() - 13) ) )
+                {
+                    settlingTime        = std::nan("SettlingTime");
+                    // <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+                    // Print out the concept information when the settling time is not found.
+                    // <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+                    std::cout << "The simulation needs more time to settle for the concept: " << std::endl; 
+                    throw;
+                }
+            }
+
+            ++timeIterator;
+        } 
+
+        return settlingTime; 
+    };
 
 private: 
     //! State history storage container.

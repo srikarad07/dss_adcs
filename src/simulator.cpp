@@ -225,8 +225,13 @@ void executeSingleSimulator( const rapidjson::Document& config )
                                                                                        reactionWheelAngularMomentums ); 
 
         //! Make it parameteric to save the state histories. 
-        // StateHistoryWriterToInternalStructure writer( stateHistoryFile, stateHistoryStorageContainer, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities,reactionWheelPowerConsumption );
         StateHistoryWriter writer( stateHistoryFile, controlTorque, reactionWheelMotorTorque, disturbanceTorque, reactionWheelAngularVelocities,reactionWheelPowerConsumption );
+        // StateHistoryWriterToInternalStructure writer( stateHistoryStorageContainer, 
+                                                    //   controlTorque, 
+                                                    //   reactionWheelMotorTorque, 
+                                                    //   disturbanceTorque, 
+                                                    //   reactionWheelAngularVelocities,
+                                                    //   reactionWheelPowerConsumption );
 
         // Dynamics of the system 
         DynamicalSystem dynamics( asymmetricBodyTorque, controlTorque, 
@@ -303,6 +308,11 @@ void executeSingleSimulator( const rapidjson::Document& config )
              input.endEpoch, input.timeStep, input.relativeTolerance, input.absoluteTolerance, reactionWheelUuids, 
              reactionWheelOrientation1, reactionWheelOrientation2  );     
     metadatafile << std::endl;
+
+    //! Print concept attributes. 
+    // SaveHighLevelAttributes saveHighLevelAttributes( stateHistoryStorageContainer );
+    // std::cout << "The settling time calculated for the simulation is: " << 
+                //   ( saveHighLevelAttributes.calculateSettingTime( ) / 60.0 ) << std::endl;  
 
 };
 
