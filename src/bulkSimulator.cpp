@@ -79,6 +79,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                 minimumNumberOfReactionWheels,
                                                 maximumNumberOfReactionWheels, 
                                                 input.wheelOrientation ); 
+
+    //! Total number of simulations. 
+    unsigned const totalNumberOfSimulations = (input.numberOfSamples - 1) + reactionWheelConcepts.size(); 
+    
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
     // Find a better way to do print the metadata file. 
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
@@ -128,11 +132,11 @@ void executeBulkSimulator( const rapidjson::Document& config )
         }
         // metadatafile.close(); 
     }    
-    // Current value in the reaction wheel concept iterator. 
-    // unsigned int ii = 0; 
+    
+    // Initialise the current number of simulation. 
+    unsigned int currentSimulationNumber = 0; 
     
     std::cout << "Looping over the reaction wheel concepts " << std::endl; 
-
     for ( std::map< std::pair<std::string, unsigned int>, std::vector<ReactionWheel> >::iterator 
                                         reactionWheelConceptIterator = reactionWheelConcepts.begin(); 
                                         reactionWheelConceptIterator != reactionWheelConcepts.end(); 
@@ -418,7 +422,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
 
             // Print progress on the screen.
-            progressBar( input.numberOfSamples, numberOfSimulation );
+            progressBar( totalNumberOfSimulations, currentSimulationNumber );
+
+            // Update the current simulation number. 
+            ++currentSimulationNumber; 
         } // Monte Carlo simulation loop 
     } // Reaction wheel concept loop
 };
