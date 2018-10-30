@@ -190,7 +190,14 @@ namespace dss_adcs
 		}
 
 		double reactionWheelMomentumStorage; 
-		if ( mapForResult.find("maximum momentum storage") != mapForResult.end() )
+		//! <<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+		//  Substituting the value of reaction wheel torque for maximum value where 
+		//  it is not given is dangerous. Substitute it with a formula which can be 
+		//  used to derive maximum torque. 
+		//! <<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+		std::string tempStringValue2 	= mapForResult.find("maximum momentum storage")->second.first; 
+
+		if ( tempStringValue2.compare("") )
 		{
 			reactionWheelMomentumStorage = convertToNewtonMeterSec( 
 														mapForResult["maximum momentum storage"].second,
