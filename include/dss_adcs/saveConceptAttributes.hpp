@@ -10,6 +10,7 @@
 #include <numeric> // std::accumulate
 
 #include "dss_adcs/reactionWheelSchema.hpp"
+#include "dss_adcs/typedefs.hpp"
 
 namespace dss_adcs
 {
@@ -57,29 +58,39 @@ public:
      *  This is to write high-level parameters to the metadata file. Iterates over the time 
      *  history of power to extract peak power values of reaction wheel and total system. 
      *  
-     *  @param[out]   std::pair< const Real, const VectorXd >  peakPower 
-    */ 
-    std::tuple< const Real, const VectorXd, const VectorXd > getPeakPower( 
+     *  @param[out] std::pair< const Real, const VectorXd > peakPower
+    */
+    std::tuple< SystemPowerPair, ReactionWheelPowerPair, const VectorXd> getPeakPower( 
                                     const std::vector<ReactionWheel> reactionWheelConcept )
     {
         std::vector< VectorXd > reactionWheelPowerHistories;  
-        std::vector< double > peakSystemPowerHistories;  
+        std::vector< Real > totalSystemPowerHistories;  
+        std::vector< Real > totalSystemPowerForAverage; 
 
         // Save the parameters for the entire time history 
         for( std::vector<SaveStateHistories>::iterator it = stateHistoryStorageContainer.begin(); it != stateHistoryStorageContainer.end(); ++it)
         {
             const SaveStateHistories tempStateHistories = *it; 
             reactionWheelPowerHistories.push_back( tempStateHistories.reactionWheelPowerProfiles );
-            peakSystemPowerHistories.push_back( tempStateHistories.systemPeakPower );  
-        }
+            totalSystemPowerHistories.push_back( tempStateHistories.systemPeakPower );  
+            if ( tempStateHistories.systemPeakPower > 1e-3 )
+            {
+               totalSystemPowerForAverage.push_back( tempStateHistories.systemPeakPower ); 
+            }
+        } 
 
         // System peak power
         std::vector<Real>::iterator peakSystemPowerDistance; 
-        peakSystemPowerDistance     = std::max_element( peakSystemPowerHistories.begin(), 
-                                        peakSystemPowerHistories.end(), abs_compare );  
+        peakSystemPowerDistance     = std::max_element( totalSystemPowerHistories.begin(), 
+                                        totalSystemPowerHistories.end(), abs_compare );  
 
-        const Real peakSystemPower  = peakSystemPowerHistories[std::distance(peakSystemPowerHistories.begin(), peakSystemPowerDistance )]; 
+        const Real peakSystemPower  = totalSystemPowerHistories[std::distance(totalSystemPowerHistories.begin(), peakSystemPowerDistance )]; 
 
+        // Reaction wheel average system power. 
+        const Real avgSystemPower   = ( std::accumulate( totalSystemPowerForAverage.begin(), 
+                                                         totalSystemPowerForAverage.end(),
+                                                         0.0 ) / totalSystemPowerForAverage.size() );
+         
         // Reaction wheel peak power
         std::vector<Real>::iterator reactionWheelPeakPowerDistance; 
         VectorXd reactionWheelPeakPower( reactionWheelPowerHistories[0].size() ); 
@@ -87,30 +98,56 @@ public:
         // Peak power to given peak power percentage. 
         VectorXd reactionWheelPeakPowerPercentage( reactionWheelPowerHistories[0].size() ); 
         
+        // Reaction wheel average power. 
+        VectorXd reactionWheelAveragePower( reactionWheelPowerHistories[0].size() ); 
+
         // Iterate over the number of reaction wheels. 
         for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheelPowerHistories[0].size(); ++reactionWheelIterator )
         {
             std::vector<Real> reactionWheelTempPower;
+
+            std::vector<Real>reactionWheelPowerForAverage; 
 
             // Iterate over the time histories to save the power profiles for each reaction wheel. 
             for( std::vector<VectorXd>::iterator powerTimeHistoryIterator = reactionWheelPowerHistories.begin(); powerTimeHistoryIterator != reactionWheelPowerHistories.end(); ++powerTimeHistoryIterator )
             {
                 VectorXd tempPowerContainer = *powerTimeHistoryIterator;
                 reactionWheelTempPower.push_back( tempPowerContainer[reactionWheelIterator] ); 
+                if ( tempPowerContainer[reactionWheelIterator] > 1e-3)
+                {
+                    reactionWheelPowerForAverage.push_back( tempPowerContainer[reactionWheelIterator] );
+                }
             } 
+
             reactionWheelPeakPowerDistance = std::max_element( reactionWheelTempPower.begin(), reactionWheelTempPower.end(), abs_compare ); 
-            
+
             //! Peak power of the reaction wheel in the simulation. 
             reactionWheelPeakPower[reactionWheelIterator] = reactionWheelTempPower[std::distance(reactionWheelTempPower.begin(), reactionWheelPeakPowerDistance )]; 
             
             //! Percentage of peak power in the simulation with respect to the peak power given for the hardware 
             //! in the datasheet. 
             const double peakPowerReactionWheelGiven    = reactionWheelConcept[reactionWheelIterator].peakPower; 
-            reactionWheelPeakPowerPercentage[reactionWheelIterator] = ( reactionWheelPeakPower[reactionWheelIterator] /
-                                                                        peakPowerReactionWheelGiven ) * 100.0; 
-        }
+            reactionWheelPeakPowerPercentage[reactionWheelIterator] = ( 
+                                                reactionWheelPeakPower[reactionWheelIterator] /
+                                                        peakPowerReactionWheelGiven ) * 100.0; 
 
-        std::tuple< const Real, const VectorXd, const VectorXd > outputPower( peakSystemPower, reactionWheelPeakPower, reactionWheelPeakPowerPercentage );  
+            //! Average power of reaction wheels in the simulation. 
+            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+            // The average power is taken for elements less than 1e-4. 
+            // Need to verify if it is actually correct. 
+            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+            reactionWheelAveragePower[reactionWheelIterator] = ( std::accumulate( reactionWheelPowerForAverage.begin(), 
+                                                            reactionWheelPowerForAverage.end(), 
+                                                            0.0 ) / reactionWheelPowerForAverage.size() );  
+            // reactionWheelAveragePower[reactionWheelIterator] = std::accumulate( reactionWheelTempPower.begin(), 
+            //                                                 reactionWheelTempPower.end(), 
+            //                                                 0.0 ) / reactionWheelTempPower.size() );
+        }   
+        SystemPowerPair peakAndAverageSystemPower( peakSystemPower, avgSystemPower ); 
+        ReactionWheelPowerPair peakAndAveragePowerReactionWheelWheel( reactionWheelPeakPower, reactionWheelAveragePower );  
+        std::tuple< SystemPowerPair, ReactionWheelPowerPair, const VectorXd > outputPower(                                                                               peakAndAverageSystemPower,
+                                                              peakAndAveragePowerReactionWheelWheel,
+                                                              reactionWheelPeakPowerPercentage );  
         
         return outputPower; 
     } 
@@ -193,7 +230,7 @@ public:
         }
 
         //! Set the allowed tolerance for slew rate constancy. 
-        const Real tolerance  = 5e-3; 
+        const Real tolerance  = 1e-3; 
 
         //! Time iterator
         unsigned int timeIterator = 0; 
@@ -242,7 +279,8 @@ public:
             ++timeIterator;
         } 
 
-        return settlingTime; 
+        //! Convert settling time from seconds to minutes. 
+        return (settlingTime / 60.0); 
     };
 
 private: 

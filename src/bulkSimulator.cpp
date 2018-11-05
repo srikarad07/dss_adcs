@@ -100,31 +100,31 @@ void executeBulkSimulator( const rapidjson::Document& config )
         {
             metadatafile << "ConceptIdentifier,principleInertia1,principleInertia2,principleInertia3,InitialAttitudeState1,InitialAttitudeState2,InitialAttitudeState3,InitialAttitudeState4,InitialAttitudeState5,InitialAttitudeState6,InitialAttitudeState7,AttitudeReferenceState1,AttitudeReferenceState2,AttitudeReferenceState3,AsymmetricBodyTorqueFlag,GravityGradientBodyFlag,ControlTorqueFlag,GravitationalParameter,NaturalFrequency,DampingRatio,SlewRate,SemiMajorAxis,ControllerType,Radius,Integrator,StartEpoch,EndEpoch,TimeStep,RelativeTolerance,AbsoluteTolerance,rwUuid1,rwUUid2,rwWheelOrientation1,rwWheelOrientation1,rw2WheelOrientation2,rw2WheelOrientation2,reactionWheelName1,reactionWheelName2" << std::endl;
 
-            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,settlingTime,rwPower1,rwPower2,rwMomentum1,rwMomentum2,rwPowerPercent1,rwPowerPercent2,rwMomentumPercent1,rwMomentumPercent2" << std::endl; 
+            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwAvgPower1,rwAvgPower2,rwMomentum1,rwMomentum2,rwPeakPowerPercent1,rwPeakPowerPercent2,rwMomentumPercent1,rwMomentumPercent2" << std::endl; 
         }
         else if ( numberOfReactionWheels == 3 )
         {
             metadatafile << "ConceptIdentifier,principleInertia1,principleInertia2,principleInertia3,InitialAttitudeState1,InitialAttitudeState2,InitialAttitudeState3,InitialAttitudeState4,InitialAttitudeState5,InitialAttitudeState6,InitialAttitudeState7,AttitudeReferenceState1,AttitudeReferenceState2,AttitudeReferenceState3,AttitudeReferenceState4,AsymmetricBodyTorqueFlag,GravityGradientBodyFlag,ControlTorqueFlag,GravitationalParameter,NaturalFrequency,DampingRatio,SlewRate,SemiMajorAxis,ControllerType,Radius,Integrator,StartEpoch,EndEpoch,TimeStep,RelativeTolerance,AbsoluteTolerance,rw1Uuid,rw2UUid,rw3UUid,rw1WheelOrientation1,rw2WheelOrientation1,rw3WheelOrientation1,rw1WheelOrientation2,rw2WheelOrientation2,rw3WheelOrientation2,reactionWheelName1,reactionWheelName2,reactionWheelName3" << std::endl;
 
-            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,settlingTime,rwPower1,rwPower2,rwPower3,rwMomentum1,rwMomentum2,rwMomentum3,rwPowerPercent1,rwPowerPercent2,rwPowerPercent3,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3" << std::endl; 
+            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwMomentum1,rwMomentum2,rwMomentum3,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3" << std::endl; 
         }
         else if ( numberOfReactionWheels == 4 )
         {
             metadatafile << "ConceptIdentifier,principleInertia1,principleInertia2,principleInertia3,InitialAttitudeState1,InitialAttitudeState2,InitialAttitudeState3,InitialAttitudeState4,InitialAttitudeState5,InitialAttitudeState6,InitialAttitudeState7,AttitudeReferenceState1,AttitudeReferenceState2,AttitudeReferenceState3,AttitudeReferenceState4,AsymmetricBodyTorqueFlag,GravityGradientBodyFlag,ControlTorqueFlag,GravitationalParameter,NaturalFrequency,DampingRatio,SlewRate,SemiMajorAxis,ControllerType,Radius,Integrator,StartEpoch,EndEpoch,TimeStep,RelativeTolerance,AbsoluteTolerance,rw1Uuid,rw2UUid,rw3UUid,rw4UUid,rw1WheelOrientation1,rw2WheelOrientation1,rw3WheelOrientation1,rw4WheelOrientation1,rw1WheelOrientation2,rw2WheelOrientation2,rw3WheelOrientation2,rw4WheelOrientation2,reactionWheelName1,reactionWheelName2,reactionWheelName3,reactionWheelName4" << std::endl;
 
-            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,settlingTime,rwPower1,rwPower2,rwPower3,rwPower4,rwMomentum1,rwMomentum2,rwMomentum3,rwMomentum4,rwPowerPercent1,rwPowerPercent2,rwPowerPercent3,rwPowerPercent4,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwMomentumPercent4" << std::endl; 
+            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwPeakPower4,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwAvgPower4,rwMomentum1,rwMomentum2,rwMomentum3,rwMomentum4,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwPeakPowerPercent4,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwMomentumPercent4" << std::endl; 
         }
         else if ( numberOfReactionWheels == 5 )
         {
             metadatafile << "ConceptIdentifier,principleInertia1,principleInertia2,principleInertia3,InitialAttitudeState1,InitialAttitudeState2,InitialAttitudeState3,InitialAttitudeState4,InitialAttitudeState5,InitialAttitudeState6,InitialAttitudeState7,AttitudeReferenceState1,AttitudeReferenceState2,AttitudeReferenceState3,AttitudeReferenceState4,AsymmetricBodyTorqueFlag,GravityGradientBodyFlag,ControlTorqueFlag,GravitationalParameter,NaturalFrequency,DampingRatio,SlewRate,SemiMajorAxis,ControllerType,Radius,Integrator,StartEpoch,EndEpoch,TimeStep,RelativeTolerance,AbsoluteTolerance,rw1Uuid,rw2UUid,rw3UUid,rw4UUid,rw5UUid,rw1WheelOrientation1,rw2WheelOrientation1,rw3WheelOrientation1,rw4WheelOrientation1,rw5WheelOrientation1,rw1WheelOrientation2,rw2WheelOrientation2,rw3WheelOrientation2,rw4WheelOrientation2,rw5WheelOrientation2,reactionWheelName1,reactionWheelName2,reactionWheelName3,reactionWheelName4,reactionWheelName5" << std::endl;
         
-            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,settlingTime,rwPower1,rwPower2,rwPower3,rwPower4,rwPower5,rwMomentum1,rwMomentum2,rwMomentum3,rwMomentum4,rwMomentum5,rwPowerPercent1,rwPowerPercent2,rwPowerPercent3,rwPowerPercent4,rwPowerPercent5,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwMomentumPercent4,rwMomentumPercent5" << std::endl; 
+            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwPeakPower4,rwPeakPower5,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwAvgPower4,rwAvgPower5,rwMomentum1,rwMomentum2,rwMomentum3,rwMomentum4,rwMomentum5,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwPeakPowerPercent4,rwPeakPowerPercent5,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwMomentumPercent4,rwMomentumPercent5" << std::endl; 
         }
         else if ( numberOfReactionWheels == 6 )
         {
             metadatafile << "ConceptIdentifier,principleInertia1,principleInertia2,principleInertia3,InitialAttitudeState1,InitialAttitudeState2,InitialAttitudeState3,InitialAttitudeState4,InitialAttitudeState5,InitialAttitudeState6,InitialAttitudeState7,AttitudeReferenceState1,AttitudeReferenceState2,AttitudeReferenceState3,AttitudeReferenceState4,AsymmetricBodyTorqueFlag,GravityGradientBodyFlag,ControlTorqueFlag,GravitationalParameter,NaturalFrequency,DampingRatio,SlewRate,SemiMajorAxis,ControllerType,Radius,Integrator,StartEpoch,EndEpoch,TimeStep,RelativeTolerance,AbsoluteTolerance,rw1Uuid,rw2UUid,rw3UUid,rw4UUid,rw5UUid,rw6UUid,rw1WheelOrientation1,rw2WheelOrientation1,rw3WheelOrientation1,rw4WheelOrientation1,rw5WheelOrientation1,rw6WheelOrientation1,rw1WheelOrientation2,rw2WheelOrientation2,rw3WheelOrientation2,rw4WheelOrientation2,rw5WheelOrientation2,rw6WheelOrientation2,reactionWheelName1,reactionWheelName2,reactionWheelName3,reactionWheelName4,reactionWheelName5,reactionWheelName6" << std::endl;
 
-            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,settlingTime,rwPower1,rwPower2,rwPower3,rwPower4,rwPower5,rwPower6,rwMomentum1,rwMomentum2,rwMomentum3,rwMomentum4,rwMomentum5,rwMomentum6,rwPowerPercent1,rwPowerPercent2,rwPowerPercent3,rwPowerPercent4,rwPowerPercent5,rwPowerPercent6,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwMomentumPercent4,rwMomentumPercent5,rwMomentumPercent6" << std::endl; 
+            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwPeakPower4,rwPeakPower5,rwPeakPower6,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwAvgPower4,rwAvgPower5,rwAvgPower6,rwMomentum1,rwMomentum2,rwMomentum3,rwMomentum4,rwMomentum5,rwMomentum6,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwPeakPowerPercent4,rwPeakPowerPercent5,rwPeakPowerPercent6,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwMomentumPercent4,rwMomentumPercent5,rwMomentumPercent6" << std::endl; 
         }
         else
         {
@@ -348,10 +348,14 @@ void executeBulkSimulator( const rapidjson::Document& config )
             SaveHighLevelAttributes dataToSave( stateHistoryStorageContainer ); 
 
             //! Get Peak power values for each simulation.
-            std::tuple< const Real, const VectorXd, const VectorXd > outputPower = 
+            std::tuple< SystemPowerPair, ReactionWheelPowerPair, const VectorXd > outputPower = 
                                             dataToSave.getPeakPower( reactionWheelConcept );  
-            const Real systemPeakPowerPerSimulation         = std::get<0>(outputPower); 
-            const VectorXd rwPeakPowerPerSimulation         = std::get<1>(outputPower); 
+            const SystemPowerPair systemPowerPair           = std::get<0>(outputPower); 
+            const Real systemPeakPowerPerSimulation         = systemPowerPair.first; 
+            const Real systemAvgPowerPerSimulation          = systemPowerPair.second; 
+            const ReactionWheelPowerPair rwPeakAndAveragePower = std::get<1>(outputPower); 
+            const VectorXd rwPeakPowerPerSimulation         = rwPeakAndAveragePower.first;
+            const VectorXd rwAvgPowerPerSimulation          = rwPeakAndAveragePower.second;  
             const VectorXd rwPeakPowerPercentPerSimulation  = std::get<2>(outputPower); 
 
             //! Get Peak momentum values for each simulation. 
@@ -412,8 +416,9 @@ void executeBulkSimulator( const rapidjson::Document& config )
             // Save the conept attributes for each simulation. 
             doPrint( conceptAttribtuesFile, conceptIdentifierMonteCarlo, 
                      actuatorConfiguration.calculateMassBudget( ), 
-                     actuatorConfiguration.calculateVolumeBudget( ), systemPeakPowerPerSimulation, settlingTime,
-                     rwPeakPowerPerSimulation, rwPeakMomentumStorage, rwPeakPowerPercentPerSimulation,
+                     actuatorConfiguration.calculateVolumeBudget( ), systemPeakPowerPerSimulation, 
+                     systemAvgPowerPerSimulation, settlingTime,
+                     rwPeakPowerPerSimulation, rwAvgPowerPerSimulation, rwPeakMomentumStorage, rwPeakPowerPercentPerSimulation,
                      rwPeakMomentumPercentStorage );
             conceptAttribtuesFile << std::endl; 
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 

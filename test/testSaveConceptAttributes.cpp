@@ -122,9 +122,12 @@ TEST_CASE("Test Case 1: Test the saveHighLevelConcept class for operator getPeak
     expectedRwPowerPercent << (11.0 / 10.0) * 100.0, (20.0 / 15.0) * 100.0, (15.0 / 10.0) * 100.0, (8.0/20.0)*100.0 ;
 
     SaveHighLevelAttributes saveHighLevelAttributes( stateHistoryStorageContainer );
-    std::tuple< const Real, const VectorXd, const VectorXd > outputPower = saveHighLevelAttributes.getPeakPower( reactionWheelConcept ); 
-    const Real calculatedSystemPeakPower = std::get<0>(outputPower); 
-    const VectorXd calculatedReactionWheelPower = std::get<1>(outputPower);
+    std::tuple< std::pair< const Real, const Real>, std::pair< const VectorXd, const VectorXd>, const VectorXd > outputPower = 
+                                    saveHighLevelAttributes.getPeakPower( reactionWheelConcept ); 
+    const std::pair<const Real,const Real>calculatedPeakAndAvgSystemPower = std::get<0>(outputPower);
+    const Real calculatedSystemPeakPower = calculatedPeakAndAvgSystemPower.first;  
+    const std::pair< const VectorXd, const VectorXd > calculatedPeakAndAvgPower = std::get<1>(outputPower); 
+    const VectorXd calculatedReactionWheelPower = calculatedPeakAndAvgPower.first;
     const VectorXd calculatedPeakPowerPercent = std::get<2>(outputPower);
 
     //! Test the system peak power of reaction wheel concept. 

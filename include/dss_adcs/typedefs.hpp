@@ -68,6 +68,9 @@ typedef std::vector<double> VectorXdIntegration;
 //! JSON config iterator.
 typedef rapidjson::Value::ConstMemberIterator ConfigIterator;
 
+typedef std::pair< const Real, const Real > SystemPowerPair;
+typedef std::pair< const VectorXd, const VectorXd > ReactionWheelPowerPair; 
+
 //! Define numerical integrators.
 enum Integrator
 {
