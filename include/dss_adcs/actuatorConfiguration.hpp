@@ -61,6 +61,10 @@ public:
     const Real calculateVolumeBudget( ) const
     {
         Real volumeBudget(0.0); 
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
+        // The volume of the reaction wheel concept depends on the configuration of the 
+        // reaction wheels. update this function to include that!! 
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
 
         for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheel.size(); ++reactionWheelIterator )
         {
