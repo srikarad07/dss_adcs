@@ -267,8 +267,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
             }; 
             Vector4 referenceAttitudeState      = input.referenceAttitudeState; 
 
-            const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
+            // const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
 
+            const Vector4 initialQuaternionError( input.initialAttitudeState[0] - input.referenceAttitudeState[0],
+                                     input.initialAttitudeState[1] - input.referenceAttitudeState[1], input.initialAttitudeState[2] - input.referenceAttitudeState[2], input.initialAttitudeState[3] - input.referenceAttitudeState[3] );
             //! Save state histories within the model. 
             StateHistoryStorageContainer stateHistoryStorageContainer; 
 
@@ -312,7 +314,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                         input.dampingRatio, 
                                                         slewRateRandomlyGenerated,
                                                         principleInertia, 
-                                                        initialQuaternion, 
+                                                        initialQuaternionError, 
                                                         integrationStartTime ); 
                 Vector3 controlTorque( outputTorques.first ); 
                 VectorXd reactionWheelMotorTorque( outputTorques.second );  
@@ -430,7 +432,8 @@ void executeBulkSimulator( const rapidjson::Document& config )
              input.referenceAttitudeState, input.asymmetricBodyTorqueModelFlag, 
              input.gravityGradientAccelerationModelFlag, input.controlTorqueActiveModelFlag, 
              input.gravitationalParameter, input.naturalFrequency, input.dampingRatio, 
-             slewRateRandomlyGenerated, input.semiMajorAxis, input.controllerType, input.radius, 
+             sml::convertRadiansToDegrees(slewRateRandomlyGenerated), input.semiMajorAxis, 
+             input.controllerType, input.radius, 
              input.integrator, input.startEpoch, input.endEpoch, input.timeStep, 
              input.relativeTolerance, input.absoluteTolerance, reactionWheelUuids, 
              reactionWheelOrientation1, reactionWheelOrientation2, reactionWheelNames  );  
