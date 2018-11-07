@@ -49,7 +49,7 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
 
     Vector3 commandedControlTorque;
 
-    if ( controllerType.compare("linear") == 0)
+    if ( controllerType.compare("quaternion_feedback") == 0)
     {
         commandedControlTorque   = astro::computeQuaternionControlTorque( quaternionReference, 
                                                                           quaternionCurrent, 
