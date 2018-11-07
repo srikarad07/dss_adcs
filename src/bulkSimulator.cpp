@@ -51,6 +51,14 @@ void executeBulkSimulator( const rapidjson::Document& config )
     const unsigned int minimumNumberOfReactionWheels    = input.numberOfReactionWheels[0]; 
     const unsigned int maximumNumberOfReactionWheels    = input.numberOfReactionWheels[1] + 1;  
 
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>...... // 
+    // Change this and if there is a better way to do it.                             // 
+    // const bool asymmetricBodyTorqueModelFlag           = find( config, "is_asymmetric_body_torque_active")->value.GetBool(); 
+    // const bool monteCarloInitialAttitudeActiveFlag     = find( config, "monte_carlo_on_initial_attitude" )->value.GetBool( );
+    const Real slewRateUncertainty        = sml::convertDegreesToRadians(
+                                                            find( config, "slew_rate_range" )->value.GetDouble( ) );  
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  // 
+
     // Initialize random seed.
     boost::random::mt19937 randomSeed;
 
@@ -64,6 +72,10 @@ void executeBulkSimulator( const rapidjson::Document& config )
     boost::random::uniform_real_distribution< Real > principleInertiaGeneratorZZ( 
         input.principleInertia[2] - input.principleInertiaUncertainty[2], 
         input.principleInertia[2] + input.principleInertiaUncertainty[2]  );
+
+    // Generate random seed for slew saturation rate. 
+    boost::random::uniform_real_distribution< Real > slewRateGenerator( 
+                                                    input.slewSaturationRate - slewRateUncertainty,                input.slewSaturationRate + slewRateUncertainty ); 
 
     // Create instance of dynamical system.
     std::cout << "Setting up dynamical model ..." << std::endl;
@@ -221,6 +233,17 @@ void executeBulkSimulator( const rapidjson::Document& config )
                 principleInertia[2]  = input.principleInertia[2]; 
             }
 
+            // Slew saturation rate. 
+            Real slewRateRandomlyGenerated; 
+            if ( slewRateUncertainty != 0 )
+            {
+                slewRateRandomlyGenerated = slewRateGenerator( randomSeed );     
+            } 
+            else
+            {
+                slewRateRandomlyGenerated = input.slewSaturationRate; 
+            }
+
             // Concept Identifier with simulation
             const std::string conceptIdentifierMonteCarlo = conceptIdentifier.first + "_" 
                                                             + std::to_string(numberOfSimulation); 
@@ -287,7 +310,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                         input.controllerType, 
                                                         input.naturalFrequency, 
                                                         input.dampingRatio, 
-                                                        input.slewSaturationRate,
+                                                        slewRateRandomlyGenerated,
                                                         principleInertia, 
                                                         initialQuaternion, 
                                                         integrationStartTime ); 
@@ -407,7 +430,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
              input.referenceAttitudeState, input.asymmetricBodyTorqueModelFlag, 
              input.gravityGradientAccelerationModelFlag, input.controlTorqueActiveModelFlag, 
              input.gravitationalParameter, input.naturalFrequency, input.dampingRatio, 
-             input.slewSaturationRate, input.semiMajorAxis, input.controllerType, input.radius, 
+             slewRateRandomlyGenerated, input.semiMajorAxis, input.controllerType, input.radius, 
              input.integrator, input.startEpoch, input.endEpoch, input.timeStep, 
              input.relativeTolerance, input.absoluteTolerance, reactionWheelUuids, 
              reactionWheelOrientation1, reactionWheelOrientation2, reactionWheelNames  );  

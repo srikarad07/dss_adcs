@@ -1,36 +1,43 @@
 {
     "mode": "bulk_simulator",
 
-    // Principle moments of inertia in Body Fixed frame 
+    // Principle moments of inertia in Body Fixed frame  in Vector3 (double) [kg/m2]
     "principle_inertia": [
-        10.0,
-        12.0,
-        11.0
+        100.0,
+        150.0,
+        130.0
     ],
 
     // Define the range of moments on inertia in Body fixed frame 
     // null | double 
     "principle_inertia_uncertainties": [
         null,
-        3.0,
+        null,
         null
     ],
     
+    // Slew rate [confirm units]
+    "slew_saturation_rate" : 0.5, 
+    
+    // Range of slew 
+    // null | double
+    "slew_rate_range" : null, 
+
     // Attitude representation type. Change it to initial attitude 
     // euler_angles | quaternions 
     "attitude_representation" : "euler_angles", 
 
     // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3) + attiude rates [w1, w2, w3] in deg/sec. 
     "initial_attitude_state": [
-        50.0,
-        50.0,
-        50.0,
+        80.0,
+        80.0,
+        80.0,
         0.0,
         0.0,
         0.0
     ],
 
-    // Reference attitude state: either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3)
+    // Reference attitude state: either in euler_angle(Vector3: theta_1, theta_2, theta_3) or quaternions (Vector4: q_0, q_1, q_2, q_3)
     "attitude_reference_state": [
         0.0, 
         0.0,
@@ -38,7 +45,7 @@
     ],
 
     // Number of samples for monte carlo simulation 
-    "number_0f_samples": 50, 
+    "number_0f_samples": 1, 
     
     // Flag for the asymmetric body torque on the system 
     // true | false
@@ -102,17 +109,16 @@
     // [min, max]
     "number_of_reaction_wheels": [
         3, 
-        6
+        3
     ], 
 
     // Controller properties 
-    "natural_frequency" : 0.1,
-    "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.2, 
+    "natural_frequency" : 0.5,
+    "damping_ratio" : 1.0,
 
     // Controller type
     // quaternion_feedback | cascade_saturation | cascade_saturation_with_limiter
-    "controller_type" : "cascade_saturation",   
+    "controller_type" : "cascade_saturation_with_limiter",   
     
     // Radial distance of the center of the earth from spacecraft [m]. 
     "radius": 7371000.0,
@@ -127,7 +133,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 3000.0,
+    "end_epoch": 5000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
