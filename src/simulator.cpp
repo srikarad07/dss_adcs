@@ -160,8 +160,9 @@ void executeSingleSimulator( const rapidjson::Document& config )
 
     std::vector< Vector4 > quaternionStateVector; 
     
-    const Vector4 initialQuaternion(input.initialAttitudeState[0], input.initialAttitudeState[1], input.initialAttitudeState[2], input.initialAttitudeState[3]); 
-
+    const Vector4 initialQuaternionError( input.initialAttitudeState[0] - input.referenceAttitudeState[0],
+                                     input.initialAttitudeState[1] - input.referenceAttitudeState[1], input.initialAttitudeState[2] - input.referenceAttitudeState[2], input.initialAttitudeState[3] - input.referenceAttitudeState[3] ); 
+    
     //! Save state histories within the model. 
     StateHistoryStorageContainer stateHistoryStorageContainer; 
 
@@ -210,7 +211,7 @@ void executeSingleSimulator( const rapidjson::Document& config )
                                                                                           input.dampingRatio, 
                                                                                           input.slewSaturationRate,
                                                                                           input.principleInertia, 
-                                                                                          initialQuaternion, 
+                                                                                          initialQuaternionError, 
                                                                                           integrationStartTime ); 
         Vector3 controlTorque( outputTorques.first ); 
         VectorXd reactionWheelMotorTorque( outputTorques.second );  
