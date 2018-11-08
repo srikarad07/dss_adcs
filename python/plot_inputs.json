@@ -1,12 +1,15 @@
 {
-    "filePath" : "/home/superman/Desktop/monte_carlo_single/", 
+    "filePath" : "/home/superman/Desktop/bulk_simulation", 
     "number_of_reactionWheels" : "none", 
     "parameters_to_plot": [
-        "powerConsumption", 
-        "motorTorque",
-        "controlTorque",
-        "angularMomentum",
-        "reactionWheelAngularVelocity"
+        [ "settlingTime", "principleInertia2" ], 
+        [ "systemPeakPower", "principleInertia2"],
+        [ "systemAvgPower", "principleInertia2"]  
+    ],
+    "axisTitles" : [ 
+        ["Maneuver time [min]", "MOIx [kg/m^2]" ], 
+        ["Peak power [W]", "MOIx [kg/m^2]"],
+        ["Average power [W]", "MOIx [kg/m^2]"]
     ],
     "xAxisPlot" : "t", 
     "pltTitles": [
@@ -19,9 +22,15 @@
     "showFigures": true, 
     "saveFigures" : false,
     "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case2/", 
+    "hover_flag" : true, 
+    "font" : {
+        "family" : "monospace",
+        "weight" : "bold",
+        "size"   :  15 
+        },
     "figSize" : 
         [
-            15.0, 
-            7.0
+            10.0, 
+            8.0
         ]
 }

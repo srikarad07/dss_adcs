@@ -73,14 +73,15 @@ print ""
 
 # Update this part to use the json input for plotting. 
 # path                =  "/home/superman/Desktop/monte_carlo_single/"
-path                        = "/home/superman/Desktop/single_simulation/"
-metadataFilePath            = "/home/superman/Desktop/single_simulation/metadata.csv"
-# metadata                    = pd.read_csv(metadataFilePath)
-stringToSearchWith          = 'state_history.csv'
-# numberOfReactionWheels      = '_44.csv'
-# filesForTheplots            = requiredFiles( path, stringToSearchWith, numberOfReactionWheels)
-filesForTheplots            = requiredFiles( path, stringToSearchWith )
-
+# path                        = "/home/superman/Desktop/single_simulation/state_history.csv"
+# metadataFilePath            = "/home/superman/Desktop/single_simulation/metadata.csv"
+# # metadata                    = pd.read_csv(metadataFilePath)
+# stringToSearchWith          = 'state_history.csv'
+# # numberOfReactionWheels      = '_44.csv'
+# # filesForTheplots            = requiredFiles( path, stringToSearchWith, numberOfReactionWheels)
+# # filesForTheplots            = requiredFiles( path, stringToSearchWith )
+filesForTheplots            = ["/home/superman/Desktop/single_simulation/state_history.csv"]
+# print(filesForTheplots)
 # Define linestyles. 
 linestyles = ['-', '--', '-.', ':']
 
@@ -90,15 +91,15 @@ colors  = ['r', 'b', 'c', 'g']
 # Change the font size 
 font = {'family' : 'monospace',
         'weight' : 'bold',
-        'size'   :  22}
+        'size'   :  10}
 matplotlib.rc('font', **font)        
-matplotlib.rc('xtick', labelsize=22)
-matplotlib.rc('ytick', labelsize=22)
+matplotlib.rc('xtick', labelsize=10)
+matplotlib.rc('ytick', labelsize=10)
 
-closeplot    = True 
+closeplot    = False 
 # savefigPath  = '/home/superman/Delft/Thesis/IAC/iac_2018/Images/results/case1/'
 savefigPath    = '/home/superman/Delft/IAC/presentation/results/case1/'
-figureSize = (14.0,6.0)
+figureSize = (10.0,8.0)
 ## Plot spacecraft attitudes. ## 
 fig1  = plt.figure(figsize=figureSize)
 ax1   = fig1.add_subplot(111)
@@ -107,13 +108,6 @@ for filename in range(len(filesForTheplots)):
 
     state_history   = pd.read_csv( filesForTheplots[filename] )
 
-    # Plot quaternion 1 with time.
-    # ax1.plot(state_history['t']/60.0,state_history['q1'], c='r', linestyle='-', linewidth=5.0)
-    # ax1.plot(state_history['t']/60.0,state_history['q2'], c='b', linestyle='--', linewidth=5.0)
-    # ax1.plot(state_history['t']/60.0,state_history['q3'], c='c', linestyle='-.', linewidth=5.0)
-    # ax1.plot(state_history['t']/60.0,state_history['q4'], c='g', linestyle=':', linewidth=5.0)
-
-    
     ax1.plot(state_history['t']/60.0,state_history['q1'], c='r', linestyle='-', linewidth=2.0)
     ax1.plot(state_history['t']/60.0,state_history['q2'], c='b', linestyle='--', linewidth=2.0)
     ax1.plot(state_history['t']/60.0,state_history['q3'], c='c', linestyle='-.', linewidth=2.0)
@@ -140,59 +134,59 @@ for filename in range(len(filesForTheplots)):
     pass
 
 fig1.savefig(savefigPath + 'attitudes.png')
-plt.close()
+# plt.close()
 
-## PLot spacecraft control torques ##
-fig  = plt.figure()
-ax1   = fig.add_subplot(111)
-# # fig, ( ax1, ax2, ax3, ax4 ) = plt.subplots(4, sharex=True, figsize=(11,7) )
-for filename in range(len(filesForTheplots)):
+# ## PLot spacecraft control torques ##
+# fig  = plt.figure()
+# ax1   = fig.add_subplot(111)
+# # # fig, ( ax1, ax2, ax3, ax4 ) = plt.subplots(4, sharex=True, figsize=(11,7) )
+# for filename in range(len(filesForTheplots)):
 
-    state_history   = pd.read_csv( filesForTheplots[filename] )
-    #Generate figure with 2D plots. 
-    # ax1 = fig.add_subplot(2,2,1)
-    # ax2 = fig.add_subplot(2,2,2)
-    # ax3 = fig.add_subplot(2,2,3)
+#     state_history   = pd.read_csv( filesForTheplots[filename] )
+#     #Generate figure with 2D plots. 
+#     # ax1 = fig.add_subplot(2,2,1)
+#     # ax2 = fig.add_subplot(2,2,2)
+#     # ax3 = fig.add_subplot(2,2,3)
 
-    #Plot angular velocity with respect to time. 
-    ax1.plot(state_history['t']/60.0, state_history['controlTorque1'], c=colors[0], linestyle=linestyles[0] )
-    ax1.plot(state_history['t']/60.0, state_history['controlTorque2'], c=colors[1], linestyle=linestyles[1])
-    ax1.plot(state_history['t']/60.0, state_history['controlTorque3'], c=colors[2], linestyle=linestyles[2])
-    ax1.grid()
+#     #Plot angular velocity with respect to time. 
+#     ax1.plot(state_history['t']/60.0, state_history['controlTorque1'], c=colors[0], linestyle=linestyles[0] )
+#     ax1.plot(state_history['t']/60.0, state_history['controlTorque2'], c=colors[1], linestyle=linestyles[1])
+#     ax1.plot(state_history['t']/60.0, state_history['controlTorque3'], c=colors[2], linestyle=linestyles[2])
+#     ax1.grid()
 
-    ax1.set_xlabel('Time[min]')
-    ax1.set_ylabel('Control Torque [N m]')
-    ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+#     ax1.set_xlabel('Time[min]')
+#     ax1.set_ylabel('Control Torque [N m]')
+#     ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     
 
-    # ax2.plot(state_history['t'], state_history['controlTorque2'])
-    # ax2.set_xlabel('time[sec]')
-    # ax2.set_ylabel('Control_Y [Nm]')
-    # ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-    # ax2.grid()
+#     # ax2.plot(state_history['t'], state_history['controlTorque2'])
+#     # ax2.set_xlabel('time[sec]')
+#     # ax2.set_ylabel('Control_Y [Nm]')
+#     # ax2.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+#     # ax2.grid()
 
-    # ax3.plot(state_history['t'], state_history['controlTorque3'])
-    # ax3.set_xlabel('time[sec]')
-    # ax3.set_ylabel('Control_Z [Nm]')
-    # ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-    # ax3.grid()    
-    plt.tight_layout()
+#     # ax3.plot(state_history['t'], state_history['controlTorque3'])
+#     # ax3.set_xlabel('time[sec]')
+#     # ax3.set_ylabel('Control_Z [Nm]')
+#     # ax3.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+#     # ax3.grid()    
+#     plt.tight_layout()
     
-    header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
-                          markersize=10, label='Control Torque in X axis')
-    header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-                          markersize=10, label='Control Torque in Y axis')
-    header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-                          markersize=10, label='Control Torque in Z axis')
-    plt.legend(handles=[header1,header2,header3])
-    plt.grid()
+#     header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
+#                           markersize=10, label='Control Torque in X axis')
+#     header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
+#                           markersize=10, label='Control Torque in Y axis')
+#     header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
+#                           markersize=10, label='Control Torque in Z axis')
+#     plt.legend(handles=[header1,header2,header3])
+#     plt.grid()
 
-    pass
+#     pass
 
-fig.savefig(savefigPath +'controlTorques.eps')
-plt.close(closeplot)
+# fig.savefig(savefigPath +'controlTorques.eps')
+# plt.close(closeplot)
 
-## Plot motor torques of the reaction wheels ##
+# ## Plot motor torques of the reaction wheels ##
 fig = plt.figure()
 ax  = fig.add_subplot(111)
 
@@ -200,7 +194,7 @@ for filename in range(len(filesForTheplots)):
 
     state_history   = pd.read_csv( filesForTheplots[filename] )
     testPath   = filesForTheplots[filename]
-    stringToBeLocated   = 'motorTorque'
+    stringToBeLocated   = 'motorTorque\\d'
     results = stringLocator(testPath, stringToBeLocated )
 
     jj = np.ceil( len(results)/ 2.0 )
@@ -223,95 +217,95 @@ for filename in range(len(filesForTheplots)):
                           markersize=10, label='RW3 motor torque')
     header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
                           markersize=10, label='RW4 motor torque')   
-    plt.legend(handles=[header1,header2,header3,header4])
+#     plt.legend(handles=[header1,header2,header3,header4])
 
     plt.grid()
     
     pass 
-fig.savefig(savefigPath +'motorTorques.eps')
+# fig.savefig(savefigPath +'motorTorques.eps')
 plt.close(closeplot)
 
-# ## Plot angular momentum of the reaction wheels. 
-fig = plt.figure()
-ax  = fig.add_subplot(111)
+# # ## Plot angular momentum of the reaction wheels. 
+# fig = plt.figure()
+# ax  = fig.add_subplot(111)
 
-for filename in range(len(filesForTheplots)):
+# for filename in range(len(filesForTheplots)):
 
-    state_history   = pd.read_csv( filesForTheplots[filename] )
-    testPath   = filesForTheplots[filename]
-    stringToBeLocated   = 'angularMomentum'
-    results = stringLocator(testPath, stringToBeLocated )
+#     state_history   = pd.read_csv( filesForTheplots[filename] )
+#     testPath   = filesForTheplots[filename]
+#     stringToBeLocated   = 'angularMomentum'
+#     results = stringLocator(testPath, stringToBeLocated )
 
-    for i in range(len(results)):
-        jj = np.ceil( len(results)/ 2.0 )
-        # ax = fig.add_subplot(2,jj,i+1)
-        ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
-        ax.set_xlabel('Time[min]')
-        ax.set_ylabel('Angular momentum [kgm2/sec]')
-        ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-        pass 
+#     for i in range(len(results)):
+#         jj = np.ceil( len(results)/ 2.0 )
+#         # ax = fig.add_subplot(2,jj,i+1)
+#         ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
+#         ax.set_xlabel('Time[min]')
+#         ax.set_ylabel('Angular momentum [kgm2/sec]')
+#         ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+#         pass 
     
-        ax.grid()
-        plt.tight_layout()
-        header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
-                              markersize=10, label='RW1 angular momentum')
-        header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-                              markersize=10, label='RW2 angular momentum')
-        header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-                              markersize=10, label='RW3 angular momentum')
-        header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-                              markersize=10, label='RW4 angular momentum')   
-        plt.legend(handles=[header1,header2,header3,header4])
+#         ax.grid()
+#         plt.tight_layout()
+#         header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
+#                               markersize=10, label='RW1 angular momentum')
+#         header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
+#                               markersize=10, label='RW2 angular momentum')
+#         header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
+#                               markersize=10, label='RW3 angular momentum')
+#         header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
+#                               markersize=10, label='RW4 angular momentum')   
+#         plt.legend(handles=[header1,header2,header3,header4])
 
-        plt.grid()
-    pass 
+#         plt.grid()
+#     pass 
 
-fig.savefig(savefigPath +'angularMomentumReactionWheels.eps')
-plt.close(closeplot)
+# fig.savefig(savefigPath +'angularMomentumReactionWheels.eps')
+# plt.close(closeplot)
 
-## Plot the reaction wheel angular velocities. 
+# ## Plot the reaction wheel angular velocities. 
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+
+# for filename in range(len(filesForTheplots)):
+
+#     state_history   = pd.read_csv( filesForTheplots[filename] )
+#     testPath   = filesForTheplots[filename]
+#     stringToBeLocated   = 'reactionWheelAngularVelocity'
+#     results = stringLocator(testPath, stringToBeLocated )
+
+#     for i in range(len(results)):
+#         jj = np.ceil( len(results)/ 2.0 )
+#         ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
+#         ax.set_xlabel('Time[min]')
+#         ax.set_title('Angular Velocity [rpm]')
+#         ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+#         pass 
+    
+#     ax.grid()
+#     plt.tight_layout()
+#     header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
+#                           markersize=10, label='RW1 angular velocity')
+#     header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
+#                           markersize=10, label='RW2 angular velocity')
+#     header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
+#                           markersize=10, label='RW3 angular velocity')
+#     header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
+#                           markersize=10, label='RW4 angular velocity')   
+#     plt.legend(handles=[header1,header2,header3,header4])
+#     plt.grid()
+#     pass 
+# fig.savefig(savefigPath +'reactionWheelAngularRates.eps')
+# plt.close(closeplot)
+
+# ## Plot the power consumption for the reaction wheels. ##  
 fig = plt.figure()
 ax = fig.add_subplot(111)
-
 for filename in range(len(filesForTheplots)):
 
     state_history   = pd.read_csv( filesForTheplots[filename] )
     testPath   = filesForTheplots[filename]
-    stringToBeLocated   = 'reactionWheelAngularVelocity'
-    results = stringLocator(testPath, stringToBeLocated )
-
-    for i in range(len(results)):
-        jj = np.ceil( len(results)/ 2.0 )
-        ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
-        ax.set_xlabel('Time[min]')
-        ax.set_title('Angular Velocity [rpm]')
-        ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-        pass 
-    
-    ax.grid()
-    plt.tight_layout()
-    header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
-                          markersize=10, label='RW1 angular velocity')
-    header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-                          markersize=10, label='RW2 angular velocity')
-    header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-                          markersize=10, label='RW3 angular velocity')
-    header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-                          markersize=10, label='RW4 angular velocity')   
-    plt.legend(handles=[header1,header2,header3,header4])
-    plt.grid()
-    pass 
-fig.savefig(savefigPath +'reactionWheelAngularRates.eps')
-plt.close(closeplot)
-
-## Plot the power consumption for the reaction wheels. ##  
-fig = plt.figure()
-ax = fig.add_subplot(111)
-for filename in range(len(filesForTheplots)):
-
-    state_history   = pd.read_csv( filesForTheplots[filename] )
-    testPath   = filesForTheplots[filename]
-    stringToBeLocated   = 'powerConsumption'
+    stringToBeLocated   = 'powerConsumption\\d'
     results = stringLocator(testPath, stringToBeLocated )
     jj = np.ceil( len(results)/ 2.0 )
     
@@ -338,7 +332,7 @@ for filename in range(len(filesForTheplots)):
 fig.savefig(savefigPath +'power.eps')
 plt.close(closeplot)
 
-## Plot the angular rates of the spacecraft ## 
+# ## Plot the angular rates of the spacecraft ## 
 fig = plt.figure()
 # fig, ( ax1, ax2, ax3, ax4 ) = plt.subplots(4, sharex=True, figsize=(11,7) )
 for filename in range(len(filesForTheplots)):
@@ -379,7 +373,7 @@ for filename in range(len(filesForTheplots)):
     plt.grid()
     
     pass 
-fig.savefig(savefigPath +'angularRatesSpacecraft.eps')
+# fig.savefig(savefigPath +'angularRatesSpacecraft.eps')
 plt.close(closeplot)
 
 plt.show()
@@ -387,15 +381,15 @@ plt.show()
 print "Figures generated successfully!"
 print ""
 
-peakPowerPercents   = calculatePeakPowerPercentage( metadataFilePath, filesForTheplots )
-peakMomentumPercent = calculateSaturationPercentage( metadataFilePath, filesForTheplots )
-settlingTime        = calculateSettlingTime("/home/superman/Desktop/single_simulation/state_history.csv")
-maxPower, yy, xx, zz            = calculatePower(filesForTheplots)
+# peakPowerPercents   = calculatePeakPowerPercentage( metadataFilePath, filesForTheplots )
+# peakMomentumPercent = calculateSaturationPercentage( metadataFilePath, filesForTheplots )
+# settlingTime        = calculateSettlingTime("/home/superman/Desktop/single_simulation/state_history.csv")
+# maxPower, yy, xx, zz            = calculatePower(filesForTheplots)
 
-print("Peak power %:", peakPowerPercents)
-print("Peak momentum %:", peakMomentumPercent)
-print("Settling Time [min]: ", (settlingTime) )
-print("Total peak power [W]: ", maxPower)
+# print("Peak power %:", peakPowerPercents)
+# print("Peak momentum %:", peakMomentumPercent)
+# print("Settling Time [min]: ", (settlingTime) )
+# print("Total peak power [W]: ", maxPower)
 # Stop timer
 end_time = time.time( )
 

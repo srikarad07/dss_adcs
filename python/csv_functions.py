@@ -60,27 +60,29 @@ def hover(event):
                 fig.canvas.draw_idle()
 
 if __name__ == "__main__":
-    # path                = "/home/superman/Desktop/bulk_simulation/state_history_3.csv"
-    # stringToBeLocated   = 'concept_3_*\\d\_\d\d'
+    path                = "/home/superman/Desktop/bulk_simulation/state_history_3.csv"
+    # path                = "/home/superman/Desktop/bulk_simulation/metadata_3.csv"
 
-    # results = stringLocator( path, stringToBeLocated )
-    # print(results)
+    stringToBeLocated   = 'rwPeakPower\\d'
+    # print()
+    results = stringLocator( path, stringToBeLocated )
+    print(results)
 
-    x = np.random.rand(5)
-    y = np.random.rand(5)
-    names = np.array(["a", "b", "c", "d", "e"])
-    c = np.random.randint(1,5,size=5)
+    # x = np.random.rand(5)
+    # y = np.random.rand(5)
+    # names = np.array(["a", "b", "c", "d", "e"])
+    # c = np.random.randint(1,5,size=5)
 
-    norm = plt.Normalize(1,4)
-    cmap = plt.cm.RdYlGn
+    # norm = plt.Normalize(1,4)
+    # cmap = plt.cm.RdYlGn
 
-    fig,ax  = plt.subplots()
-    sc      = plt.scatter(x,y,c=c, s=100, cmap=cmap, norm=norm)
-    annot   = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",
-                        bbox=dict(boxstyle="round", fc="w"),
-                        arrowprops=dict(arrowstyle="->"))
-    annot.set_visible(False)
+    # fig,ax  = plt.subplots()
+    # sc      = plt.scatter(x,y,c=c, s=100, cmap=cmap, norm=norm)
+    # annot   = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",
+    #                     bbox=dict(boxstyle="round", fc="w"),
+    #                     arrowprops=dict(arrowstyle="->"))
+    # annot.set_visible(False)
 
-    fig.canvas.mpl_connect("motion_notify_event", hover)
-    plt.show()
+    # fig.canvas.mpl_connect("motion_notify_event", hover)
+    # plt.show()
 
