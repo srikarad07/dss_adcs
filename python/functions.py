@@ -316,28 +316,30 @@ if __name__ == "__main__":
     stateHistoryFiles       = np.array([filePath])
     print( "State history files: ", stateHistoryFiles )
     maxPower, avgPower, maxPowerReactionWheels, avgPowerReactionWheels  = calculatePower(stateHistoryFiles)
+    print("Peak power system: ", maxPower )
+    print("Peak power RW: ", maxPowerReactionWheels )
 
-    # Calculate the saturation % from the state history files. 
-    metadataFilePath    = "/home/superman/Desktop/metadata.csv"
-    path                = "/home/superman/Desktop/monte_carlo_single"
-    stringToSearchWith          = 'state_history'
-    filesForTheplots            = natural_sort( requiredFiles( path, stringToSearchWith ) )
+    # # Calculate the saturation % from the state history files. 
+    # metadataFilePath    = "/home/superman/Desktop/metadata.csv"
+    # path                = "/home/superman/Desktop/monte_carlo_single"
+    # stringToSearchWith          = 'state_history'
+    # filesForTheplots            = natural_sort( requiredFiles( path, stringToSearchWith ) )
 
-    testPeakMomentumStoragePercent = calculateSaturationPercentage( metadataFilePath, filesForTheplots )
-    print(testPeakMomentumStoragePercent.shape)
-    # Calculate reaction wheel max and average torques. 
-    # maxReactionWheelTorque, avgReactionWheelTorque, maxMomentum, avgMomentum, maxVelocity, avgVelocity  = extractConceptAttributes( stateHistoryFiles )
+    # testPeakMomentumStoragePercent = calculateSaturationPercentage( metadataFilePath, filesForTheplots )
+    # print(testPeakMomentumStoragePercent.shape)
+    # # Calculate reaction wheel max and average torques. 
+    # # maxReactionWheelTorque, avgReactionWheelTorque, maxMomentum, avgMomentum, maxVelocity, avgVelocity  = extractConceptAttributes( stateHistoryFiles )
     
-    # print(maxReactionWheelTorque)
-    # print(avgReactionWheelTorque)
-    # print(maxMomentum)
-    # print(avgMomentum)
-    # print(maxVelocity)
-    # print(avgVelocity)
+    # # print(maxReactionWheelTorque)
+    # # print(avgReactionWheelTorque)
+    # # print(maxMomentum)
+    # # print(avgMomentum)
+    # # print(maxVelocity)
+    # # print(avgVelocity)
 
-    # # Calculate reaction wheel peak power percent. 
-    # reactionWheelPeakPowerGiven      = [ 50.0, 10.0, 1.0, 100.0] # Reaction wheel power given (hardware)
-    # reactionWheelPeakPowerCalculated = [ 40.0, 1.0, 5.0, 10.0]
+    # # # Calculate reaction wheel peak power percent. 
+    # # reactionWheelPeakPowerGiven      = [ 50.0, 10.0, 1.0, 100.0] # Reaction wheel power given (hardware)
+    # # reactionWheelPeakPowerCalculated = [ 40.0, 1.0, 5.0, 10.0]
 
-    # reactionWheelPowerPercent       = calculateCalculateToGivenPercentage( reactionWheelPeakPowerCalculated, reactionWheelPeakPowerGiven)
-    # print(reactionWheelPowerPercent)
+    # # reactionWheelPowerPercent       = calculateCalculateToGivenPercentage( reactionWheelPeakPowerCalculated, reactionWheelPeakPowerGiven)
+    # # print(reactionWheelPowerPercent)
