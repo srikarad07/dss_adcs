@@ -47,7 +47,7 @@ void executeProductAttributeExtraction( const rapidjson::Document& config )
 	// Get the path to save the metadata parameters. 
 	std::ofstream metadatHistoryStream( find( config, "metadataPath" )->value.GetString() ); 
 
-	metadatHistoryStream << "name,supplier,angularMomentum,angularSpeedControlAccuracy,angularSpeed,connectorType,dataInterface,diameter,dynamicValue,height,idlePower,integratedElectronics,length,lifetime,mass,maxAngularSpeed,maxMomentumStorage,maxPower,maxTorque,maxVoltage,mechanicalInterface,mechanicalVibration,moi,operatingTemperature,powerInterface,radiationTolerance,staticUnbalance,steadyStatePower,storageTemperature,survivalTemperature,torque,voltageDc,voltage,width" << std::endl; 
+	metadatHistoryStream << "name,supplier,angularMomentum,angularSpeedControlAccuracy,angularSpeed,dataInterface,diameter,dynamicValue,height,idlePower,integratedElectronics,length,lifetime,mass,maxAngularSpeed,maxMomentumStorage,maxPower,maxTorque,maxVoltage,mechanicalVibration,moi,operatingTemperature,radiationTolerance,staticUnbalance,steadyStatePower,survivalTemperature,torque,voltageDc,voltage,width" << std::endl; 
 
     // Get the product json using the api.
     for( unsigned int actuatorIterator2 = 0; actuatorIterator2 < actuatorUuids.size(); ++actuatorIterator2 )
@@ -70,13 +70,69 @@ void executeProductAttributeExtraction( const rapidjson::Document& config )
 
         metadatHistoryStream << reactionWheelName       << "," 
                              << supplierName            << "," ; 
-        std::pair< std::string, std::string > test  = mapForResult["torque"]; 
+        // std::pair< std::string, std::string > test  = mapForResult["torque"]; 
         // std::cout << "test value: " << test.first << " unit " << test.second << std::endl;  
         for ( std::map<std::string, std::pair<std::string,std::string> >::iterator mapIterator = mapForResult.begin(); mapIterator != mapForResult.end(); ++mapIterator )
         {
-            std::pair<std::string, std::string> attributeValueAndUnit = mapIterator->second; 
-            // std::cout << mapIterator->first << " value: " << attributeValueAndUnit.first << " unit: " << attributeValueAndUnit.second << std::endl; 
-            metadatHistoryStream << attributeValueAndUnit.first << ","; 
+            if ( !mapIterator->first.compare("torque") || !mapIterator->first.compare("maximum torque") )
+            {
+                std::cout << "Attribute name: " << mapIterator->first << std::endl;
+                const Real attributeToPrint   = convertToNewtonMeter( mapIterator->second.second, 
+                                                                         mapIterator->second.first,
+                                                                         reactionWheelName, 
+                                                                         supplierName ); 
+                metadatHistoryStream << attributeToPrint << ",";
+            }
+            else if ( !mapIterator->first.compare("maximum momentum storage") || !mapIterator->first.compare("angular momentum storage") )
+            {
+                std::cout << "Attribute name: " << mapIterator->first << std::endl;
+                const Real attributeToPrint   = convertToNewtonMeterSec( mapIterator->second.second, 
+                                                                         mapIterator->second.first,
+                                                                         reactionWheelName, 
+                                                                         supplierName ); 
+                metadatHistoryStream << attributeToPrint << ",";
+            }
+            else if ( !mapIterator->first.compare("maximum power") || !mapIterator->first.compare("idle power") || !mapIterator->first.compare("steady state power") )
+            {
+                std::cout << "Attribute name: " << mapIterator->first << std::endl;
+                Real attributeToPrint(0.0);  
+                std::string::size_type sz; 
+                if (mapForResult["maximum power"].second.compare("mW") != 0 && !mapForResult["maximum power"].first.empty())
+		        {
+		        	attributeToPrint 		= std::stod( mapForResult["maximum power"].first, &sz ); 
+		        }
+		        else if ( mapForResult["maximum power"].second.compare("W") != 0 && !mapForResult["maximum power"]      .first.empty() )
+		        {
+		        	attributeToPrint 		= std::stod( mapForResult["maximum power"].first, &sz ) / 1000.0; 
+		        }
+                else if (mapForResult["idle power"].second.compare("mW") != 0 && !mapForResult["idle power"].first.empty())
+		        {
+		        	attributeToPrint 		= std::stod( mapForResult["idle power"].first, &sz ); 
+		        }
+		        else if ( mapForResult["idle power"].second.compare("W") != 0 && !mapForResult["idle power"]      .first.empty() )
+		        {
+		        	attributeToPrint 		= std::stod( mapForResult["idle power"].first, &sz ) / 1000.0; 
+		        }
+                else if (mapForResult["steady state power"].second.compare("mW") != 0 && !mapForResult["steady state power"].first.empty())
+		        {
+		        	attributeToPrint 		= std::stod( mapForResult["steady state power"].first, &sz ); 
+		        }
+		        else if ( mapForResult["steady state power"].second.compare("W") != 0 && !mapForResult["steady state power"].first.empty() )
+		        {
+		        	attributeToPrint 		= std::stod( mapForResult["steady state power"].first, &sz ) / 1000.0; 
+		        }
+                else
+                {
+                    std::cout << "The unit conversion for the given attribute is not defined! " << std::endl; 
+                }
+                metadatHistoryStream << attributeToPrint << ",";
+            }
+            else 
+            {
+                std::pair<std::string, std::string> attributeValueAndUnit = mapIterator->second; 
+                // std::cout << mapIterator->first << " value: " << attributeValueAndUnit.first << " unit: " <<     attributeValueAndUnit.second << std::endl; 
+                metadatHistoryStream << attributeValueAndUnit.first << ","; 
+            }
         }
         metadatHistoryStream << std::endl; 
         // // Extract the reaction wheel properties from the map into SI Units. 
