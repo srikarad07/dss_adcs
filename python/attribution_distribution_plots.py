@@ -10,6 +10,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns 
 import matplotlib.patches as mpatches
+import matplotlib.collections as mcollections
 
 # Numerical
 import numpy as np
@@ -66,9 +67,74 @@ momentum        = np.array(metadata['angularMomentum'])
 maxTorque       = np.array(metadata['maxTorque'])
 torque          = np.array(metadata['torque'])
 
-print("Number of torque values given: ", torque)
-print("Number of max torque values given: ", maxTorque.size)
-print("Number of momentum values given: ", momentum.size)
+## Update the index of the metadata file 
+metadata.set_index('name', inplace=True)
+
+## Draw the general frequency of parameters given in the datasheet plot. 
+fig, axs         = plt.subplots( 1, 1, tight_layout=True )
+tempMetadata     = pd.notnull(metadata)
+attributeNames   = np.array([])
+ytickLocation    = np.array([])
+
+patches          = []
+x  = 0.0 
+y  = 0.5
+wide = 1.0
+
+## Draw a reactangle with the width of the rectanglre representing the count of the attributes. 
+for column in tempMetadata:
+    attributeValues     = np.array(tempMetadata[column])
+    attributeNames      = np.append(attributeNames, column)
+    attributeCount      = np.count_nonzero(attributeValues)   
+    ytickLocation       = np.append( ytickLocation, y + (wide / 2.0)  ) 
+    rect                = mpatches.Rectangle(xy=(x,y), width=attributeCount, height=wide)
+    patches.append(rect)    
+    y           = 2.0 + y
+    pass 
+  
+collection = mcollections.PatchCollection(patches, cmap=plt.cm.hsv, alpha=0.6)
+colors = np.linspace(0, 1, len(patches))
+collection.set_array(np.array(colors))
+axs.add_collection(collection)
+axs.autoscale()
+axs.set_yticks(ytickLocation)
+axs.set_yticklabels(attributeNames)
+fig.savefig(saveFigPath + "numberOfAttributesInDatasheets.eps")
+
+## Draw the different suppliers used for the data. 
+fig, axs                = plt.subplots( 1, 1, tight_layout=True )
+supplierNames           = ['MSC', 'BCT', 'HAI', 'GSP', 'SIP', 'RCD', 'NAN', 'BST', 'AUF']
+numberOfHardware        = [3.0, 7.0, 1.0, 1.0, 5.0, 9.0, 1.0, 1.0, 4.0]
+labelName               = ["Microsat Systems Canada", "Blue Canyon Technologies Inc", "Honeywell Aerospace Inc", "Gomspace", "Sinclair Interplanetary", "Rockwell Collins Deutschland", "NanoAvionika Llc", "Berlin Space Technologies GmbH", "Astro- und Feinwerktechnik Adlershof GmbH"]
+ytickLocation    = np.array([])
+# attributeCount   = np.array([])
+patches          = []
+x  = 0.0 
+y  = 0.5
+wide = 1.0
+
+for ii in range(len(supplierNames)):
+    ytickLocation       = np.append( ytickLocation, y + (wide / 2.0)  ) 
+    rect                = mpatches.Rectangle(xy=(x,y), width=numberOfHardware[ii], height=wide, 
+                                label=labelName[ii])
+#     print(labelName[ii])
+    axs.legend(labelName[ii])
+    patches.append(rect)    
+    y           = 2.0 + y
+    pass 
+
+collection = mcollections.PatchCollection(patches, cmap=plt.cm.hsv, alpha=0.6)
+colors = np.linspace(0, 1, len(patches))
+collection.set_array(np.array(colors))
+axs.add_collection(collection)
+# handles, labels = axs.get_legend_handles_labels()
+# print("Labels:", labels)
+# axs.legend(handles, labels)
+axs.autoscale()
+axs.set_yticks(ytickLocation)
+axs.set_yticklabels(supplierNames)
+fig.savefig(saveFigPath + "supplierProducts.eps")
+# axs.legend()
 
 # fig, axs         = plt.subplots( 1, 1, tight_layout=True )
 # n, bins, patches = axs.hist( mass, bins=n_bins)
@@ -120,7 +186,7 @@ ax5.set_title('Momentum Storage vs Torque for reaction wheels')
 ax5.grid(which='major', linestyle='-', linewidth='0.5', color='red')
 # Customize the minor grid
 ax5.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
-plt.close(showplot)
+plt.close()
 # fig5.savefig(saveFigPath + 'torqueVsMomentum.eps')
 
 # Log plot of Torque vs Momentum storage. 
@@ -135,7 +201,7 @@ ax5.set_title('Momentum Storage vs Max torque for reaction wheels')
 ax5.grid(which='major', linestyle='-', linewidth='0.5', color='red')
 # Customize the minor grid
 ax5.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
-plt.close(showplot)
+plt.close()
 # fig5.savefig(saveFigPath + 'torqueVsMomentum.eps')
 
 # # Log plot of torque vs mass 
