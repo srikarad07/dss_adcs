@@ -142,7 +142,7 @@ for filename in range(len(filesForTheplots)):
     # Locate the concept identifiers for all the concepts
     conceptIdentity                 = 'concept_3_*\\d\_\d\d'
     conceptIdentityStrings          = stringLocator(filesForTheplots[filename], conceptIdentity)
-    
+    # print("Identity strings: ", conceptIdentityStrings)
     # Locate the strings for necessary attributes
     stringToBeLocated               = 'rwPeakPower\\d'
     stringToBeLocated2              = 'rwMomentumPercent\\d'
@@ -175,6 +175,12 @@ avgPowerRange                   = np.arange( np.min(avgPower), np.max(avgPower),
 settlingTimeRange               = np.arange( np.min(settlingTime), np.max(settlingTime), 1.0 ); 
 
 names                           = state_history.index.values
+
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in xrange(0, len(l), n):
+        yield l[i:i + n]
+
 # print(rwPeakPowerPercent.shape)
 # print(rwPeakMomentumPercent.shape)
 
@@ -201,75 +207,110 @@ names                           = state_history.index.values
 # newDataFrame    = state_history.sort_values(by='rwPowerPercent1')
 # print(newDataFrame)
 # print(state_history)
-# fig      = plt.figure(figsize=figureSize)
-# ax       = fig.add_subplot(111)
 
+fig      = plt.figure(figsize=figureSize)
+ax       = fig.add_subplot(111)
+new      = chunks(peakPower, 100)
+# print(new)
+
+newMass  = chunks(mass, 100)
+
+testArray = []
+massTest  = []
+for i, j in zip(new, newMass):     
+    testArray.append(i)
+    massTest.append(j)
+ax.boxplot(testArray, positions=np.average(massTest, axis=1)) 
 # ax.errorbar( xPositions, peakPowerPercentMean, yerr=peakPowerPercentStd, fmt='o' )
 # ax.set_xticklabels( ['Concept 1', 'Concept 2'] )
-# ax.set_title('Peak power distribution')
+ax.set_title('Peak power distribution')
 # fig.savefig(saveFigPath + "case2a_peakPowerDistribution.png")
 
-fig       = plt.figure(figsize=figureSize)
-ax        = fig.add_subplot(111)
+fig      = plt.figure(figsize=figureSize)
+ax       = fig.add_subplot(111)
+new = chunks(avgPower, 100)
+# print(new)
+testArray = []
+for i in new:     
+    testArray.append(i)
+ax.boxplot(testArray, positions=np.average(massTest, axis=1))
+ax.set_title('Average power distribution')
 
-c        = np.random.randint(1,5,size=len(mass))
-sc = ax.scatter( mass, peakPower, s=100, c=c, cmap=cmap, norm=norm )
-ax.set_xlabel('Mass [kg]')
-ax.set_ylabel('Peak power [W]')
-ax.legend()
-ax.grid(linestyle='--', linewidth=0.25, color='black')
-ax.fill_between( massRange, peakPowerGiven[0], peakPowerGiven[1], facecolor='yellow', alpha=0.7)
-ax.fill_betweenx( peakPowerRange, massGiven[0], massGiven[1], facecolor='red', alpha=0.4)
-plt.tight_layout()   
+fig      = plt.figure(figsize=figureSize)
+ax       = fig.add_subplot(111)
+new      = chunks(settlingTime, 100)
 
-annot   = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",
-                    bbox=dict(boxstyle="round", fc="w"),
-                    arrowprops=dict(arrowstyle="->"))
-annot.set_visible(False)
+testArray = []
+for i in new:     
+    testArray.append(i)
+ax.boxplot(testArray, positions=np.average(massTest, axis=1))
+ax.set_title('Settling time distribution')
 
-fig.canvas.mpl_connect("motion_notify_event", hover)
-fig.savefig(saveFigPath + "case2a_massVsPeakPower.png")
+# print(np.average(massTest))
+# ax.errorbar( xPositions, peakPowerPercentMean, yerr=peakPowerPercentStd, fmt='o' )
+# ax.set_xticklabels( ['Concept 1', 'Concept 2'] )
 
-fig2             = plt.figure(figsize=figureSize)
-axScatter2       = fig2.add_subplot(111)
+# fig       = plt.figure(figsize=figureSize)
+# ax        = fig.add_subplot(111)
 
-fig3             = plt.figure(figsize=figureSize)
-axScatter3       = fig3.add_subplot(111)
+# c        = np.random.randint(1,5,size=len(mass))
+# sc = ax.scatter( mass, peakPower, s=100, c=c, cmap=cmap, norm=norm )
+# ax.set_xlabel('Mass [kg]')
+# ax.set_ylabel('Peak power [W]')
+# ax.legend()
+# ax.grid(linestyle='--', linewidth=0.25, color='black')
+# ax.fill_between( massRange, peakPowerGiven[0], peakPowerGiven[1], facecolor='yellow', alpha=0.7)
+# ax.fill_betweenx( peakPowerRange, massGiven[0], massGiven[1], facecolor='red', alpha=0.4)
+# plt.tight_layout()   
 
-fig4             = plt.figure(figsize=figureSize)
-axScatter4       = fig4.add_subplot(111)
+# annot   = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",
+#                     bbox=dict(boxstyle="round", fc="w"),
+#                     arrowprops=dict(arrowstyle="->"))
+# annot.set_visible(False)
 
-axScatter2.scatter( settlingTime, peakPower )
-axScatter2.set_xlabel('Settling time [min]')
-axScatter2.set_ylabel('Peak power [W]')
-axScatter2.legend()
-axScatter2.grid(linestyle='--', linewidth=0.25, color='black')
-axScatter2.fill_between( settlingTimeRange, peakPowerGiven[0], peakPowerGiven[1], facecolor='yellow', alpha=0.7)
-axScatter2.fill_betweenx( peakPowerRange, settlingTimeGiven[0], settlingTimeGiven[1], facecolor='red', alpha=0.4)
-plt.tight_layout()   
-fig2.savefig(saveFigPath + "case2a_settlingTimeVsPeakPower.png")
+# fig.canvas.mpl_connect("motion_notify_event", hover)
+# fig.savefig(saveFigPath + "case2a_massVsPeakPower.png")
 
-axScatter3.scatter( settlingTime, mass )
-axScatter3.set_xlabel('Settling time [min]')
-axScatter3.set_ylabel('Mass [kg]')
-axScatter3.legend()
-axScatter3.grid(linestyle='--', linewidth=0.25, color='black')
-axScatter3.fill_between( settlingTimeRange, massGiven[0], massGiven[1], facecolor='yellow', alpha=0.7)
-axScatter3.fill_betweenx( massRange, settlingTimeGiven[0], settlingTimeGiven[1], facecolor='red', alpha=0.4)
-plt.tight_layout()
-fig3.savefig(saveFigPath + "case2a_settlingTimeVsmass.png")
+# fig2             = plt.figure(figsize=figureSize)
+# axScatter2       = fig2.add_subplot(111)
 
-axScatter4.scatter( avgPower, peakPower )
-axScatter4.set_xlabel('Avg Power [W]')
-axScatter4.set_ylabel('Peak Power [W]')
-axScatter4.legend()
-axScatter4.grid(linestyle='--', linewidth=0.25, color='black')
-axScatter4.fill_between( avgPowerRange, peakPowerGiven[0], peakPowerGiven[1], facecolor='yellow', alpha=0.7)
-axScatter4.fill_betweenx( peakPowerRange, avgPowerGiven[0], avgPowerGiven[1], facecolor='red', alpha=0.4)
-plt.tight_layout()
-fig4.savefig(saveFigPath + "case2a_PeakVsAvgPower.png")
+# fig3             = plt.figure(figsize=figureSize)
+# axScatter3       = fig3.add_subplot(111)
 
-plt.show()
+# fig4             = plt.figure(figsize=figureSize)
+# axScatter4       = fig4.add_subplot(111)
+
+# axScatter2.scatter( settlingTime, peakPower )
+# axScatter2.set_xlabel('Settling time [min]')
+# axScatter2.set_ylabel('Peak power [W]')
+# axScatter2.legend()
+# axScatter2.grid(linestyle='--', linewidth=0.25, color='black')
+# axScatter2.fill_between( settlingTimeRange, peakPowerGiven[0], peakPowerGiven[1], facecolor='yellow', alpha=0.7)
+# axScatter2.fill_betweenx( peakPowerRange, settlingTimeGiven[0], settlingTimeGiven[1], facecolor='red', alpha=0.4)
+# plt.tight_layout()   
+# fig2.savefig(saveFigPath + "case2a_settlingTimeVsPeakPower.png")
+
+# axScatter3.scatter( settlingTime, mass )
+# axScatter3.set_xlabel('Settling time [min]')
+# axScatter3.set_ylabel('Mass [kg]')
+# axScatter3.legend()
+# axScatter3.grid(linestyle='--', linewidth=0.25, color='black')
+# axScatter3.fill_between( settlingTimeRange, massGiven[0], massGiven[1], facecolor='yellow', alpha=0.7)
+# axScatter3.fill_betweenx( massRange, settlingTimeGiven[0], settlingTimeGiven[1], facecolor='red', alpha=0.4)
+# plt.tight_layout()
+# fig3.savefig(saveFigPath + "case2a_settlingTimeVsmass.png")
+
+# axScatter4.scatter( avgPower, peakPower )
+# axScatter4.set_xlabel('Avg Power [W]')
+# axScatter4.set_ylabel('Peak Power [W]')
+# axScatter4.legend()
+# axScatter4.grid(linestyle='--', linewidth=0.25, color='black')
+# axScatter4.fill_between( avgPowerRange, peakPowerGiven[0], peakPowerGiven[1], facecolor='yellow', alpha=0.7)
+# axScatter4.fill_betweenx( peakPowerRange, avgPowerGiven[0], avgPowerGiven[1], facecolor='red', alpha=0.4)
+# plt.tight_layout()
+# fig4.savefig(saveFigPath + "case2a_PeakVsAvgPower.png")
+
+plt.show(True)
 
 print "Figures generated successfully!"
 print ""

@@ -2,14 +2,14 @@
     "filePath" : "/home/superman/Desktop/bulk_simulation", 
     "number_of_reactionWheels" : "none", 
     "parameters_to_plot": [
-        [ "settlingTime", "principleInertia2" ], 
-        [ "systemPeakPower", "principleInertia2"],
-        [ "systemAvgPower", "principleInertia2"]  
+        [ "settlingTime", "SlewRate" ], 
+        [ "systemPeakPower", "SlewRate"],
+        [ "systemAvgPower", "SlewRate"]  
     ],
     "axisTitles" : [ 
-        ["Maneuver time [min]", "MOIx [kg/m^2]" ], 
-        ["Peak power [W]", "MOIx [kg/m^2]"],
-        ["Average power [W]", "MOIx [kg/m^2]"]
+        ["Maneuver time [min]", "Slew rate [deg/sec]" ], 
+        ["Peak power [W]", "Slew rate [deg/sec]"],
+        ["Average power [W]", "Slew rate [deg/sec]"]
     ],
     "xAxisPlot" : "t", 
     "pltTitles": [

@@ -112,14 +112,14 @@ def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTi
             # Update the index of dataframe to be the concept identifier
             state_history.set_index('ConceptIdentifier', inplace=True)
             metadata.set_index('ConceptIdentifier', inplace=True)
+
+            ## Check if the indeces of the state history and metadata are same!
             if False == np.array_equal( state_history.index.values, metadata.index.values): 
                 print("ERROR!! Metadata and state history indexes do not match!!")
                 exit()
 
             yAxisParameterString  = stringLocator( stateHistoryPath, stringToBeLocated[0] )
             xAxisParameterString  = stringLocator( metadataPath, stringToBeLocated[1] )
-            # print("String searched with: ", stringToBeLocated[0])
-            # print("Strings for the plot: ", yAxisParameterString, xAxisParameterString )
 
             # To be displayed over the scatter points when hovered upon.
             names                   = state_history.index.values
@@ -132,7 +132,7 @@ def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTi
                 ax.set_xlabel(axisTitles[1])
                 ax.set_ylabel(axisTitles[0])
                 ax.grid(linestyle='--', linewidth=0.25, color='black')
-                ax.ticklabel_format(style='plain', axis='both', scilimits=(0,0))
+                ax.ticklabel_format(style='plain', axis='both')
                 c       = np.random.randint(1,5,size=len(xAxisParameterToPlot))
                 plt.tight_layout()
                 plt.draw( )
@@ -177,7 +177,7 @@ def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTi
         pass
     
     if saveFigureBool: 
-        fig.savefig( pathToSaveFigure + stringToBeLocated )
+        fig.savefig( pathToSaveFigure + stringToBeLocated[0] + "VS" + stringToBeLocated[1] + '.eps'  )
         pass 
     # plt.show()
     pass 
@@ -250,3 +250,14 @@ print "                         Exited successfully!                     "
 print "------------------------------------------------------------------"
 print ""
 
+# ### 
+#     "parameters_to_plot": [
+#         [ "settlingTime", "principleInertia2" ], 
+#         [ "systemPeakPower", "principleInertia2"],
+#         [ "systemAvgPower", "principleInertia2"]  
+#     ],
+#     "axisTitles" : [ 
+#         ["Maneuver time [min]", "MOIx [kg/m^2]" ], 
+#         ["Peak power [W]", "MOIx [kg/m^2]"],
+#         ["Average power [W]", "MOIx [kg/m^2]"]
+#     ],
