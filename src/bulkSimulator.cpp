@@ -93,7 +93,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
                                                 input.wheelOrientation ); 
 
     //! Total number of simulations. 
-    unsigned const totalNumberOfSimulations = (input.numberOfSamples - 1) * reactionWheelConcepts.size(); 
+    unsigned const totalNumberOfSimulations = (input.numberOfSamples) * reactionWheelConcepts.size(); 
     
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
     // Find a better way to do print the metadata file. 
