@@ -37,6 +37,12 @@ import os
 from csv_functions import stringLocator
 from csv_functions import requiredFiles
 
+# Import the plotter functions 
+from plotter_functions import plotWithSystemRequirements
+from plotter_functions import plotWithSystemLevelConstraints
+from plotter_functions import hoverFunctionality
+from plotter_functions import plotWithSystemConstraintsAndRequirements
+
 print ""
 print "------------------------------------------------------------------"
 print "                             dss_adcs                             "
@@ -54,80 +60,6 @@ print "                          Input parameters                        "
 print "******************************************************************"
 print ""
 
-## Plotting function with system requirements in the plot. 
-def plotWithSystemRequirements( xAxisParameterToPlot, yAxisParameterToPlot, system_requirements, ax ): 
-    # sc =  ax.scatter( xAxisParameterToPlot, yAxisParameterToPlot, marker='.', linewidth=10 )
-    
-    ## Define the range over which the area will be shaded.
-    xAxisParameterRange  = np.arange( 0.0, np.max(xAxisParameterToPlot), 1.0 ) 
-    yAxisParameterRange  = np.arange( 0.0, np.max(yAxisParameterToPlot), 1.0 )
-    
-    ## Get the requirements of the system.
-    if xAxisParameterToPlot.columns.values[0] in system_requirements.keys():
-        xAxisParameteRequirement    = system_requirements[ xAxisParameterToPlot.columns.values[0] ]
-    else: 
-        xAxisParameteRequirement    = 0
-        pass 
-
-    if yAxisParameterToPlot.columns.values[0] in system_requirements.keys():    
-        yAxisParameterRequirement   = system_requirements[ yAxisParameterToPlot.columns.values[0] ]
-    else: 
-        yAxisParameterRequirement   = 0
-        pass 
-    ## Check if the requirement if defined for the parameters that are being plotted. 
-    if xAxisParameteRequirement != 0 and yAxisParameterRequirement != 0 :   
-        ax.fill_between( xAxisParameterRange, yAxisParameterRequirement, 
-                                     1.5*yAxisParameterRequirement, facecolor='yellow', alpha=0.4)
-        ax.fill_betweenx( yAxisParameterRange, xAxisParameteRequirement, 
-                                     1.5*xAxisParameteRequirement, facecolor='red', alpha=0.4)
-    elif xAxisParameteRequirement != 0 and yAxisParameterRequirement == 0:
-         ax.fill_betweenx( yAxisParameterRange, xAxisParameteRequirement, 
-                                     1.5*xAxisParameteRequirement, facecolor='red', alpha=0.4)
-    elif yAxisParameterRequirement != 0 and xAxisParameteRequirement == 0:
-        ax.fill_between( xAxisParameterRange, yAxisParameterRequirement, 
-                                     1.5*yAxisParameterRequirement, facecolor='yellow', alpha=0.4)
-        pass 
-    pass  
-
-## Plotting function with system constraints in the plot. 
-def plotWithSystemLevelConstraints(xParameterToPlot, yParameterToPlot, state_history, systemConstraints, ax): 
-    
-    # Get strings of the system constraint and the value defined by the user.
-    constrainParameterString    = systemConstraints.keys()
-    
-    # Shorten the dataframe to only the value that are needed. 
-    requiredStateHistory  = state_history[constrainParameterString] 
-    
-    # Check if all rows are non-zero. Is used later to assess the final 
-    # criteria for assessment of system constraints. 
-    finalCriteria     = requiredStateHistory.all(axis=1)
-
-    for ii in range(len(constrainParameterString)):
-        
-        ## Get the constrina values and testing criteria for the system constraint.
-        intermediateConstraintString    =  constrainParameterString[ii]
-        intermediateConstraintValue     =  systemConstraints[constrainParameterString[ii]]
-        intermediateCriteria            = requiredStateHistory[intermediateConstraintString] < intermediateConstraintValue
-        
-        # Update the criteria with the criteria obtained for non zero with the system 
-        # constraint criteria above.
-        finalCriteria = finalCriteria & intermediateCriteria
-        pass 
-
-    print "The final concept values: ", requiredStateHistory[finalCriteria]
-    
-    ## Obtain the values that satisfy the constraints. 
-    constrainedValues           = requiredStateHistory[finalCriteria] 
-
-    # Get the index of values below constraints
-    indexOfBelowConstraints             = constrainedValues.index.values
-    
-    ## Get the x axis and y axis parameters for the values below the the constraints. 
-    constrainedXAxisParameterToPlot     = xParameterToPlot.loc[indexOfBelowConstraints]
-    constrainedYAxisParameterToPlot     = yParameterToPlot.loc[indexOfBelowConstraints]
-
-    return constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot
-
 def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTitles, systemRequirements, 
                       systemConstraints, showFigureBool, saveFigureBool, pathToSaveFigure, subplots, 
                       figureSize, hoverFlag, font ): 
@@ -144,12 +76,6 @@ def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTi
     ## For hover options. 
     norm    = plt.Normalize(1,4)
     cmap    = plt.cm.RdYlGn
-    
-    ## System requirements. 
-    system_requirements  = np.array(systemRequirements)
-
-    ## System constraints. 
-    system_constraints   = np.array(systemConstraints)
 
     ## Search for the files with the string as given in the path. 
     if plotWithString == 'none': 
@@ -222,85 +148,20 @@ def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTi
                 ax.set_xlabel(axisTitles[1])
                 ax.set_ylabel(axisTitles[0])
 
-                ## Check if the system requirements are defined by the user. 
-                if  bool(systemRequirements) == 1 and bool(systemConstraints) != 1:
-                    sc =  ax.scatter( xAxisParameterToPlot, yAxisParameterToPlot, marker='.', linewidth=10 )
+                ## Scatter plots with system requirements and constraints. 
+                sc = plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history )
 
-                    plotWithSystemRequirements( xAxisParameterToPlot, yAxisParameterToPlot, systemRequirements, ax )
-
-                ## Check if the system constraints are defined by the user. 
-                elif bool(systemConstraints) == 1 and bool(systemRequirements) != 1: 
-                    
-                    ## Check for system constraints
-                    constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot = plotWithSystemLevelConstraints( xAxisParameterToPlot, 
-                                                    yAxisParameterToPlot, 
-                                                    state_history,
-                                                    systemConstraints, ax )
-                    sc =  ax.scatter( constrainedXAxisParameterToPlot,
-                                      constrainedYAxisParameterToPlot, 
-                                      marker='.', linewidth=10 ) 
-                    
-                elif bool(systemConstraints) == 1 and bool(systemRequirements) == 1: 
-                    
-                    ## Check for system constraints
-                    constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot = plotWithSystemLevelConstraints( xAxisParameterToPlot, 
-                                                    yAxisParameterToPlot, 
-                                                    state_history,
-                                                    systemConstraints, ax )
-                    sc =  ax.scatter( constrainedXAxisParameterToPlot,
-                                      constrainedYAxisParameterToPlot, 
-                                      marker='.', linewidth=10 ) 
-                    plotWithSystemRequirements( constrainedXAxisParameterToPlot, 
-                                                constrainedYAxisParameterToPlot, 
-                                                systemRequirements, ax )
-                    
-                else: 
-                    sc =  ax.scatter( xAxisParameterToPlot, 
-                                      yAxisParameterToPlot, 
-                                      marker='.', linewidth=10 )
-                    pass 
                 ax.autoscale()
                 ax.grid(linestyle='--', linewidth=0.25, color='black')
                 ax.ticklabel_format(style='plain', axis='both')
-                c       = np.random.randint(1,5,size=len(xAxisParameterToPlot))
+                
                 plt.tight_layout()
                 # plt.draw( )
                 
-                ## Display concept identifier upone hovering over the plot.
+                ## Display concept identifier upon hovering over the plot.
                 if hoverFlag:
-                    annot   = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",
-                    bbox=dict(boxstyle="round", fc="w"),
-                    arrowprops=dict(arrowstyle="->"))
-                    annot.set_visible(False)
-                    ## <<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>> ## 
-                    ## Figure out a way to move it to a separate function ## 
-                    # Hover over the point to get coordinates. 
-                    def update_annot(ind, sc, annot):
-                        pos = sc.get_offsets()[ind["ind"][0]]
-                        annot.xy = pos
-                        text = "{}".format( " ".join([names[n] for n in ind["ind"]]))
-                        annot.set_text(text)
-                        annot.get_bbox_patch().set_facecolor(cmap(norm(c[ind["ind"][0]])))
-                        annot.get_bbox_patch().set_alpha(0.4)
-                        pass 
-                    def hover(event):
-                        vis = annot.get_visible()
-                        if event.inaxes == ax:
-                            cont, ind = sc.contains(event)
-                            if cont:
-                                update_annot(ind, sc, annot)
-                                annot.set_visible(True)
-                                fig.canvas.draw_idle()
-                            else:
-                                if vis:
-                                    annot.set_visible(False)
-                                    fig.canvas.draw_idle()
-                        pass 
-                    norm    = plt.Normalize(1,4)
-                    cmap    = plt.cm.RdYlGn
-                    ## <<<<<<<<<<<<<<<<<<<<, TO DO >>>>>>>>>>>>>>>>> ## 
-                    fig.canvas.mpl_connect("motion_notify_event", hover)
-                    pass 
+                   hoverFunctionality( ax, names, sc, fig, xAxisParameterToPlot ) 
+                   pass 
                 pass 
             pass 
         pass
