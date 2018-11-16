@@ -64,13 +64,31 @@ print ""
 
 def dss_adcs_plotter( path, stringToBeLocated, mode, typeOfPlots, plotWithString, pltTitles, axisTitles, 
 systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSaveFigure, subplotFlag, 
-                      figureSize, hoverFlag, font ): 
+                      figureProperties, hoverFlag, font, plotProperties ): 
     
     # Number of simulations.
     # <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
     # This should be defined by the user in the json input file   
     numberOfSimulations     = 100
     # <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
+
+    # plot_properties =  {
+    #     "marker":".", 
+    #     "linewidth":10.0, 
+    #     "c":"cyan",
+    #     "alpha":0.5 
+    # "font" : {
+    #     "family" : "monospace",
+    #     "weight" : "bold",
+    #     "size"   :  15 
+    #     },
+    # }
+    # "fig_properties"  : {
+    # "figsize" :  [ 10.0, 
+    #             8.0
+    #         ],
+    # "tight_layout" : true
+    # }, 
 
     # Font for matplotlib 
     matplotlib.rc('font', **font) 
@@ -93,9 +111,8 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
         filesForTheplots    = requiredFiles( path, stateHistoryString, plotWithString )
         filesForThePlots2   = requiredFiles( path, metadataString, plotWithString )        
         pass
-
-        
-    fig = plt.figure( figsize=figureSize )
+  
+    fig = plt.figure( **figureProperties )
     ax = fig.add_subplot(111)
     ax.autoscale()
     ax.grid(linestyle='--', linewidth=0.25, color='black')
@@ -145,18 +162,15 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
         
         elif mode == "bulk_simulation":            
                                 
-            bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations )
+            bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations, plotProperties )
 
             pass 
         
         pass
-    
-    plt.tight_layout()
 
     if saveFigureBool: 
         fig.savefig( pathToSaveFigure + stringToBeLocated[0] + "VS" + stringToBeLocated[1] + '.eps'  )
         pass 
-    # plt.show()
     pass 
 
 ## JSON file path. 
@@ -205,14 +219,17 @@ saveFigurePath              = inputPythonPlotData["saveFigurePath"]
 # Subplots or same plot
 subplots                    = False
 
-# Figure Size
-figureSize                  = inputPythonPlotData["figSize"]
+# Figure Poperties
+figureProperties            = inputPythonPlotData["fig_properties"]
 
 # Hover Flag                
 hoverFlag                   = inputPythonPlotData["hover_flag"] 
 
 # Font type and size: 
 font                        = inputPythonPlotData["font"]
+
+# Properties of the plot: 
+plotProperties              = inputPythonPlotData["plot_properties"]
 
 # Requirements of the system: 
 system_requirements         = inputPythonPlotData["systemRequirements"]
@@ -222,9 +239,10 @@ system_constraints          = inputPythonPlotData["systemConstraints"]
 
 for i in range( len(stringToPlot) ): 
 
-    dss_adcs_plotter( stateHistoryFilePath, stringToPlot[i], mode, typeOfPlots, plotWithString, plotTitles[i], axesTitles[i], system_requirements, system_constraints, showFigure, savefig, saveFigurePath, subplots, figureSize, hoverFlag, font )
+    dss_adcs_plotter( stateHistoryFilePath, stringToPlot[i], mode, typeOfPlots, plotWithString, plotTitles[i], axesTitles[i], system_requirements, system_constraints, showFigure, savefig, saveFigurePath, subplots, figureProperties, hoverFlag, font, plotProperties )
     
     pass 
+    
 plt.show( showFigure )
 
 print "Figures generated successfully!"

@@ -128,11 +128,11 @@ def hoverFunctionality( ax, names, sc, fig, xAxisParameterToPlot ):
     fig.canvas.mpl_connect("motion_notify_event", hover)
 
 ## Function to plot with system requirements and constraints. 
-def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history ):
+def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history, plotProperties ):
     
     ## Check if the system requirements are defined by the user. 
     if  bool(systemRequirements) == 1 and bool(systemConstraints) != 1:
-        sc =  ax.scatter( xAxisParameterToPlot, yAxisParameterToPlot, marker='.', linewidth=10 )
+        sc =  ax.scatter( xAxisParameterToPlot, yAxisParameterToPlot, **plotProperties )
 
         plotWithSystemRequirements( xAxisParameterToPlot, yAxisParameterToPlot, systemRequirements, ax )
 
@@ -146,7 +146,7 @@ def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstrai
                                         systemConstraints, ax )
         sc =  ax.scatter( constrainedXAxisParameterToPlot,
                             constrainedYAxisParameterToPlot, 
-                            marker='.', linewidth=10 ) 
+                            **plotProperties ) 
         
     elif bool(systemConstraints) == 1 and bool(systemRequirements) == 1: 
         
@@ -157,7 +157,7 @@ def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstrai
                                         systemConstraints, ax )
         sc =  ax.scatter( constrainedXAxisParameterToPlot,
                             constrainedYAxisParameterToPlot, 
-                            marker='.', linewidth=10 ) 
+                            **plotProperties ) 
         plotWithSystemRequirements( constrainedXAxisParameterToPlot, 
                                     constrainedYAxisParameterToPlot, 
                                     systemRequirements, ax )
@@ -165,7 +165,7 @@ def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstrai
     else: 
         sc =  ax.scatter( xAxisParameterToPlot, 
                             yAxisParameterToPlot, 
-                            marker='.', linewidth=10 )
+                           **plotProperties)
         pass 
     return sc 
 
@@ -220,8 +220,7 @@ def singleSimulationPlots( subplotFlag, yAxisParameterString, xAxisParameterStri
 
     return ax 
 
-def bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations ): 
-    
+def bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations, plotProperties ): 
     
     for ii in range(len(yAxisParameterString)):
         ## Add the extra [] to get the result as a dataframe; it is used 
@@ -234,7 +233,7 @@ def bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParame
             pass 
         if typeOfPlots == "scatter": 
             ## Scatter plots with system requirements and constraints. 
-            sc = plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history )
+            sc = plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history, plotProperties )
             
             ## Display concept identifier upon hovering over the plot.
             if hoverFlag:

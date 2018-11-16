@@ -4,39 +4,52 @@
     "number_of_reactionWheels" : "none",
     "type_of_plots" : "scatter",  
     "parameters_to_plot": [
-        [ "systemAvgPower", "mass" ]
-
+        [ "systemAvgPower", "mass" ],
+        [ "systemPeakPower", "mass" ], 
+        [ "settlingTime", "mass" ],
+        ["rwMomentumPercent\\d", "mass"],
+        ["rwPeakPowerPercent\\d", "mass"] 
     ],
     "axisTitles" : [ 
-        ["Average power [W]", "Mass [kg]"  ]    
+        ["Average power [W]", "Mass [kg]"  ],
+        ["Peak power [W]", "Mass [kg]"  ],
+        ["Settling Time [min]", "Mass [kg]"  ],      
+        ["Momentum storage [%]", "Mass [kg]"],
+        ["Peak Power [%]", "Mass [kg]"]
     ],
     "systemRequirements" : {
-       "systemAvgPower" : 30.0 
     },
     "systemConstraints" : {
-        "systemPeakPower" : 100.0
     },
     "xAxisPlot" : "t", 
     "pltTitles": [
         "Power [W]", 
         "temp1", 
         "temp2", 
-        "temp3"
+        "temp3", 
+        "temp1"
     ],   
     "showFigures": true, 
     "saveFigures" : false,
     "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case2/", 
-    "hover_flag" : true, 
+    "hover_flag" : true,
+    "plot_properties": {
+        "marker":".", 
+        "linewidth":10.0, 
+        "c":"cyan",
+        "alpha":0.5
+    }, 
     "font" : {
         "family" : "monospace",
         "weight" : "bold",
         "size"   :  15 
         },
-    "figSize" : 
-        [
-            10.0, 
-            8.0
-        ],
+    "fig_properties"  : {
+    "figsize" :  [ 10.0, 
+                8.0
+            ],
+    "tight_layout" : true
+    }, 
     "reference": [
             [ "systemAvgPower", "mass" ],
             [ "systemPeakPower", "mass" ], 
@@ -48,6 +61,11 @@
             ["Peak power [W]", "Mass [kg]"  ],
             ["Peak power [W]", "Settling Time [min]" ],     
             ["Settling Time [min]", "Mass [kg]"  ]    
-        ]
+        ],
+    "grid":{
+            "linestyle":"--", 
+            "linewidth":0.25, 
+            "color":"black"
+        }
 }
 
