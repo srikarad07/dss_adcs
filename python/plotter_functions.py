@@ -8,6 +8,15 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+## Extract chunks of data from the array. 
+def chunks(l, n):
+    
+    """Yield successive n-sized chunks from l."""
+    for i in xrange(0, len(l), n):
+        yield l[i:i + n]
+    
+    pass
+
 ## Plotting function with system requirements in the plot. 
 def plotWithSystemRequirements( xAxisParameterToPlot, yAxisParameterToPlot, system_requirements, ax ): 
     # sc =  ax.scatter( xAxisParameterToPlot, yAxisParameterToPlot, marker='.', linewidth=10 )
@@ -118,6 +127,7 @@ def hoverFunctionality( ax, names, sc, fig, xAxisParameterToPlot ):
     ## <<<<<<<<<<<<<<<<<<<<, TO DO >>>>>>>>>>>>>>>>> ## 
     fig.canvas.mpl_connect("motion_notify_event", hover)
 
+## Function to plot with system requirements and constraints. 
 def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history ):
     
     ## Check if the system requirements are defined by the user. 
@@ -158,4 +168,86 @@ def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstrai
                             marker='.', linewidth=10 )
         pass 
     return sc 
+
+def drawBoxplots( xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history, numberOfSimulations ):
+    
+    tempXParameterToPlot    = np.array(xAxisParameterToPlot)
+    
+    ## Split the entire histories of parameters into chunks based on numberOfSimulation. 
+    yParameterChunks        = chunks(yAxisParameterToPlot, numberOfSimulations)
+    xParameterChunks        = chunks(tempXParameterToPlot, numberOfSimulations)
+
+    yParameterBoxPlot       = []
+    xParameterBoxPlot       = []
+
+    for i, j in zip(yParameterChunks, xParameterChunks):     
+        yParameterBoxPlot.append(i)
+        xParameterBoxPlot.append(j)
+        pass 
+
+    ax.boxplot(yParameterBoxPlot, positions=np.average(xParameterBoxPlot, axis=1) ) 
+
+    pass 
+
+## Function to plot single simulation in either subplots or not. 
+
+def singleSimulationPlots( subplotFlag, yAxisParameterString, xAxisParameterString, fig, state_history ): 
+    
+    if subplotFlag == True:
+        jj = np.ceil( len(yAxisParameterString)/ 2.0 )
+        for i in range(len(yAxisParameterString)):
+            ax = fig.add_subplot(2,jj,i+1)
+            ax.plot( state_history[xAxisParameterString], state_history[yAxisParameterString[i]] )
+            # ax.set_title( 'Power' + str(i+1) + ' [W]' )
+            ax.set_xlabel('time[min]')
+            handles, labels = ax.get_legend_handles_labels()
+            # ax.legend(handles, labels)
+            ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+            pass 
+         
+    elif subplotFlag == False: 
+        for i in range(len(yAxisParameterString)):
+            # ax = fig.add_subplot(2,jj,i+1)
+            ax.plot( xAxisParameterString, state_history[yAxisParameterString[i]], color=colors[i],     linestyle=linestyles[i], linewidth=2.0 )
+            ax.set_xlabel('Time [min]')
+            ax.set_ylabel('Motor torque [N/m]')
+            ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+            pass 
+    else: 
+        print "Error!!!!! Subplotflag incorrectly defined!"
+        exit()
+        pass
+
+    return ax 
+
+def bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations ): 
+    
+    
+    for ii in range(len(yAxisParameterString)):
+        ## Add the extra [] to get the result as a dataframe; it is used 
+        ## later for a function! 
+        yAxisParameterToPlot  = state_history[[yAxisParameterString[ii]]] 
+        if xAxisParameterString.size == 0:
+            xAxisParameterToPlot  = state_history[xAxisParameterString2] 
+        else:    
+            xAxisParameterToPlot  = metadata[xAxisParameterString] 
+            pass 
+        if typeOfPlots == "scatter": 
+            ## Scatter plots with system requirements and constraints. 
+            sc = plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history )
+            
+            ## Display concept identifier upon hovering over the plot.
+            if hoverFlag:
+                hoverFunctionality( ax, names, sc, fig, xAxisParameterToPlot ) 
+                pass         
+        
+        elif typeOfPlots == "boxplot": 
+             drawBoxplots( xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history, numberOfSimulations )
+        
+        pass
+
+        pass  
+
+    pass # def bulkSimulationPlots 
+
 

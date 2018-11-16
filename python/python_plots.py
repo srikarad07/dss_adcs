@@ -42,6 +42,8 @@ from plotter_functions import plotWithSystemRequirements
 from plotter_functions import plotWithSystemLevelConstraints
 from plotter_functions import hoverFunctionality
 from plotter_functions import plotWithSystemConstraintsAndRequirements
+from plotter_functions import singleSimulationPlots
+from plotter_functions import bulkSimulationPlots
 
 print ""
 print "------------------------------------------------------------------"
@@ -60,10 +62,16 @@ print "                          Input parameters                        "
 print "******************************************************************"
 print ""
 
-def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTitles, systemRequirements, 
-                      systemConstraints, showFigureBool, saveFigureBool, pathToSaveFigure, subplots, 
+def dss_adcs_plotter( path, stringToBeLocated, mode, typeOfPlots, plotWithString, pltTitles, axisTitles, 
+systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSaveFigure, subplotFlag, 
                       figureSize, hoverFlag, font ): 
     
+    # Number of simulations.
+    # <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
+    # This should be defined by the user in the json input file   
+    numberOfSimulations     = 100
+    # <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
+
     # Font for matplotlib 
     matplotlib.rc('font', **font) 
 
@@ -85,87 +93,66 @@ def dss_adcs_plotter( path, stringToBeLocated, plotWithString, pltTitles, axisTi
         filesForTheplots    = requiredFiles( path, stateHistoryString, plotWithString )
         filesForThePlots2   = requiredFiles( path, metadataString, plotWithString )        
         pass
-    
-    ## Loop over the files to plot parameters from all the files. 
+
+        
     fig = plt.figure( figsize=figureSize )
+    ax = fig.add_subplot(111)
+    ax.autoscale()
+    ax.grid(linestyle='--', linewidth=0.25, color='black')
+    ax.ticklabel_format(style='plain', axis='both')
+    ax.set_xlabel(axisTitles[1])
+    ax.set_ylabel(axisTitles[0])
+
+    ## Loop over the files to plot parameters from all the files. 
     for filename in range(len(filesForTheplots)):
 
-        state_history   = pd.read_csv( filesForTheplots[filename] )
-        metadata        = pd.read_csv( filesForThePlots2[filename] )
+        state_history           = pd.read_csv( filesForTheplots[filename] )
+        metadata                = pd.read_csv( filesForThePlots2[filename] )
 
         stateHistoryPath        = filesForTheplots[filename]
         metadataPath            = filesForThePlots2[filename]
-
-        if subplots == True: 
             
-            yAxisParameter  = stringLocator( stateHistoryPath, stringToBeLocated[0] )
-            xAxisParameter  = stringLocator( stateHistoryPath, stringToBeLocated[1] )
-            jj = np.ceil( len(yAxisParameter)/ 2.0 )
+        # Update the index of dataframe to be the concept identifier
+        state_history.set_index('ConceptIdentifier', inplace=True)
+        metadata.set_index('ConceptIdentifier', inplace=True)
 
-            for i in range(len(yAxisParameter)):
-                ax = fig.add_subplot(2,jj,i+1)
-                ax.plot( state_history[xAxisParameter]/60.0, state_history[yAxisParameter[i]] )
-                # ax.set_title( 'Power' + str(i+1) + ' [W]' )
-                ax.set_xlabel('time[min]')
-                handles, labels = ax.get_legend_handles_labels()
-                # ax.legend(handles, labels)
-                ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
-                pass 
+        ## Check if the indexes of the state history and metadata are same!
+        if False == np.array_equal( state_history.index.values, metadata.index.values): 
+            print "ERROR!! Metadata and state history indexes do not match!!" 
+            exit()
+        
+        ## Get the xAxis and yAxis parameter strings
+        yAxisParameterString  = stringLocator( stateHistoryPath, stringToBeLocated[0] )
+        xAxisParameterString  = stringLocator( metadataPath, stringToBeLocated[1] )    
+        if xAxisParameterString.size == 0:
+            xAxisParameterString2  = stringLocator( stateHistoryPath, stringToBeLocated[1] )
+            pass 
+
+        # To be displayed over the scatter points when hovered upon.
+        names                   = state_history.index.values
+
+        if mode == "single_simulation": 
+            
+            yAxisParameterString  = stringLocator( stateHistoryPath, stringToBeLocated[0] )
+            xAxisParameterString  = stringLocator( stateHistoryPath, stringToBeLocated[1] )
+            # jj = np.ceil( len(yAxisParameter)/ 2.0 )
+
+            ax = singleSimulationPlots(subplotFlag, yAxisParameterString, xAxisParameterString, fig, state_history  )
             plt.suptitle( pltTitles, fontsize=16 )
             plt.tight_layout()
             plt.grid()
             pass 
         
-        elif subplots == False:            
-            # Update the index of dataframe to be the concept identifier
-            state_history.set_index('ConceptIdentifier', inplace=True)
-            metadata.set_index('ConceptIdentifier', inplace=True)
+        elif mode == "bulk_simulation":            
+                                
+            bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations )
 
-            ## Check if the indeces of the state history and metadata are same!
-            if False == np.array_equal( state_history.index.values, metadata.index.values): 
-                print "ERROR!! Metadata and state history indexes do not match!!" 
-                exit()
-
-            yAxisParameterString  = stringLocator( stateHistoryPath, stringToBeLocated[0] )
-            xAxisParameterString  = stringLocator( metadataPath, stringToBeLocated[1] )
-            if xAxisParameterString.size == 0:
-                xAxisParameterString2  = stringLocator( stateHistoryPath, stringToBeLocated[1] )
-                pass 
-
-            # To be displayed over the scatter points when hovered upon.
-            names                   = state_history.index.values
-            
-            ax = fig.add_subplot(111)
-            for ii in range(len(yAxisParameterString)):
-                ## Add the extra [] to get the result as a dataframe; it is used 
-                ## later for a function! 
-                yAxisParameterToPlot  = state_history[[yAxisParameterString[ii]]] 
-                if xAxisParameterString.size == 0:
-                   xAxisParameterToPlot  = state_history[xAxisParameterString2] 
-                else:    
-                   xAxisParameterToPlot  = metadata[xAxisParameterString] 
-                   pass 
-                ax.set_xlabel(axisTitles[1])
-                ax.set_ylabel(axisTitles[0])
-
-                ## Scatter plots with system requirements and constraints. 
-                sc = plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history )
-
-                ax.autoscale()
-                ax.grid(linestyle='--', linewidth=0.25, color='black')
-                ax.ticklabel_format(style='plain', axis='both')
-                
-                plt.tight_layout()
-                # plt.draw( )
-                
-                ## Display concept identifier upon hovering over the plot.
-                if hoverFlag:
-                   hoverFunctionality( ax, names, sc, fig, xAxisParameterToPlot ) 
-                   pass 
-                pass 
             pass 
+        
         pass
     
+    plt.tight_layout()
+
     if saveFigureBool: 
         fig.savefig( pathToSaveFigure + stringToBeLocated[0] + "VS" + stringToBeLocated[1] + '.eps'  )
         pass 
@@ -193,6 +180,12 @@ else:
 
 # String to be located.
 stringToPlot                = np.array( inputPythonPlotData["parameters_to_plot"] )
+
+# Simulation mode. 
+mode                        = inputPythonPlotData["mode"]
+
+# Type of plots. 
+typeOfPlots                 = inputPythonPlotData["type_of_plots"]
 
 # Titles of the figure.
 plotTitles                  = inputPythonPlotData["pltTitles"]
@@ -229,7 +222,7 @@ system_constraints          = inputPythonPlotData["systemConstraints"]
 
 for i in range( len(stringToPlot) ): 
 
-    dss_adcs_plotter( stateHistoryFilePath, stringToPlot[i], plotWithString, plotTitles[i], axesTitles[i], system_requirements, system_constraints, showFigure, savefig, saveFigurePath, subplots, figureSize, hoverFlag, font )
+    dss_adcs_plotter( stateHistoryFilePath, stringToPlot[i], mode, typeOfPlots, plotWithString, plotTitles[i], axesTitles[i], system_requirements, system_constraints, showFigure, savefig, saveFigurePath, subplots, figureSize, hoverFlag, font )
     
     pass 
 plt.show( showFigure )

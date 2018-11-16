@@ -1,23 +1,27 @@
 {
+    "mode" : "bulk_simulation", 
     "filePath" : "/home/superman/Desktop/bulk_simulation", 
-    "number_of_reactionWheels" : "none", 
+    "number_of_reactionWheels" : "none",
+    "type_of_plots" : "scatter",  
     "parameters_to_plot": [
-        [ "settlingTime", "SlewRate" ], 
-        [ "systemPeakPower", "SlewRate"],
-        [ "systemAvgPower", "SlewRate"]  
+        [ "systemAvgPower", "mass" ]
+
     ],
     "axisTitles" : [ 
-        ["Maneuver time [min]", "Slew rate [deg/sec]" ], 
-        ["Peak power [W]", "Slew rate [deg/sec]"],
-        ["Average power [W]", "Slew rate [deg/sec]"]
+        ["Average power [W]", "Mass [kg]"  ]    
     ],
+    "systemRequirements" : {
+       "systemAvgPower" : 30.0 
+    },
+    "systemConstraints" : {
+        "systemPeakPower" : 100.0
+    },
     "xAxisPlot" : "t", 
     "pltTitles": [
         "Power [W]", 
-        "Motor torque [Nm]",
-        "Control torque [Nm]", 
-        "Angular momentum [Nms]",
-        "Reaction wheel angular velocities [rpm]"
+        "temp1", 
+        "temp2", 
+        "temp3"
     ],   
     "showFigures": true, 
     "saveFigures" : false,
@@ -32,5 +36,18 @@
         [
             10.0, 
             8.0
+        ],
+    "reference": [
+            [ "systemAvgPower", "mass" ],
+            [ "systemPeakPower", "mass" ], 
+            [ "systemPeakPower", "settlingTime" ],
+            [ "settlingTime", "mass" ] 
+        ],
+    "reference2" : [ 
+            ["Average power [W]", "Mass [kg]"  ],
+            ["Peak power [W]", "Mass [kg]"  ],
+            ["Peak power [W]", "Settling Time [min]" ],     
+            ["Settling Time [min]", "Mass [kg]"  ]    
         ]
 }
+
