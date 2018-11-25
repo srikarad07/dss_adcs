@@ -51,8 +51,8 @@ from functions import calculatePeakPowerPercentage
 from functions import calculateSaturationPercentage
 from functions import calculateSettlingTime
 
-# plt.style.use('seaborn-whitegrid')
-plt.style.use('dark_background')
+plt.style.use('seaborn-whitegrid')
+# plt.style.use('dark_background')
 # plt.style.use(['dark_background', 'presentation'])
 print ""
 print "------------------------------------------------------------------"
@@ -83,10 +83,10 @@ print ""
 filesForTheplots            = ["/home/superman/Desktop/single_simulation/state_history.csv"]
 # print(filesForTheplots)
 # Define linestyles. 
-linestyles = ['-', '--', '-.', ':']
+linestyles = ['-', '--', '-.', ':', '-.']
 
 # Define colors 
-colors  = ['r', 'b', 'c', 'g']
+colors  = ['r', 'b', 'c', 'g', 'k']
 
 # Change the font size 
 font = {'family' : 'monospace',
@@ -226,39 +226,39 @@ for filename in range(len(filesForTheplots)):
 plt.close(closeplot)
 
 # # ## Plot angular momentum of the reaction wheels. 
-# fig = plt.figure()
-# ax  = fig.add_subplot(111)
+fig = plt.figure()
+ax  = fig.add_subplot(111)
 
-# for filename in range(len(filesForTheplots)):
+for filename in range(len(filesForTheplots)):
 
-#     state_history   = pd.read_csv( filesForTheplots[filename] )
-#     testPath   = filesForTheplots[filename]
-#     stringToBeLocated   = 'angularMomentum'
-#     results = stringLocator(testPath, stringToBeLocated )
+    state_history   = pd.read_csv( filesForTheplots[filename] )
+    testPath   = filesForTheplots[filename]
+    stringToBeLocated   = 'angularMomentum\\d'
+    results = stringLocator(testPath, stringToBeLocated )
 
-#     for i in range(len(results)):
-#         jj = np.ceil( len(results)/ 2.0 )
-#         # ax = fig.add_subplot(2,jj,i+1)
-#         ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
-#         ax.set_xlabel('Time[min]')
-#         ax.set_ylabel('Angular momentum [kgm2/sec]')
-#         ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-#         pass 
+    for i in range(len(results)):
+        jj = np.ceil( len(results)/ 2.0 )
+        # ax = fig.add_subplot(2,jj,i+1)
+        ax.plot( state_history['t']/60.0, state_history[results[i]], color=colors[i], linestyle=linestyles[i] )
+        ax.set_xlabel('Time[min]')
+        ax.set_ylabel('Angular momentum [kgm2/sec]')
+        ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        pass 
     
-#         ax.grid()
-#         plt.tight_layout()
-#         header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
-#                               markersize=10, label='RW1 angular momentum')
-#         header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
-#                               markersize=10, label='RW2 angular momentum')
-#         header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
-#                               markersize=10, label='RW3 angular momentum')
-#         header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-#                               markersize=10, label='RW4 angular momentum')   
-#         plt.legend(handles=[header1,header2,header3,header4])
+        ax.grid()
+        plt.tight_layout()
+        header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
+                              markersize=10, label='RW1 angular momentum')
+        header2 = mlines.Line2D([], [], color=colors[1], linestyle=linestyles[1],
+                              markersize=10, label='RW2 angular momentum')
+        header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
+                              markersize=10, label='RW3 angular momentum')
+        header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
+                              markersize=10, label='RW4 angular momentum')   
+        plt.legend(handles=[header1,header2,header3,header4])
 
-#         plt.grid()
-#     pass 
+        plt.grid()
+    pass 
 
 # fig.savefig(savefigPath +'angularMomentumReactionWheels.eps')
 # plt.close(closeplot)
@@ -315,6 +315,7 @@ for filename in range(len(filesForTheplots)):
         ax.set_xlabel('Time[min]')
         # ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
         pass 
+    ax.plot( state_history['t']/60.0, state_history['totalSystemPower'], color=colors[4], linestyle=linestyles[4] )
     ax.grid()
     plt.tight_layout()
     header1 = mlines.Line2D([], [], color=colors[0], linestyle=linestyles[0],
@@ -324,8 +325,10 @@ for filename in range(len(filesForTheplots)):
     header3 = mlines.Line2D([], [], color=colors[2], linestyle=linestyles[2],
                           markersize=10, label='RW3 power consumption')
     header4 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
-                          markersize=10, label='RW4 power consumption')   
-    plt.legend(handles=[header1,header2,header3,header4])
+                          markersize=10, label='RW4 power consumption')  
+    header5 = mlines.Line2D([], [], color=colors[3], linestyle=linestyles[3],
+                          markersize=10, label='Total system power')   
+    plt.legend(handles=[header1,header2,header3,header4,header5])
     plt.grid()
     
     pass 

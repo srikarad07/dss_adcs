@@ -7,7 +7,6 @@ See accompanying file LICENSE.md or copy at http://opensource.org/licenses/MIT
 # Set up modules and packages.
 # Plotting
 import matplotlib
-# matplotlib.use('seaborn-whitegrid')
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 # from matplotlib import rcParams
@@ -113,10 +112,16 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
         pass
   
     fig = plt.figure( **figureProperties )
-    ax = fig.add_subplot(111)
+    ax  = fig.add_subplot(111)
     ax.autoscale()
     ax.grid(linestyle='--', linewidth=0.25, color='black')
-    ax.ticklabel_format(style='plain', axis='both')
+    
+    ## <<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>> ## 
+    # Switching off the scientific tick format is not working! Need to be fixed 
+    ax.tick_params(axis='both', which='major')
+    plt.ticklabel_format(axis='both', style='sci', scilimits=None)    
+    ## <<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>> ## 
+    
     ax.set_xlabel(axisTitles[1])
     ax.set_ylabel(axisTitles[0])
 
@@ -165,9 +170,8 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
             bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations, plotProperties )
 
             pass 
-        
-        pass
 
+        pass
     if saveFigureBool: 
         fig.savefig( pathToSaveFigure + stringToBeLocated[0] + "VS" + stringToBeLocated[1] + '.eps'  )
         pass 

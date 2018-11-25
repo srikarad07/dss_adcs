@@ -199,19 +199,19 @@ def singleSimulationPlots( subplotFlag, yAxisParameterString, xAxisParameterStri
             ax = fig.add_subplot(2,jj,i+1)
             ax.plot( state_history[xAxisParameterString], state_history[yAxisParameterString[i]] )
             # ax.set_title( 'Power' + str(i+1) + ' [W]' )
-            ax.set_xlabel('time[min]')
+            # ax.set_xlabel('time[min]')
             handles, labels = ax.get_legend_handles_labels()
             # ax.legend(handles, labels)
-            ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
+            # ax.ticklabel_format(style='sci', axis='both', scilimits=(0,0))
             pass 
          
     elif subplotFlag == False: 
         for i in range(len(yAxisParameterString)):
             # ax = fig.add_subplot(2,jj,i+1)
             ax.plot( xAxisParameterString, state_history[yAxisParameterString[i]], color=colors[i],     linestyle=linestyles[i], linewidth=2.0 )
-            ax.set_xlabel('Time [min]')
-            ax.set_ylabel('Motor torque [N/m]')
-            ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+            # ax.set_xlabel('Time [min]')
+            # ax.set_ylabel('Motor torque [N/m]')
+            # ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             pass 
     else: 
         print "Error!!!!! Subplotflag incorrectly defined!"

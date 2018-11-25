@@ -5,7 +5,7 @@
     "principle_inertia": [
         10.0,
         10.0,
-        8.0
+        18.0
     ],
     
     // Attitude representation type. Change it to initial attitude 
@@ -14,9 +14,9 @@
     
     // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3). 
     "initial_attitude_state": [
-        60.0,
-        60.0,
-        60.0,
+        0.0,
+        0.0,
+        0.0,
         0.0,
         0.0,
         0.0
@@ -24,9 +24,9 @@
 
     // Change reference to target. [target_attitude_state]
     "attitude_reference_state": [
-        0.0, 
-        0.0, 
-        0.0
+        100.0,
+        120.0,
+        100.0
     ],
 
     // Flag for the asymmetric body torque on the system 
@@ -55,39 +55,32 @@
     
     "reaction_wheels": [
         {
-            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
+            "uuid": "890c1d1a-0289-5e3b-ae68-c51468ecdaf5",
             "wheel_orientation": [
-                0.0, 
-                90.0
+                90.0, 
+                0.0
             ] 
         },
         {
-            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
+            "uuid": "890c1d1a-0289-5e3b-ae68-c51468ecdaf5",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
+            "uuid": "890c1d1a-0289-5e3b-ae68-c51468ecdaf5",
             "wheel_orientation": [
                 0.0, 
-                0.0
+                90.0
             ]
-        }, 
-        {
-            "uuid": "e45102be-c531-5eb9-bfb8-47ff3a5f3358",
-            "wheel_orientation": [
-                45.0, 
-                45.0
-            ]
-        }  
+        }
     ],
-
+ 
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.5, 
+    "slew_saturation_rate" : 0.3, 
 
     // Controller type
     // quaternion_feedback | cascade_saturation | cascade_saturation_with_limiter
@@ -105,7 +98,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 800.0,
+    "end_epoch": 3000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).

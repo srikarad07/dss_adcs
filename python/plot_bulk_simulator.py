@@ -182,7 +182,7 @@ def chunks(l, n):
         yield l[i:i + n]
 
 # print(rwPeakPowerPercent.shape)
-# print(rwPeakMomentumPercent.shape)
+print(rwPeakMomentumPercent[0].shape)
 
 # print("Before sorting: ", rwPeakPowerPercent )
 
@@ -224,17 +224,22 @@ ax.boxplot(testArray, positions=np.average(massTest, axis=1))
 # ax.errorbar( xPositions, peakPowerPercentMean, yerr=peakPowerPercentStd, fmt='o' )
 # ax.set_xticklabels( ['Concept 1', 'Concept 2'] )
 ax.set_title('Peak power distribution')
-# fig.savefig(saveFigPath + "case2a_peakPowerDistribution.png")
+ax.set_xlabel('Mass [kg]')
+ax.set_ylabel('Peak Power [W]')
+fig.savefig(saveFigPath + "peakPowerDistributionVsMass.png")
 
 fig      = plt.figure(figsize=figureSize)
 ax       = fig.add_subplot(111)
-new = chunks(avgPower, 100)
+new      = chunks(avgPower, 100)
 # print(new)
 testArray = []
 for i in new:     
     testArray.append(i)
 ax.boxplot(testArray, positions=np.average(massTest, axis=1))
 ax.set_title('Average power distribution')
+ax.set_xlabel('Mass [kg]')
+ax.set_ylabel('Average Power [W]')
+fig.savefig(saveFigPath + "avgPowerDistributionVsMass.png")
 
 fig      = plt.figure(figsize=figureSize)
 ax       = fig.add_subplot(111)
@@ -245,6 +250,32 @@ for i in new:
     testArray.append(i)
 ax.boxplot(testArray, positions=np.average(massTest, axis=1))
 ax.set_title('Settling time distribution')
+ax.set_xlabel('Mass [kg]')
+ax.set_ylabel('Maneuver time [min]')
+fig.savefig(saveFigPath + "settlingTimeDistributionVsMass.png")
+
+fig      = plt.figure(figsize=figureSize)
+ax       = fig.add_subplot(111)
+new1     = chunks(rwPeakMomentumPercent[0], 100)
+new2     = chunks(rwPeakMomentumPercent[1], 100)
+new3     = chunks(rwPeakMomentumPercent[2], 100)
+
+testArray   = []
+testArray2  = []
+testArray3  = []
+
+for i, j, k in zip(new1, new2, new3):     
+    testArray.append(i)
+    testArray2.append(j)
+    testArray3.append(k)
+ax.boxplot(testArray, positions=np.average(massTest, axis=1))
+ax.boxplot(testArray2, positions=np.average(massTest, axis=1))
+ax.boxplot(testArray3, positions=np.average(massTest, axis=1))
+
+ax.set_title('Momentum percentage distribution')
+ax.set_xlabel('Mass [kg]')
+ax.set_ylabel('Momentum storage [%]')
+fig.savefig(saveFigPath + "momentumStorageDistributionVsMass.png")
 
 # print(np.average(massTest))
 # ax.errorbar( xPositions, peakPowerPercentMean, yerr=peakPowerPercentStd, fmt='o' )
