@@ -89,6 +89,7 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
     # "tight_layout" : true
     # }, 
 
+    plt.style.use('dark_background')
     # Font for matplotlib 
     matplotlib.rc('font', **font) 
 
@@ -150,8 +151,8 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
             xAxisParameterString2  = stringLocator( stateHistoryPath, stringToBeLocated[1] )
             pass 
 
-        # To be displayed over the scatter points when hovered upon.
-        names                   = state_history.index.values
+        # # To be displayed over the scatter points when hovered upon.
+        # names                   = state_history.index.values
 
         if mode == "single_simulation": 
             
@@ -167,7 +168,7 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
         
         elif mode == "bulk_simulation":            
                                 
-            bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations, plotProperties )
+            bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, fig, typeOfPlots, numberOfSimulations, plotProperties )
 
             pass 
 
@@ -189,9 +190,9 @@ with open( pythonInputsJsonPath ) as data_file:
 stateHistoryFilePath        = inputPythonPlotData["filePath"]
 
 # Plot with searching for a specific string.
-numberOfReactionWheels      = inputPythonPlotData["number_of_reactionWheels"]
+numberOfReactionWheels      = inputPythonPlotData["plot_with_string"]
 if (numberOfReactionWheels != "none"):
-    plotWithString              = numberOfReactionWheels + '.csv' 
+    plotWithString              = numberOfReactionWheels 
 else: 
     plotWithString              = "none"
     pass 
