@@ -68,8 +68,8 @@ def plotWithSystemLevelConstraints(xParameterToPlot, yParameterToPlot, state_his
     for ii in range(len(constrainParameterString)):
         
         ## Get the constrina values and testing criteria for the system constraint.
-        intermediateConstraintString    =  constrainParameterString[ii]
-        intermediateConstraintValue     =  systemConstraints[constrainParameterString[ii]]
+        intermediateConstraintString    = constrainParameterString[ii]
+        intermediateConstraintValue     = systemConstraints[constrainParameterString[ii]]
         intermediateCriteria            = requiredStateHistory[intermediateConstraintString] < intermediateConstraintValue
         
         # Update the criteria with the criteria obtained for non zero with the system 
@@ -81,6 +81,7 @@ def plotWithSystemLevelConstraints(xParameterToPlot, yParameterToPlot, state_his
     
     ## Obtain the values that satisfy the constraints. 
     constrainedValues           = requiredStateHistory[finalCriteria] 
+    state_history               = state_history[finalCriteria] 
 
     # Get the index of values below constraints
     indexOfBelowConstraints             = constrainedValues.index.values
@@ -89,7 +90,7 @@ def plotWithSystemLevelConstraints(xParameterToPlot, yParameterToPlot, state_his
     constrainedXAxisParameterToPlot     = xParameterToPlot.loc[indexOfBelowConstraints]
     constrainedYAxisParameterToPlot     = yParameterToPlot.loc[indexOfBelowConstraints]
 
-    return constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot
+    return constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot, state_history
 
 def hoverFunctionality( ax, names, sc, fig, xAxisParameterToPlot ): 
     
@@ -140,7 +141,7 @@ def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstrai
     elif bool(systemConstraints) == 1 and bool(systemRequirements) != 1: 
         
         ## Check for system constraints
-        constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot = plotWithSystemLevelConstraints( xAxisParameterToPlot, 
+        constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot, state_history = plotWithSystemLevelConstraints( xAxisParameterToPlot, 
                                         yAxisParameterToPlot, 
                                         state_history,
                                         systemConstraints, ax )
@@ -151,7 +152,7 @@ def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstrai
     elif bool(systemConstraints) == 1 and bool(systemRequirements) == 1: 
         
         ## Check for system constraints
-        constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot = plotWithSystemLevelConstraints( xAxisParameterToPlot, 
+        constrainedXAxisParameterToPlot, constrainedYAxisParameterToPlot, state_history = plotWithSystemLevelConstraints( xAxisParameterToPlot, 
                                         yAxisParameterToPlot, 
                                         state_history,
                                         systemConstraints, ax )
@@ -167,7 +168,7 @@ def plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstrai
                             yAxisParameterToPlot, 
                            **plotProperties)
         pass 
-    return sc 
+    return sc, state_history 
 
 def drawBoxplots( xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history, numberOfSimulations ):
     
@@ -220,7 +221,7 @@ def singleSimulationPlots( subplotFlag, yAxisParameterString, xAxisParameterStri
 
     return ax 
 
-def bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, names, fig, typeOfPlots, numberOfSimulations, plotProperties ): 
+def bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParameterString2, state_history, metadata, ax, systemRequirements, systemConstraints, hoverFlag, fig, typeOfPlots, numberOfSimulations, plotProperties ): 
     
     for ii in range(len(yAxisParameterString)):
         ## Add the extra [] to get the result as a dataframe; it is used 
@@ -233,10 +234,11 @@ def bulkSimulationPlots( yAxisParameterString, xAxisParameterString, xAxisParame
             pass 
         if typeOfPlots == "scatter": 
             ## Scatter plots with system requirements and constraints. 
-            sc = plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history, plotProperties )
+            sc, state_history = plotWithSystemConstraintsAndRequirements( systemRequirements, systemConstraints, xAxisParameterToPlot, yAxisParameterToPlot, ax, state_history, plotProperties )
             
             ## Display concept identifier upon hovering over the plot.
             if hoverFlag:
+                names                   = state_history.index.values        
                 hoverFunctionality( ax, names, sc, fig, xAxisParameterToPlot ) 
                 pass         
         
