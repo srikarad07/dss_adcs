@@ -7,9 +7,9 @@
 
     // Principle moments of inertia in Body Fixed frame  in Vector3 (double) [kg/m2]
     "principle_inertia": [
-        100.0,
-        120.0,
-        118.0
+        50.0,
+        52.0,
+        51.0
     ],
 
     // Define the range of moments on inertia in Body fixed frame 
@@ -21,7 +21,7 @@
     ],
     
     // Slew rate [confirm units]
-    "slew_saturation_rate" : 0.3, 
+    "slew_saturation_rate" : 0.5, 
     
     // Range of slew 
     // null | double
@@ -135,6 +135,6 @@
 
     // Output
     // Set up file writer options.
-    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/metadata_",
-    "state_history_file_path": "/home/superman/Desktop/bulk_simulation/state_history_"
+    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/trial/inertia=50,52,51_metadata_",
+    "state_history_file_path": "/home/superman/Desktop/bulk_simulation/trial/inertia=50,52,51_state_history_"
 }

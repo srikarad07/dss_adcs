@@ -3,9 +3,9 @@
 
     // Principle moments of inertia in Body Fixed frame 
     "principle_inertia": [
-        10.0,
-        10.0,
-        18.0
+        200.0,
+        220.0,
+        210.0
     ],
     
     // Attitude representation type. Change it to initial attitude 
@@ -14,9 +14,9 @@
     
     // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3). 
     "initial_attitude_state": [
-        0.0,
-        0.0,
-        0.0,
+        100.0,
+        120.0,
+        110.0,
         0.0,
         0.0,
         0.0
@@ -24,9 +24,9 @@
 
     // Change reference to target. [target_attitude_state]
     "attitude_reference_state": [
-        100.0,
-        120.0,
-        100.0
+        0.0, 
+        0.0,
+        0.0
     ],
 
     // Flag for the asymmetric body torque on the system 
@@ -80,11 +80,11 @@
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.3, 
+    "slew_saturation_rate" : 0.5, 
 
     // Controller type
     // quaternion_feedback | cascade_saturation | cascade_saturation_with_limiter
-    "controller_type" : "cascade_saturation",   
+    "controller_type" : "cascade_saturation_with_limiter",   
 
     // Radial distance of the center of the earth from spacecraft [m]. 
     "radius": 7371000.0,
@@ -98,7 +98,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 3000.0,
+    "end_epoch": 10000.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
@@ -106,6 +106,6 @@
     "absolute_tolerance": 1.0e-2,
 
     // Set up file writer options.
-    "metadata_file_path": "/home/superman/Desktop/single_simulation/metadata.csv",
-    "state_history_file_path": "/home/superman/Desktop/single_simulation/state_history.csv"
+    "metadata_file_path": "/home/superman/Desktop/single_simulation/trial1/c=2.0_metadata.csv",
+    "state_history_file_path": "/home/superman/Desktop/single_simulation/trial1/c=2.0_state_history.csv"
 }

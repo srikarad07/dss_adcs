@@ -92,6 +92,15 @@ void executeProductAttributeExtraction( const rapidjson::Document& config )
                                                                          supplierName ); 
                 metadatHistoryStream << attributeToPrint << ",";
             }
+            else if ( !mapIterator->first.compare("mass") )
+            {
+                std::cout << "Attribute name: " << mapIterator->first << std::endl;
+                const Real attributeToPrint   = convertToKilograms( mapIterator->second.second, 
+                                                                         mapIterator->second.first,
+                                                                         reactionWheelName, 
+                                                                         supplierName ); 
+                metadatHistoryStream << attributeToPrint << ",";
+            }
             else if ( !mapIterator->first.compare("maximum power") || !mapIterator->first.compare("idle power") || !mapIterator->first.compare("steady state power") )
             {
                 std::cout << "Attribute name: " << mapIterator->first << std::endl;
