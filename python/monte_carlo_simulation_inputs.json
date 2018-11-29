@@ -4,16 +4,22 @@
     "plot_with_string" : "none",
     "type_of_plots" : "scatter",  
     "parameters_to_plot": [
-        [ "systemAvgPower", "mass" ],
-        [ "systemPeakPower", "mass" ], 
-        [ "systemPeakPower", "settlingTime" ],
-        [ "settlingTime", "mass" ] 
+        ["rwPeakPower2", "mass"], 
+        ["systemAvgPower", "mass"],
+        ["systemPeakPower", "mass"],
+        ["rwMomentumPercent2", "mass"],
+        ["rwPeakPowerPercent2", "mass"],
+        ["rwTorque2", "mass"],
+        ["rwTorquePercent2", "mass"]  
     ],
-    "axisTitles" : [ 
-        ["Average power [W]", "Mass [kg]"  ],
-        ["Peak power [W]", "Mass [kg]"  ],
-        ["Peak power [W]", "Settling Time [min]" ],     
-        ["Settling Time [min]", "Mass [kg]"  ]
+    "axisTitles" : [      
+        ["Peak Power [W]", "Mass [kg]"],
+        ["System Average power [W]", "Mass [kg]"],
+        ["System Peak Power [W]", "Mass [kg]"],
+        ["Momentum storage [%]", "Mass [kg]"],
+        ["Peak Power [%]", "Mass [kg]"],
+        ["Reaction wheel torque", "Mass [kg]"],
+        ["Reaction wheel torque [%]", "Mass [kg]"]      
     ],
     "systemRequirements" : {
     },
@@ -26,11 +32,13 @@
         "temp2", 
         "temp3", 
         "temp1",
+        "temp3",
+        "temp3",
         "temp3"
     ],   
     "showFigures": true, 
     "saveFigures" : false,
-    "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case_2", 
+    "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case_2/case_2c_", 
     "hover_flag" : true,
     "plot_properties": {
         "marker":".", 

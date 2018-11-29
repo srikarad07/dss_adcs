@@ -179,7 +179,17 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
     pass 
 
 ## JSON file path. 
-pythonInputsJsonPath    = "/home/superman/workspace/dss_adcs/python/plot_inputs.json"
+# pythonInputsJsonPath    = "/home/superman/workspace/dss_adcs/python/bulk_simulation_inputs.json"
+
+import os
+import sys
+
+fn = sys.argv[1]
+if os.path.exists(fn):
+    pythonInputsJsonPath = fn
+else: 
+    print "Error!! Input file not provided!! "
+    sys.exit()
 
 ## Read the json file. 
 with open( pythonInputsJsonPath ) as data_file: 

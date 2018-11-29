@@ -1,41 +1,58 @@
 {
-    "mode" : "single_simulation", 
+    "mode" : "bulk_simulation", 
     "filePath" : "/home/superman/Desktop/bulk_simulation", 
-    "number_of_reactionWheels" : "none", 
+    "plot_with_string" : "none",
+    "type_of_plots" : "scatter", 
     "parameters_to_plot": [
-        [ "systemAvgPower", "mass" ]
-
+        [ "systemAvgPower", "mass" ],
+        [ "systemPeakPower", "mass" ], 
+        [ "systemPeakPower", "settlingTime" ],
+        [ "settlingTime", "mass" ], 
+        [ "settlingTime", "volume" ],
+        [ "systemPeakPower", "volume" ]
     ],
     "axisTitles" : [ 
-        ["Average power [W]", "Mass [kg]"  ]    
+        ["Average power [W]", "Mass [kg]"  ],
+        ["Peak power [W]", "Mass [kg]"  ],
+        ["Peak power [W]", "Settling Time [min]" ],     
+        ["Settling Time [min]", "Mass [kg]"  ],
+        ["Settling Time [min]", "Volume [m3]" ],
+        ["Peak power [W]", "Volume [m3]" ]     
     ],
     "systemRequirements" : {
-       "systemAvgPower" : 30.0 
     },
     "systemConstraints" : {
-        "systemPeakPower" : 100.0
     },
     "xAxisPlot" : "t", 
     "pltTitles": [
         "Power [W]", 
         "temp1", 
         "temp2", 
+        "temp3", 
+        "temp1",
         "temp3"
     ],   
     "showFigures": true, 
     "saveFigures" : false,
     "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case2/", 
     "hover_flag" : true, 
+    "plot_properties": {
+        "marker":".", 
+        "linewidth":10.0, 
+        "c":"cyan",
+        "alpha":0.5
+    }, 
     "font" : {
         "family" : "monospace",
         "weight" : "bold",
         "size"   :  15 
         },
-    "figSize" : 
-        [
-            10.0, 
-            8.0
-        ],
+    "fig_properties"  : {
+    "figsize" :  [ 10.0, 
+                8.0
+            ],
+    "tight_layout" : true
+    }, 
     "reference": [
             [ "systemAvgPower", "mass" ],
             [ "systemPeakPower", "mass" ], 
