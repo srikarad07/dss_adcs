@@ -118,7 +118,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
         {
             metadatafile << "ConceptIdentifier,principleInertia1,principleInertia2,principleInertia3,InitialAttitudeState1,InitialAttitudeState2,InitialAttitudeState3,InitialAttitudeState4,InitialAttitudeState5,InitialAttitudeState6,InitialAttitudeState7,AttitudeReferenceState1,AttitudeReferenceState2,AttitudeReferenceState3,AttitudeReferenceState4,AsymmetricBodyTorqueFlag,GravityGradientBodyFlag,ControlTorqueFlag,GravitationalParameter,NaturalFrequency,DampingRatio,SlewRate,SemiMajorAxis,ControllerType,Radius,Integrator,StartEpoch,EndEpoch,TimeStep,RelativeTolerance,AbsoluteTolerance,rw1Uuid,rw2UUid,rw3UUid,rw1WheelOrientation1,rw2WheelOrientation1,rw3WheelOrientation1,rw1WheelOrientation2,rw2WheelOrientation2,rw3WheelOrientation2,reactionWheelName1,reactionWheelName2,reactionWheelName3,reactionWheelMass1,reactionWheelMass2,reactionWheelMass3,reactionWheelTorque1,reactionWheelTorque2,reactionWheelTorque3" << std::endl;
 
-            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwMomentum1,rwMomentum2,rwMomentum3,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3" << std::endl; 
+            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwMomentum1,rwMomentum2,rwMomentum3,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwTorque1,rwTorque2,rwTorque3,rwTorquePercent1,rwTorquePercent2,rwTorquePercent3" << std::endl; 
         }
         else if ( numberOfReactionWheels == 4 )
         {
@@ -393,6 +393,12 @@ void executeBulkSimulator( const rapidjson::Document& config )
             //! Maneuver time of the attitude control concept. 
             const Real settlingTime         = dataToSave.calculateSettingTime(); 
 
+            //! Reaction wheel torque peak and percentage values for each concept. 
+            const std::pair< const VectorXd, const VectorXd > outputReactionWheelTorque = 
+                                                dataToSave.getReactionWheelTorques( reactionWheelConcept ); 
+            const VectorXd reactionWheelPeakTorque              = outputReactionWheelTorque.first; 
+            const VectorXd reactionWheelPeakTorquePercent       = outputReactionWheelTorque.second; 
+
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
             // Undo the changes in the IO.h file in struct IOFormat, change the parameters _coeffSeparator & 
             // _rowSeparator back to " " & "/n" respectively. Instead use the link below to add a custom formatter 
@@ -451,7 +457,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
                      actuatorConfiguration.calculateVolumeBudget( ), systemPeakPowerPerSimulation, 
                      systemAvgPowerPerSimulation, settlingTime,
                      rwPeakPowerPerSimulation, rwAvgPowerPerSimulation, rwPeakMomentumStorage, rwPeakPowerPercentPerSimulation,
-                     rwPeakMomentumPercentStorage );
+                     rwPeakMomentumPercentStorage, reactionWheelPeakTorque, reactionWheelPeakTorquePercent );
             conceptAttribtuesFile << std::endl; 
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 
             // Update the progress bar to include both monte carlo simulations and the number of

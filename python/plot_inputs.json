@@ -1,15 +1,19 @@
 {
     "mode" : "bulk_simulation", 
-    "filePath" : "/home/superman/Desktop/bulk_simulation", 
-    "number_of_reactionWheels" : "none",
+    "filePath" : "/home/superman/Desktop/bulk_simulation/trial/", 
+    "plot_with_string" : "50,52,51_",
     "type_of_plots" : "scatter",  
     "parameters_to_plot": [
-        ["rwMomentumPercent\\d", "mass"],
-        ["rwPeakPowerPercent\\d", "mass"] 
+        [ "systemAvgPower", "mass" ],
+        [ "systemPeakPower", "mass" ], 
+        [ "systemPeakPower", "settlingTime" ],
+        [ "settlingTime", "mass" ] 
     ],
     "axisTitles" : [ 
-        ["Momentum storage [%]", "Mass [kg]"],
-        ["Peak Power [%]", "Mass [kg]"]
+        ["Average power [W]", "Mass [kg]"  ],
+        ["Peak power [W]", "Mass [kg]"  ],
+        ["Peak power [W]", "Settling Time [min]" ],     
+        ["Settling Time [min]", "Mass [kg]"  ]  
     ],
     "systemRequirements" : {
     },
@@ -21,11 +25,12 @@
         "temp1", 
         "temp2", 
         "temp3", 
-        "temp1"
+        "temp1",
+        "temp3"
     ],   
     "showFigures": true, 
     "saveFigures" : false,
-    "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case2/", 
+    "saveFigurePath" : "/home/superman/Delft/Thesis/thesis-report/Images/results/case_2", 
     "hover_flag" : true,
     "plot_properties": {
         "marker":".", 
@@ -48,13 +53,17 @@
             [ "systemAvgPower", "mass" ],
             [ "systemPeakPower", "mass" ], 
             [ "systemPeakPower", "settlingTime" ],
-            [ "settlingTime", "mass" ] 
+            [ "settlingTime", "mass" ], 
+            ["rwMomentumPercent\\d", "mass"],
+            ["rwPeakPowerPercent\\d", "mass"]  
         ],
     "reference2" : [ 
             ["Average power [W]", "Mass [kg]"  ],
             ["Peak power [W]", "Mass [kg]"  ],
             ["Peak power [W]", "Settling Time [min]" ],     
-            ["Settling Time [min]", "Mass [kg]"  ]    
+            ["Settling Time [min]", "Mass [kg]"  ],  
+            ["Momentum storage [%]", "Mass [kg]"],
+            ["Peak Power [%]", "Mass [kg]"]    
         ],
     "grid":{
             "linestyle":"--", 

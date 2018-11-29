@@ -207,6 +207,53 @@ public:
         return outputMomentum; 
     };
 
+    const std::pair< const VectorXd, const VectorXd> getReactionWheelTorques( const std::vector<ReactionWheel> reactionWheelConcept )
+    {
+        std::vector< VectorXd > reactionWheelTorqueHistories; 
+
+        // Save the parameters for the entire time history 
+        for( std::vector<SaveStateHistories>::iterator it = stateHistoryStorageContainer.begin(); it != stateHistoryStorageContainer.end(); ++it)
+        {
+            const SaveStateHistories tempStateHistories = *it; 
+            reactionWheelTorqueHistories.push_back( tempStateHistories.reactionWheelMotorTorques );
+        }
+
+        // Reaction wheel peak and average momentum. 
+        std::vector<Real>::iterator reactionWheelPeakTorqueDistance; 
+        VectorXd reactionWheelPeakTorque( reactionWheelTorqueHistories[0].size() ); 
+        // VectorXd reactionWheelAverageMomentum( reactionWheelTorqueHistories[0].size() ); 
+        VectorXd reactionWheelPeakTorquePercentage( reactionWheelTorqueHistories[0].size() ); 
+
+        // Iterate over the number of reaction wheels. 
+        for( unsigned int reactionWheelIterator = 0; reactionWheelIterator < reactionWheelTorqueHistories[0].size(); ++reactionWheelIterator )
+        {
+            std::vector<Real> reactionWheelTempTorque;
+
+            // Iterate over the time histories to save the power profiles for each reaction wheel. 
+            for( std::vector<VectorXd>::iterator torqueTimeHistoryIterator = reactionWheelTorqueHistories.begin(); torqueTimeHistoryIterator != reactionWheelTorqueHistories.end(); ++torqueTimeHistoryIterator )
+            { 
+                VectorXd tempTorqueContainer = *torqueTimeHistoryIterator;
+                reactionWheelTempTorque.push_back( tempTorqueContainer[reactionWheelIterator] );  
+            } 
+            reactionWheelPeakTorqueDistance = std::max_element( reactionWheelTempTorque.begin(), reactionWheelTempTorque.end(), abs_compare ); 
+            
+            //! Calculate the peak and torque for each reaction wheel. 
+            reactionWheelPeakTorque[reactionWheelIterator] = reactionWheelTempTorque[std::distance(reactionWheelTempTorque.begin(), reactionWheelPeakTorqueDistance )]; 
+        //     reactionWheelAverageMomentum[reactionWheelIterator] = ( std::accumulate( reactionWheelTempTorque.begin(), 
+        //                                                             reactionWheelTempTorque.end(), 0.0, abs_vector ) ) / reactionWheelTempTorque.size();  
+
+            //! Percentage of peak power in the simulation with respect to the peak power given for the hardware 
+            //! in the datasheet. 
+            const double peakTorqueReactionWheelGiven    = reactionWheelConcept[reactionWheelIterator].maxTorque; 
+            reactionWheelPeakTorquePercentage[reactionWheelIterator] = std::abs( ( reactionWheelPeakTorque[reactionWheelIterator] /
+                                                                        peakTorqueReactionWheelGiven ) * 100.0 );
+            
+        }
+        std::pair< const VectorXd, const VectorXd> outputReactionWheelTorques( reactionWheelPeakTorque, 
+                                                                               reactionWheelPeakTorquePercentage );  
+        return outputReactionWheelTorques; 
+    };
+
     //! Get the maneuver time for the attitude control concept/ 
     /*  Maneuver time is understood as the time during which the slew rate of the spacecraft  
      *  becomes constant.  

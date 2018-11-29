@@ -21,7 +21,7 @@
     ],
     
     // Slew rate [confirm units]
-    "slew_saturation_rate" : 0.5, 
+    "slew_saturation_rate" : 1.0, 
     
     // Range of slew 
     // null | double

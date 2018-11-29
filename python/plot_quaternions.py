@@ -80,7 +80,10 @@ print ""
 # # numberOfReactionWheels      = '_44.csv'
 # # filesForTheplots            = requiredFiles( path, stringToSearchWith, numberOfReactionWheels)
 # # filesForTheplots            = requiredFiles( path, stringToSearchWith )
-filesForTheplots            = ["/home/superman/Desktop/single_simulation/state_history.csv"]
+# filesForTheplots            = ["/home/superman/Desktop/single_simulation/state_history.csv"]
+filesForTheplots            = ["/home/superman/Desktop/single_simulation/trial1/c=2.0_state_history.csv"]
+# savefigPath  = '/home/superman/Delft/Thesis/IAC/iac_2018/Images/results/case1/'
+savefigPath    = '/home/superman/Delft/Thesis/trial/c=2.0_'
 # print(filesForTheplots)
 # Define linestyles. 
 linestyles = ['-', '--', '-.', ':', '-.']
@@ -97,8 +100,6 @@ matplotlib.rc('xtick', labelsize=10)
 matplotlib.rc('ytick', labelsize=10)
 
 closeplot    = False 
-# savefigPath  = '/home/superman/Delft/Thesis/IAC/iac_2018/Images/results/case1/'
-savefigPath    = '/home/superman/Delft/IAC/presentation/results/case1/'
 figureSize = (10.0,8.0)
 ## Plot spacecraft attitudes. ## 
 fig1  = plt.figure(figsize=figureSize)
@@ -336,48 +337,48 @@ fig.savefig(savefigPath +'power.eps')
 plt.close(closeplot)
 
 # ## Plot the angular rates of the spacecraft ## 
-fig = plt.figure()
-# fig, ( ax1, ax2, ax3, ax4 ) = plt.subplots(4, sharex=True, figsize=(11,7) )
-for filename in range(len(filesForTheplots)):
+# fig = plt.figure()
+# # fig, ( ax1, ax2, ax3, ax4 ) = plt.subplots(4, sharex=True, figsize=(11,7) )
+# for filename in range(len(filesForTheplots)):
 
-    state_history   = pd.read_csv( filesForTheplots[filename] )
-    ax1 = fig.add_subplot(2,2,1)
-    ax2 = fig.add_subplot(2,2,2)
-    ax3 = fig.add_subplot(2,2,3)
-    ax4 = fig.add_subplot(2,2,4)
+#     state_history   = pd.read_csv( filesForTheplots[filename] )
+#     ax1 = fig.add_subplot(2,2,1)
+#     ax2 = fig.add_subplot(2,2,2)
+#     ax3 = fig.add_subplot(2,2,3)
+#     ax4 = fig.add_subplot(2,2,4)
 
-    #Plot angular velocity with respect to time. 
-    ax1.plot(state_history['t'] / 60.0, state_history['w1'])
-    # ax1.set_xlabel('time[sec]')
-    ax1.set_ylabel('V_x[deg/sec]')
-    ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    ax1.grid()
+#     #Plot angular velocity with respect to time. 
+#     ax1.plot(state_history['t'] / 60.0, state_history['w1'])
+#     # ax1.set_xlabel('time[sec]')
+#     ax1.set_ylabel('V_x[deg/sec]')
+#     ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+#     ax1.grid()
 
-    ax2.plot(state_history['t'] / 60.0, state_history['w2'])
-    # ax2.set_xlabel('time[sec]')
-    ax2.set_ylabel('V_y [deg/sec]')
-    ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    ax2.grid()
+#     ax2.plot(state_history['t'] / 60.0, state_history['w2'])
+#     # ax2.set_xlabel('time[sec]')
+#     ax2.set_ylabel('V_y [deg/sec]')
+#     ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+#     ax2.grid()
 
-    ax3.plot(state_history['t'] / 60.0, state_history['w3'])
-    ax3.set_xlabel('Time[min]')
-    ax3.set_ylabel('V_z [deg/sec]')
-    ax3.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    ax3.grid()
+#     ax3.plot(state_history['t'] / 60.0, state_history['w3'])
+#     ax3.set_xlabel('Time[min]')
+#     ax3.set_ylabel('V_z [deg/sec]')
+#     ax3.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+#     ax3.grid()
 
-    ax4.plot(state_history['t'] / 60.0, state_history['slewRate'])
-    ax4.set_xlabel('Time[min]')
-    ax4.set_ylabel('Slew Rate [deg/sec]')
-    ax4.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    ax4.grid()
+#     ax4.plot(state_history['t'] / 60.0, state_history['slewRate'])
+#     ax4.set_xlabel('Time[min]')
+#     ax4.set_ylabel('Slew Rate [deg/sec]')
+#     ax4.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+#     ax4.grid()
 
-    plt.tight_layout()
+#     plt.tight_layout()
     
-    plt.grid()
+#     plt.grid()
     
-    pass 
-# fig.savefig(savefigPath +'angularRatesSpacecraft.eps')
-plt.close(closeplot)
+#     pass 
+# # fig.savefig(savefigPath +'angularRatesSpacecraft.eps')
+# plt.close(closeplot)
 
 plt.show()
 
