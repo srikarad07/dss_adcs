@@ -191,9 +191,9 @@ public:
             reactionWheelPeakMomentumDistance = std::max_element( reactionWheelTempMomentum.begin(), reactionWheelTempMomentum.end(), abs_compare ); 
             
             //! Calculate the peal and average momentum for each reaction wheel. 
-            reactionWheelPeakMomentum[reactionWheelIterator] = reactionWheelTempMomentum[std::distance(reactionWheelTempMomentum.begin(), reactionWheelPeakMomentumDistance )]; 
-            reactionWheelAverageMomentum[reactionWheelIterator] = ( std::accumulate( reactionWheelTempMomentum.begin(), 
-                                                                    reactionWheelTempMomentum.end(), 0.0, abs_vector ) ) / reactionWheelTempMomentum.size();  
+            reactionWheelPeakMomentum[reactionWheelIterator] = std::abs( reactionWheelTempMomentum[std::distance(reactionWheelTempMomentum.begin(), reactionWheelPeakMomentumDistance )] ); 
+            reactionWheelAverageMomentum[reactionWheelIterator] = std::abs( ( std::accumulate( reactionWheelTempMomentum.begin(), 
+                                                                    reactionWheelTempMomentum.end(), 0.0, abs_vector ) ) / reactionWheelTempMomentum.size() );  
 
             //! Percentage of peak power in the simulation with respect to the peak power given for the hardware 
             //! in the datasheet. 
@@ -238,7 +238,7 @@ public:
             reactionWheelPeakTorqueDistance = std::max_element( reactionWheelTempTorque.begin(), reactionWheelTempTorque.end(), abs_compare ); 
             
             //! Calculate the peak and torque for each reaction wheel. 
-            reactionWheelPeakTorque[reactionWheelIterator] = reactionWheelTempTorque[std::distance(reactionWheelTempTorque.begin(), reactionWheelPeakTorqueDistance )]; 
+            reactionWheelPeakTorque[reactionWheelIterator] = std::abs( reactionWheelTempTorque[std::distance(reactionWheelTempTorque.begin(), reactionWheelPeakTorqueDistance )] ); 
         //     reactionWheelAverageMomentum[reactionWheelIterator] = ( std::accumulate( reactionWheelTempTorque.begin(), 
         //                                                             reactionWheelTempTorque.end(), 0.0, abs_vector ) ) / reactionWheelTempTorque.size();  
 

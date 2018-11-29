@@ -135,6 +135,6 @@
 
     // Output
     // Set up file writer options.
-    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/trial/inertia=50,52,51_metadata_",
-    "state_history_file_path": "/home/superman/Desktop/bulk_simulation/trial/inertia=50,52,51_state_history_"
+    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/metadata_",
+    "state_history_file_path": "/home/superman/Desktop/bulk_simulation/state_history_"
 }

@@ -118,7 +118,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
         {
             metadatafile << "ConceptIdentifier,principleInertia1,principleInertia2,principleInertia3,InitialAttitudeState1,InitialAttitudeState2,InitialAttitudeState3,InitialAttitudeState4,InitialAttitudeState5,InitialAttitudeState6,InitialAttitudeState7,AttitudeReferenceState1,AttitudeReferenceState2,AttitudeReferenceState3,AttitudeReferenceState4,AsymmetricBodyTorqueFlag,GravityGradientBodyFlag,ControlTorqueFlag,GravitationalParameter,NaturalFrequency,DampingRatio,SlewRate,SemiMajorAxis,ControllerType,Radius,Integrator,StartEpoch,EndEpoch,TimeStep,RelativeTolerance,AbsoluteTolerance,rw1Uuid,rw2UUid,rw3UUid,rw1WheelOrientation1,rw2WheelOrientation1,rw3WheelOrientation1,rw1WheelOrientation2,rw2WheelOrientation2,rw3WheelOrientation2,reactionWheelName1,reactionWheelName2,reactionWheelName3,reactionWheelMass1,reactionWheelMass2,reactionWheelMass3,reactionWheelTorque1,reactionWheelTorque2,reactionWheelTorque3" << std::endl;
 
-            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwMomentum1,rwMomentum2,rwMomentum3,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwTorque1,rwTorque2,rwTorque3,rwTorquePercent1,rwTorquePercent2,rwTorquePercent3" << std::endl; 
+            conceptAttribtuesFile << "ConceptIdentifier,mass,volume,systemPeakPower,systemAvgPower,settlingTime,rwPeakPower1,rwPeakPower2,rwPeakPower3,rwAvgPower1,rwAvgPower2,rwAvgPower3,rwPeakMomentum1,rwPeakMomentum2,rwPeakMomentum3,rwAvgMomentum1,rwAvgMomentum2,rwAvgMomentum3,rwPeakPowerPercent1,rwPeakPowerPercent2,rwPeakPowerPercent3,rwMomentumPercent1,rwMomentumPercent2,rwMomentumPercent3,rwTorque1,rwTorque2,rwTorque3,rwTorquePercent1,rwTorquePercent2,rwTorquePercent3" << std::endl; 
         }
         else if ( numberOfReactionWheels == 4 )
         {
@@ -456,7 +456,7 @@ void executeBulkSimulator( const rapidjson::Document& config )
                      actuatorConfiguration.calculateMassBudget( ), 
                      actuatorConfiguration.calculateVolumeBudget( ), systemPeakPowerPerSimulation, 
                      systemAvgPowerPerSimulation, settlingTime,
-                     rwPeakPowerPerSimulation, rwAvgPowerPerSimulation, rwPeakMomentumStorage, rwPeakPowerPercentPerSimulation,
+                     rwPeakPowerPerSimulation, rwAvgPowerPerSimulation, rwPeakMomentumStorage, rwAvgMomentumStorage, rwPeakPowerPercentPerSimulation,
                      rwPeakMomentumPercentStorage, reactionWheelPeakTorque, reactionWheelPeakTorquePercent );
             conceptAttribtuesFile << std::endl; 
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> // 

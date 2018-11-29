@@ -1,7 +1,7 @@
 {
     "mode" : "bulk_simulation", 
-    "filePath" : "/home/superman/Desktop/bulk_simulation/trial/", 
-    "plot_with_string" : "50,52,51_",
+    "filePath" : "/home/superman/Desktop/bulk_simulation/", 
+    "plot_with_string" : "none",
     "type_of_plots" : "scatter",  
     "parameters_to_plot": [
         [ "systemAvgPower", "mass" ],
@@ -13,7 +13,7 @@
         ["Average power [W]", "Mass [kg]"  ],
         ["Peak power [W]", "Mass [kg]"  ],
         ["Peak power [W]", "Settling Time [min]" ],     
-        ["Settling Time [min]", "Mass [kg]"  ]  
+        ["Settling Time [min]", "Mass [kg]"  ]
     ],
     "systemRequirements" : {
     },
@@ -55,7 +55,9 @@
             [ "systemPeakPower", "settlingTime" ],
             [ "settlingTime", "mass" ], 
             ["rwMomentumPercent\\d", "mass"],
-            ["rwPeakPowerPercent\\d", "mass"]  
+            ["rwPeakPowerPercent\\d", "mass"],
+            ["rwTorque\\d", "mass"],
+            ["rwTorquePercent\\d", "mass"]  
         ],
     "reference2" : [ 
             ["Average power [W]", "Mass [kg]"  ],
@@ -63,7 +65,9 @@
             ["Peak power [W]", "Settling Time [min]" ],     
             ["Settling Time [min]", "Mass [kg]"  ],  
             ["Momentum storage [%]", "Mass [kg]"],
-            ["Peak Power [%]", "Mass [kg]"]    
+            ["Peak Power [%]", "Mass [kg]"],
+            ["Reaction wheel torque", "Mass [kg]"],
+            ["Reaction wheel torque [%]", "Mass [kg]"]    
         ],
     "grid":{
             "linestyle":"--", 
