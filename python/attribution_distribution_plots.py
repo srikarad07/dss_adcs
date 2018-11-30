@@ -28,7 +28,7 @@ from csv_functions import requiredFiles
 # Hover functionality 
 from plotter_functions import hoverFunctionality
 
-plt.style.use('seaborn-white')
+# plt.style.use('seaborn-white')
 
 print ""
 print "------------------------------------------------------------------"
@@ -68,8 +68,8 @@ n_bins = 4
 closePlot       = False 
 
 # Type of plot 
+# typeOfPlot      = "scatter"
 typeOfPlot      = "scatter"
-# typeOfPlot      = "histogram"
 # typeOfPlot      = "general"
 
 ## Update the index of the metadata file 
@@ -81,6 +81,7 @@ momentum        = metadata['angularMomentum']
 maxTorque       = metadata['maxTorque'] 
 torque          = metadata['torque']
 maxMomentum     = metadata['maxMomentumStorage']
+volume          = metadata['volume']
 names           = metadata.index.values
 
 ## Histograms: 
@@ -108,7 +109,7 @@ if typeOfPlot == "histogram":
         # Draw momentum storage distribution plots. 
         momentumStorage = metadata['angularMomentum']
         fig3, ax3       = plt.subplots(1, 1, tight_layout=True)
-        ax3.hist(momentumStorage.dropna(), bins=n_bins)
+        ax3.hist(momentumStorage.dropna(), bins=6)
         ax3.set_xlabel('Momentum storage [Nmsec]')
         ax3.set_ylabel('Count')
         plt.grid()
@@ -219,6 +220,28 @@ elif typeOfPlot == "scatter":
         ax.set_xlabel('Mass [kg]')
         indexesSc     = names[~torque.isnull()]
         hoverFunctionality( ax, indexesSc, sc, fig, mass )
+
+        ## Point out the anomalies in the graphs. rw3-0.060, rw-0.03
+        y       = torque['RW3-0.060']
+        x       = mass['RW3-0.060']
+        Wide    = 0.25*x
+        Height  = 0.25*y
+        lowerX  = x - Wide/2.0 
+        lowerY  = y - Height/2.0
+        patch = mpatches.Rectangle((lowerX,lowerY), width=Wide, height=Height, edgecolor='r', facecolor='none', linewidth=2.0, label='RW3-0.060')
+        ax.add_patch(patch)
+        plt.legend(handles=[patch])
+
+        y       = torque['RW-0.03']
+        x       = mass['RW-0.03']
+        Wide    = 0.25*x
+        Height  = 0.25*y
+        lowerX  = x - Wide/2.0 
+        lowerY  = y - Height/2.0
+        patch = mpatches.Rectangle((lowerX,lowerY), width=Wide, height=Height, edgecolor='r', facecolor='none', linewidth=2.0, label='RW-0.03')
+        ax.add_patch(patch)
+        plt.legend(handles=[patch])
+
         # sc2 = ax.scatter( mass, maxTorque*0.8, marker='*' )
         # sc3 = ax.scatter( mass, maxTorque, marker='*' )
         # sc3 = ax.scatter( mass, maxTorque*0.7, marker='*' )
@@ -234,6 +257,43 @@ elif typeOfPlot == "scatter":
         plt.close(closePlot)
         fig.savefig(saveFigPath + 'torqueVsMass.eps')
 
+        # Log plot of torque vs volume 
+        fig, ax     = plt.subplots(1, 1, tight_layout=True)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        sc = ax.scatter(volume, torque)
+        ax.set_ylabel('Torque [Nm]')
+        ax.set_xlabel('Volume [m3]')
+        indexesSc     = names[~torque.isnull()]
+        hoverFunctionality( ax, indexesSc, sc, fig, volume )
+        
+        ## Point out the anomalies in the graphs. rw3-0.060, rw-0.03
+        y       = torque['RW3-0.060']
+        x       = volume['RW3-0.060']
+        Wide    = 0.25*x
+        Height  = 0.25*y
+        lowerX  = x - Wide/2.0 
+        lowerY  = y - Height/2.0
+        patch = mpatches.Rectangle((lowerX,lowerY), width=Wide, height=Height, edgecolor='r', facecolor='none', linewidth=2.0, label='RW3-0.060')
+        ax.add_patch(patch)
+        plt.legend(handles=[patch])
+
+        y       = torque['RW-0.03']
+        x       = volume['RW-0.03']
+        Wide    = 0.25*x
+        Height  = 0.25*y
+        lowerX  = x - Wide/2.0 
+        lowerY  = y - Height/2.0
+        patch = mpatches.Rectangle((lowerX,lowerY), width=Wide, height=Height, edgecolor='r', facecolor='none', linewidth=2.0, label='RW-0.03')
+        ax.add_patch(patch)
+        plt.legend(handles=[patch])
+
+        # Customize the minor grid
+        ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
+        plt.close(closePlot)
+        fig.savefig(saveFigPath + 'torqueVsVolume.eps')
+
+
         # Log plot of torque vs mass 
         fig, ax     = plt.subplots(1, 1, tight_layout=True)
         ax.set_xscale("log")
@@ -242,13 +302,30 @@ elif typeOfPlot == "scatter":
         ax.set_ylabel('Momentum storage [Nms]')
         ax.set_xlabel('Mass [kg]')
         indexesSc     = names[~momentum.isnull()]
-        hoverFunctionality( ax, indexesSc, sc, fig, mass )
+        hoverFunctionality( ax, indexesSc, sc, fig, volume )
         # Customize the major grid
         # ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
         # Customize the minor grid
         ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
         plt.close(closePlot)
         fig.savefig(saveFigPath + 'momentumVsMass.eps')
+
+
+        # Log plot of volume vs momentum 
+        fig, ax     = plt.subplots(1, 1, tight_layout=True)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        sc = ax.scatter(volume, momentum)
+        ax.set_ylabel('Momentum storage [Nms]')
+        ax.set_xlabel('Volume [m3]')
+        indexesSc     = names[~momentum.isnull()]
+        hoverFunctionality( ax, indexesSc, sc, fig, volume )
+        # Customize the major grid
+        # ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
+        # Customize the minor grid
+        ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
+        plt.close(closePlot)
+        fig.savefig(saveFigPath + 'momentumVsVolume.eps')
 
          # Log plot of torque vs mass 
         fig, ax     = plt.subplots(1, 1, tight_layout=True)
@@ -259,6 +336,23 @@ elif typeOfPlot == "scatter":
         ax.set_xlabel('Mass [kg]')
         indexesSc     = names[~peakPower.isnull()]
         hoverFunctionality( ax, indexesSc, sc, fig, mass )
+        ## Outliers: RW3-0.060, RWP050, RWP100, RW4, RW8
+        y       = np.array([peakPower.loc['RW3-0.060'], peakPower.loc['RWP050'], peakPower.loc['RWP100'], peakPower.loc['RW4'], peakPower.loc['RW8'] ])
+        x       = np.array([mass.loc['RW3-0.060'], mass.loc['RWP050'], mass.loc['RWP100'], mass.loc['RW4'], mass.loc['RW8'] ])
+        labels  = [ 'RW3-0.060', 'RWP050', 'RWP100', 'RW4', 'RW8' ]
+        
+        for ii, jj, zz in zip(x, y, labels): 
+                tempX   = ii
+                tempY   = jj
+                Wide    = 0.25*tempX
+                Height  = 0.25*tempY
+                lowerX  = tempX - Wide/2.0 
+                lowerY  = tempY - Height/2.0
+                patch = mpatches.Rectangle((lowerX,lowerY), width=Wide, height=Height, edgecolor='r', facecolor='none', linewidth=2.0, label=zz)
+                ax.add_patch(patch)
+                pass
+        plt.legend(handles=[patch])
+
         # Customize the major grid
         # ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
         # Customize the minor grid
@@ -266,25 +360,109 @@ elif typeOfPlot == "scatter":
         plt.close(closePlot)
         fig.savefig(saveFigPath + 'powerVsMass.eps')
 
+        # Log plot of power vs volume 
+        fig, ax     = plt.subplots(1, 1, tight_layout=True)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        sc = ax.scatter(volume, peakPower)
+        ax.set_ylabel('Power [W]')
+        ax.set_xlabel('Volume [m3]')
+        indexesSc     = names[~peakPower.isnull()]
+        hoverFunctionality( ax, indexesSc, sc, fig, volume )
+        # Customize the major grid
+        # ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
+        # Customize the minor grid
+        ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
+        plt.close(closePlot)
+        fig.savefig(saveFigPath + 'powerVsVolume.eps')
+
         # Log plot of Torque vs Momentum storage. 
-        # fig5, ax5       = plt.subplots(1, 1, tight_layout=True ) 
-        # ax5.set_xscale( "log" )
-        # ax5.set_yscale( "log" )
-        # sc  = ax5.scatter( momentum, torque, marker='.')
-        # indexesSc     = names[~torque.isnull()]
-        # hoverFunctionality( ax5, indexesSc, sc, fig5, momentum )
+        fig5, ax5       = plt.subplots(1, 1, tight_layout=True ) 
+        ax5.set_xscale( "log" )
+        ax5.set_yscale( "log" )
+        sc  = ax5.scatter( momentum, torque, marker='.')
+        indexesSc     = names[~torque.isnull()]
+        hoverFunctionality( ax5, indexesSc, sc, fig5, momentum )
         # sc2 = ax5.scatter( momentum, maxTorque, marker='*' )
         # indexesSc2      = names[~maxTorque.isnull()]
         # hoverFunctionality( ax5, indexesSc2, sc2, fig5, momentum )
-        # ax5.set_xlabel('Momentum Storage [Nms]')
-        # ax5.set_ylabel('Torque [Nm]')
+        # ## Outliers: RW3-0.060, RWP050, RWP100, RW4, RW8
+        # y       = np.array([peakPower.loc['RW3-0.060'], peakPower.loc['RWP050'], peakPower.loc['RWP100'], peakPower.loc['RW4'], peakPower.loc['RW8'] ])
+        # x       = np.array([mass.loc['RW3-0.060'], mass.loc['RWP050'], mass.loc['RWP100'], mass.loc['RW4'], mass.loc['RW8'] ])
+        # labels  = [ 'RW3-0.060', 'RWP050', 'RWP100', 'RW4', 'RW8' ]
+        # for ii, jj, zz in zip(x, y, labels): 
+        #         tempX   = ii
+        #         tempY   = jj
+        #         Wide    = 0.25*tempX
+        #         Height  = 0.25*tempY
+        #         lowerX  = tempX - Wide/2.0 
+        #         lowerY  = tempY - Height/2.0
+        #         patch = mpatches.Rectangle((lowerX,lowerY), width=Wide, height=Height, edgecolor='r', facecolor='none', linewidth=2.0, label=zz)
+        #         ax.add_patch(patch)
+        #         pass
+        plt.legend(handles=[patch])
+        ax5.set_xlabel('Momentum Storage [Nms]')
+        ax5.set_ylabel('Torque [Nm]')
         # ax5.set_title('Momentum Storage vs Torque for reaction wheels')
-        # # Customize the major grid
-        # ax5.grid(which='major', linestyle='-', linewidth='0.5', color='red')
-        # # Customize the minor grid
-        # ax5.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
-        # plt.close()
-        # fig5.savefig(saveFigPath + 'torqueVsMomentum.eps')
+        # Customize the major grid
+        ax5.grid(which='major', linestyle='-', linewidth='0.5', color='red')
+        # Customize the minor grid
+        ax5.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
+        plt.close(closePlot)
+        fig5.savefig(saveFigPath + 'torqueVsMomentum.eps')
+
+        # Log plot of Torque vs Momentum storage. 
+        fig5, ax5       = plt.subplots(1, 1, tight_layout=True ) 
+        ax5.set_xscale( "log" )
+        ax5.set_yscale( "log" )
+        torquePowerRatio     = ( torque / peakPower )
+        sc  = ax5.scatter( momentum, torquePowerRatio, marker='.')
+        indexesSc     = names[~torquePowerRatio.isnull()]
+        hoverFunctionality( ax5, indexesSc, sc, fig5, momentum )
+        # sc2 = ax5.scatter( momentum, maxTorque, marker='*' )
+        # indexesSc2      = names[~maxTorque.isnull()]
+        # hoverFunctionality( ax5, indexesSc2, sc2, fig5, momentum )
+        ax5.set_xlabel('Momentum Storage [Nms]')
+        ax5.set_ylabel('Torque/Power Ratio [Nm/W]')
+        # plt.yticks((10^-3, 10^-2))
+        # ax5.set_title('Momentum Storage vs Torque for reaction wheels')
+        # Customize the major grid
+        ax5.grid(which='major', linestyle='-', linewidth='0.5', color='red')
+        # Customize the minor grid
+        ax5.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
+        plt.close(closePlot)
+        fig5.savefig(saveFigPath + 'torquePowerRatioVsMomentum.eps')
+
+        # Log plot of momentum storage/mass vs angular momentum 
+        fig, ax     = plt.subplots(1, 1, tight_layout=True)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.scatter(momentum, momentum/(mass))
+        ax.set_xlabel('Momentum storage [Nms]')
+        ax.set_ylabel('Momentum storage / mass [Nms/kg]')
+        # ax.set_title('Momentum storage per unit mass vs Momentum storage')
+        # Customize the major grid
+        # ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
+        # Customize the minor grid
+        ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
+        plt.close(closePlot)
+        fig.savefig(saveFigPath + 'momentumVsMomentumPerMass.eps')
+
+        # Log plot of momentum storage/mass vs angular momentum 
+        fig, ax     = plt.subplots(1, 1, tight_layout=True)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.scatter(momentum, momentum/(volume))
+        ax.set_xlabel('Momentum storage [Nms]')
+        ax.set_ylabel('Momentum storage / Volume [Nms/m3]')
+        # ax.set_title('Momentum storage per unit mass vs Momentum storage')
+        # Customize the major grid
+        # ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
+        # Customize the minor grid
+        ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
+        plt.close(closePlot)
+        fig.savefig(saveFigPath + 'momentumVsMomentumPerVolume.eps')
+
 
         # # Log plot of Torque vs Momentum storage. 
         # fig5, ax5       = plt.subplots(1, 1, tight_layout=True ) 
@@ -305,7 +483,7 @@ elif typeOfPlot == "scatter":
         # # Customize the minor grid
         # ax5.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
         # plt.close()
-        # # fig5.savefig(saveFigPath + 'torqueVsMomentum.eps')
+        # fig5.savefig(saveFigPath + 'torqueVsMomentum.eps')
 
         # # # Log plot of torque vs peakPower 
         # fig, ax     = plt.subplots(1, 1, tight_layout=True)
@@ -314,7 +492,7 @@ elif typeOfPlot == "scatter":
         # ax.scatter(peakPower, torque)
         # ax.scatter(peakPower, maxTorque, marker='*' )
         # # patch = patches.Circle( (1.0,0.007), radius=5.0)
-        # # patch = mpatches.Rectangle([0.8,0.006], width = 0.4, height=0.002, edgecolor='r', facecolor='none',         linewidth=2.0, label='Anomaly')
+        # # patch = mpatches.Rectangle([0.8,0.006], width = 0.4, height=0.002, edgecolor='r', facecolor='none', linewidth=2.0, label='Anomaly')
         # # ax.add_patch(patch)
         # # calculated = ax.scatter(8.5281, 0.007, marker='*', color='red', label='Calculated Value', linewidth=2.0)
         # # ax.legend(['Calculated Value'])
@@ -362,20 +540,6 @@ elif typeOfPlot == "scatter":
         # plt.close(showplot)
         # fig.savefig(saveFigPath + 'torqueVsMomentumPerMass.eps')
         
-        # # Log plot of momentum storage/mass vs angular momentum 
-        # fig, ax     = plt.subplots(1, 1, tight_layout=True)
-        # ax.set_xscale("log")
-        # ax.set_yscale("log")
-        # ax.scatter(momentumStorage, momentumStorage/(mass))
-        # ax.set_xlabel('Momentum storage [Nms]')
-        # ax.set_ylabel('Momentum storage / mass [Nms/kg]')
-        # # ax.set_title('Momentum storage per unit mass vs Momentum storage')
-        # # Customize the major grid
-        # # ax.grid(which='major', linestyle='-', linewidth='0.5', color='red')
-        # # Customize the minor grid
-        # ax.grid(which='minor', linestyle='--', linewidth='0.5', color='black')
-        # plt.close(showplot)
-        # fig.savefig(saveFigPath + 'momentumVsMomentumPerMass.eps')
         pass 
 # # Log plot of momentum storage/mass vs angular momentum 
 # fig, ax     = plt.subplots(1, 1, tight_layout=True)
