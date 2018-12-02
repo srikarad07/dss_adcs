@@ -71,25 +71,6 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
     numberOfSimulations     = 100
     # <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
 
-    # plot_properties =  {
-    #     "marker":".", 
-    #     "linewidth":10.0, 
-    #     "c":"cyan",
-    #     "alpha":0.5 
-    # "font" : {
-    #     "family" : "monospace",
-    #     "weight" : "bold",
-    #     "size"   :  15 
-    #     },
-    # }
-    # "fig_properties"  : {
-    # "figsize" :  [ 10.0, 
-    #             8.0
-    #         ],
-    # "tight_layout" : true
-    # }, 
-
-    plt.style.use('dark_background')
     # Font for matplotlib 
     matplotlib.rc('font', **font) 
 
