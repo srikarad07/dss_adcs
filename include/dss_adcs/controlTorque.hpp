@@ -75,7 +75,10 @@ inline const std::pair< Vector3, VectorXd > computeRealTorqueValue( const Vector
     else if ( controllerType.compare("cascade_saturation_with_limiter") == 0 )
     {
         //! Maximum control input
-        const Vector3 maximumControlInput = reactionWheelTorqueToControlTorqueMappingMatrix * reactionWheelTorqueMax; 
+        //! Make all the elements of the control mapping matrices to be positive to 
+        //! find out the maximum control input from each reaction wheel. 
+        const MatrixXd tempMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.array().abs(); 
+        const Vector3 maximumControlInput = tempMatrix * reactionWheelTorqueMax; 
 
         commandedControlTorque = astro::computeControlTorqueWithSaturationCascadeControllerWithLimiter( 
                                                                                     naturalFrequency, 
