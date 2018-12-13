@@ -57,7 +57,11 @@ void executeSingleSimulator( const rapidjson::Document& config )
     
     const std::vector< ReactionWheel > reactionWheelConcept = reactionWheelConcepts["Concept"];
     
-    const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"] ); 
+    //! TO DO \: Do it the proper way.. from the simulation inputs.. 
+    const bool optimalConfigurationFlag    =  find( config, "use_optimal_configuration" )->value.GetBool( );
+
+    const ActuatorConfiguration actuatorConfiguration( reactionWheelConcepts["Concept"],
+                                                       optimalConfigurationFlag ); 
 
     // std::cout << "Reaction Wheel moment of inertia: " << actuatorConfiguration.calculateMomentOfInertia() << std::endl; 
 

@@ -23,22 +23,34 @@ class ActuatorConfiguration
 {
 public: 
 
-    ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel )
-                    : reactionWheel( aReactionWheel ) 
+    ActuatorConfiguration(  const std::vector< ReactionWheel > aReactionWheel, 
+                            const bool                         aOptimalConfigurationFlag  )
+                    : reactionWheel( aReactionWheel ),
+                      optimalConfigurationFlag( aOptimalConfigurationFlag ) 
     { } 
     
     const std::pair< MatrixXd, MatrixXd > computeReactionWheelMappingMatrices( ) const
     {
         MatrixXd reactionWheelTorqueToControlTorqueMappingMatrix(3, reactionWheel.size()); 
-        // TO DO: Need to test this function for accuracy.
+        // TO DO: ONLY WORKS FOR 3 REACTION WHEEL CONCEPTS!! Optimal configuration... 
+        // Add other optimal configuration of reaction wheels.. 4..5..6..!! 
 
-        for ( unsigned int i = 0; i < reactionWheel.size(); ++i )
+        if ( optimalConfigurationFlag == false )
         {
-            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[0] = sin( reactionWheel[i].wheelOrientation[1] ) * cos( reactionWheel[i].wheelOrientation[0] );
-            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[1] = sin( reactionWheel[i].wheelOrientation[1] ) * sin( reactionWheel[i].wheelOrientation[0] );
-            reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[2] = cos( reactionWheel[i].wheelOrientation[1] ); 
+            for ( unsigned int i = 0; i < reactionWheel.size(); ++i )
+            {
+                reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[0] = sin( reactionWheel[i].wheelOrientation[1] ) * cos( reactionWheel[i].wheelOrientation[0] );
+                reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[1] = sin( reactionWheel[i].wheelOrientation[1] ) * sin( reactionWheel[i].wheelOrientation[0] );
+                reactionWheelTorqueToControlTorqueMappingMatrix.col(i)[2] = cos( reactionWheel[i].wheelOrientation[1] ); 
+            }
         }
 
+        else 
+        {
+            reactionWheelTorqueToControlTorqueMappingMatrix <<  0.5773, 0.5773, 0.5773,
+                                                            0.0, 0.7071, -0.7071, 
+                                                            0.8165, -0.4083, -0.4083;  
+        }
         const MatrixXd inverseReactionWheelTorqueToControlTorqueMappingMatrix = reactionWheelTorqueToControlTorqueMappingMatrix.completeOrthogonalDecomposition().pseudoInverse();
 
         const std::pair< MatrixXd, MatrixXd > mappingMatrices( reactionWheelTorqueToControlTorqueMappingMatrix, inverseReactionWheelTorqueToControlTorqueMappingMatrix ); 
@@ -162,6 +174,8 @@ protected:
 private: 
 
 const std::vector< ReactionWheel > reactionWheel; 
+
+const bool optimalConfigurationFlag; 
 
 }; // class 
 
