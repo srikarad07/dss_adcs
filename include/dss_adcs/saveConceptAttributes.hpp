@@ -73,10 +73,10 @@ public:
             const SaveStateHistories tempStateHistories = *it; 
             reactionWheelPowerHistories.push_back( tempStateHistories.reactionWheelPowerProfiles );
             totalSystemPowerHistories.push_back( tempStateHistories.systemPeakPower );  
-            if ( tempStateHistories.systemPeakPower > 1e-3 )
-            {
+            // if ( tempStateHistories.systemPeakPower > 1e-3 )
+            // {
                totalSystemPowerForAverage.push_back( tempStateHistories.systemPeakPower ); 
-            }
+            // }
         } 
 
         // System peak power
@@ -254,10 +254,10 @@ public:
             { 
                 VectorXd tempMomentumContainer = *momentumTimeHistoryIterator;
                 reactionWheelTempMomentum.push_back( std::abs( tempMomentumContainer[reactionWheelIterator]) );  
-                if ( tempMomentumContainer[reactionWheelIterator] > 1e-5)
-                {
+                // if ( tempMomentumContainer[reactionWheelIterator] > 1e-5)
+                // {
                     reactionWheelMomentumForAverage.push_back( tempMomentumContainer[reactionWheelIterator] );
-                }
+                // }
             } 
             reactionWheelPeakMomentumDistance = std::max_element( reactionWheelTempMomentum.begin(), reactionWheelTempMomentum.end(), abs_compare ); 
             
