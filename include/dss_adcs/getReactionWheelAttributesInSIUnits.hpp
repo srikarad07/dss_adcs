@@ -180,6 +180,7 @@ namespace dss_adcs
 											         	mapForResult["maximum torque"].first,
 											         	reactionWheelName,
 											            supplierName); 
+			reactionWheelTorque = 0.7 * reactionWheelTorque; 
 		}
 		else 
 		{
