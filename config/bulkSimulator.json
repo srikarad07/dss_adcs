@@ -3,13 +3,13 @@
 
     // Number of samples for monte carlo simulation 
     // 1(if no monte carlo) | double
-    "number_0f_samples": 1, 
+    "number_0f_samples": 100, 
 
     // Principle moments of inertia in Body Fixed frame  in Vector3 (double) [kg/m2]
     "principle_inertia": [
-        50.0,
-        52.0,
-        51.0
+        23.125,
+        23.125,
+        16.0
     ],
 
     // Define the range of moments on inertia in Body fixed frame 
@@ -17,11 +17,11 @@
     "principle_inertia_uncertainties": [
         null,
         null,
-        null
+        8.0
     ],
     
     // Slew rate [confirm units]
-    "slew_saturation_rate" : 1.0, 
+    "slew_saturation_rate" : 0.3, 
     
     // Range of slew 
     // null | double
@@ -29,13 +29,14 @@
 
     // Attitude representation type. Change it to initial attitude 
     // euler_angles | quaternions 
-    "attitude_representation" : "euler_angles", 
+    "attitude_representation" : "quaternions", 
 
     // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3) + attiude rates [w1, w2, w3] in deg/sec. 
     "initial_attitude_state": [
-        100.0,
-        120.0,
-        110.0,
+        -0.0606,
+        0.693,
+        -0.0606,
+        0.715,
         0.0,
         0.0,
         0.0
@@ -44,8 +45,9 @@
     // Reference attitude state: either in euler_angle(Vector3: theta_1, theta_2, theta_3) or quaternions (Vector4: q_0, q_1, q_2, q_3)
     "attitude_reference_state": [
         0.0, 
-        0.0,
-        0.0
+        0.0, 
+        0.0, 
+        1.0
     ],
     
     // Flag for the asymmetric body torque on the system 
@@ -80,6 +82,9 @@
         3
     ], 
 
+    //! Use optimal configuration of reaction wheels
+    "use_optimal_configuration" : false, 
+
     // Uuids + Wheel orientation of a reaction wheel: Spherical coordinates -> r , theta(angle from X), psi(angle from Z) 
     // Angles given by the user in radians. 
     "wheel_orientation": [
@@ -94,10 +99,6 @@
         [
             0.0, 
             90.0
-        ], 
-        [
-            45.0, 
-            60.0
         ]
     ],
     
@@ -111,7 +112,7 @@
 
     // Controller type
     // quaternion_feedback | cascade_saturation | cascade_saturation_with_limiter
-    "controller_type" : "cascade_saturation_with_limiter",   
+    "controller_type" : "cascade_saturation",   
     
     // Radial distance of the center of the earth from spacecraft [m]. 
     "radius": 7371000.0,
@@ -126,7 +127,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 10000.0,
+    "end_epoch": 800.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
@@ -135,6 +136,6 @@
 
     // Output
     // Set up file writer options.
-    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/metadata_",
-    "state_history_file_path": "/home/superman/Desktop/bulk_simulation/state_history_"
+    "metadata_file_path": "/home/superman/Desktop/bulk_simulation/case_2b_j3/metadata_",
+    "state_history_file_path": "/home/superman/Desktop/bulk_simulation/case_2b_j3/state_history_"
 }

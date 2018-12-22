@@ -3,20 +3,21 @@
 
     // Principle moments of inertia in Body Fixed frame 
     "principle_inertia": [
-        200.0,
-        220.0,
-        210.0
+        23.125,
+        30.0,
+        16.0
     ],
     
     // Attitude representation type. Change it to initial attitude 
     // euler_angles | quaternions
-    "attitude_representation" : "euler_angles", 
+    "attitude_representation" : "quaternions", 
     
     // Initial attitude state of the s/c either in euler_angle(Vector6 theta_1, theta_2, theta_3) or quaternions (Vector7, q_0, q_1, q_2, q_3). 
     "initial_attitude_state": [
-        100.0,
-        120.0,
-        110.0,
+        -0.0606,
+        0.693,
+        -0.0606,
+        0.715,
         0.0,
         0.0,
         0.0
@@ -25,8 +26,9 @@
     // Change reference to target. [target_attitude_state]
     "attitude_reference_state": [
         0.0, 
-        0.0,
-        0.0
+        0.0, 
+        0.0, 
+        1.0
     ],
 
     // Flag for the asymmetric body torque on the system 
@@ -55,36 +57,39 @@
     
     "reaction_wheels": [
         {
-            "uuid": "890c1d1a-0289-5e3b-ae68-c51468ecdaf5",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 90.0, 
                 0.0
             ] 
         },
         {
-            "uuid": "890c1d1a-0289-5e3b-ae68-c51468ecdaf5",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 90.0, 
                 90.0
             ]
         },
         {
-            "uuid": "890c1d1a-0289-5e3b-ae68-c51468ecdaf5",
+            "uuid": "759fef15-c22a-5b9f-b461-894500bfc0c1",
             "wheel_orientation": [
                 0.0, 
                 90.0
             ]
         }
     ],
- 
+    
+    //! Use optimal configuration of reaction wheels
+    "use_optimal_configuration" : false, 
+
     // Controller properties 
     "natural_frequency" : 0.1,
     "damping_ratio" : 0.707,
-    "slew_saturation_rate" : 0.5, 
+    "slew_saturation_rate" : 0.3, 
 
     // Controller type
     // quaternion_feedback | cascade_saturation | cascade_saturation_with_limiter
-    "controller_type" : "cascade_saturation_with_limiter",   
+    "controller_type" : "cascade_saturation",   
 
     // Radial distance of the center of the earth from spacecraft [m]. 
     "radius": 7371000.0,
@@ -98,7 +103,7 @@
 
     // Set up integrator time parameters.
     "start_epoch": 0.0,
-    "end_epoch": 10000.0,
+    "end_epoch": 800.0,
     "time_step": 1.0,
 
     // Set up integrator tolerances (only applicable for adaptive step size integrators).
@@ -106,6 +111,6 @@
     "absolute_tolerance": 1.0e-2,
 
     // Set up file writer options.
-    "metadata_file_path": "/home/superman/Desktop/single_simulation/trial1/c=2.0_metadata.csv",
-    "state_history_file_path": "/home/superman/Desktop/single_simulation/trial1/c=2.0_state_history.csv"
+    "metadata_file_path": "/home/superman/Desktop/single_simulation/trial/metadata_j2=30.csv",
+    "state_history_file_path": "/home/superman/Desktop/single_simulation/trial/state_history_j2=30.csv"
 }
