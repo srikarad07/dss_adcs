@@ -70,7 +70,11 @@ def plotWithSystemLevelConstraints(xParameterToPlot, yParameterToPlot, state_his
         ## Get the constrina values and testing criteria for the system constraint.
         intermediateConstraintString    = constrainParameterString[ii]
         intermediateConstraintValue     = systemConstraints[constrainParameterString[ii]]
-        intermediateCriteria            = requiredStateHistory[intermediateConstraintString] < intermediateConstraintValue
+        # if intermediateConstraintString == "settlingTime": 
+        #     print "Enters this loop"
+        #     intermediateCriteria    = requiredStateHistory[intermediateConstraintString] > intermediateConstraintValue
+        # else: 
+        intermediateCriteria    = requiredStateHistory[intermediateConstraintString] < intermediateConstraintValue
         
         # Update the criteria with the criteria obtained for non zero with the system 
         # constraint criteria above.

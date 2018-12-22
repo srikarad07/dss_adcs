@@ -63,13 +63,19 @@ print ""
 
 def dss_adcs_plotter( path, stringToBeLocated, mode, typeOfPlots, plotWithString, pltTitles, axisTitles, 
 systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSaveFigure, subplotFlag, 
-                      figureProperties, hoverFlag, font, plotProperties ): 
+                      figureProperties, hoverFlag, font, plotProperties, useLatexFlag ): 
     
     # Number of simulations.
     # <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
     # This should be defined by the user in the json input file   
     numberOfSimulations     = 100
     # <<<<<<<<<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
+
+    ## For latex style graphs
+    if useLatexFlag == True: 
+        matplotlib.rc('text', usetex=True)
+        matplotlib.rcParams['text.latex.preamble'] = [r'\usepackage{sfmath}']  
+        pass 
 
     # Font for matplotlib 
     matplotlib.rc('font', **font) 
@@ -93,6 +99,9 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
         filesForThePlots2   = requiredFiles( path, metadataString, plotWithString )        
         pass
   
+    # print "Metadata file paths : ", filesForThePlots2
+    # print "Statehistory file paths : ", filesForTheplots
+
     fig = plt.figure( **figureProperties )
     ax  = fig.add_subplot(111)
     ax.autoscale()
@@ -103,9 +112,8 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
     ax.tick_params(axis='both', which='major')
     plt.ticklabel_format(axis='both', style='sci', scilimits=None)    
     ## <<<<<<<<<<<<<<<<<<< TO DO >>>>>>>>>>>>>>>>>>>>>>>>>>>>> ## 
-    
-    ax.set_xlabel(axisTitles[1])
-    ax.set_ylabel(axisTitles[0])
+    ax.set_xlabel(axisTitles[1], font)
+    ax.set_ylabel(axisTitles[0], font)
 
     ## Loop over the files to plot parameters from all the files. 
     for filename in range(len(filesForTheplots)):
@@ -130,8 +138,10 @@ systemRequirements, systemConstraints, showFigureBool, saveFigureBool, pathToSav
         xAxisParameterString  = stringLocator( metadataPath, stringToBeLocated[1] )    
         if xAxisParameterString.size == 0:
             xAxisParameterString2  = stringLocator( stateHistoryPath, stringToBeLocated[1] )
+        else: 
+            xAxisParameterString2  = "empty"
             pass 
-
+        print "X parameter string: ", xAxisParameterString
         # # To be displayed over the scatter points when hovered upon.
         # names                   = state_history.index.values
 
@@ -233,9 +243,12 @@ system_requirements         = inputPythonPlotData["systemRequirements"]
 # Constraints on the system: 
 system_constraints          = inputPythonPlotData["systemConstraints"]
 
+# Use latex flag
+useLatexFlag                = inputPythonPlotData["use_latex_flag"]
+
 for i in range( len(stringToPlot) ): 
 
-    dss_adcs_plotter( stateHistoryFilePath, stringToPlot[i], mode, typeOfPlots, plotWithString, plotTitles[i], axesTitles[i], system_requirements, system_constraints, showFigure, savefig, saveFigurePath, subplots, figureProperties, hoverFlag, font, plotProperties )
+    dss_adcs_plotter( stateHistoryFilePath, stringToPlot[i], mode, typeOfPlots, plotWithString, plotTitles[i], axesTitles[i], system_requirements, system_constraints, showFigure, savefig, saveFigurePath, subplots, figureProperties, hoverFlag, font, plotProperties, useLatexFlag )
     
     pass 
     
